@@ -155,6 +155,7 @@ void cambiar_signo(FILE* fpasm, int es_variable){
         fprintf(fpasm, "\tmov eax, [eax]\n");
 
     fprintf(fpasm, "\tneg eax\n");
+    fprintf(fpasm, "\tpush eax\n");
 }
 
 //sería preferible olvidarnos de cuantos_no y usar una variable estática
