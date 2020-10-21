@@ -7,4 +7,5 @@ $ ./compile.sh
 
 # Output:
 > Compiled files at p1/out/
+
 > Nasm produced files at p1/asm/
