@@ -119,7 +119,7 @@ void dividir(FILE* fpasm, int es_variable1, int es_variable2){
     fprintf(fpasm, "\tcmp ecx, 0\n");
     fprintf(fpasm, "\tjne %s\n", __NO_DIV_ERR__);
 
-    fprintf(fpasm, "\tpush dword, dword [_err_msg_div]\n");
+    fprintf(fpasm, "\tpush dword [_err_msg_div]\n");
     fprintf(fpasm, "\tcall print_string\n");
     fprintf(fpasm, "\tadd esp, 4\n");
     fprintf(fpasm, "\tcall print_endofline\n");
@@ -157,32 +157,23 @@ void cambiar_signo(FILE* fpasm, int es_variable){
     fprintf(fpasm, "\tneg eax\n");
 }
 
-
+//sería preferible olvidarnos de cuantos_no y usar una variable estática
 void no(FILE* fpasm, int es_variable, int cuantos_no){
-    fprintf(fpasm, "\tpop dword ebx\n"); /* ebx == cuantos_no */
     fprintf(fpasm, "\tpop dword eax\n"); /* eax == stack_top (numeric) */
     if(es_variable)
         fprintf(fpasm, "\tmov eax, [eax]\n");
 
-    fprintf(fpasm, "%s:\n", __NO_LOOP_STARTS__);
-
-    fprintf(fpasm, "\tcmp ebx, 0\n"); // ¿cuantos_no > 0?
-    fprintf(fpasm, "\tje %s\n", __NO_LOOP_ENDS__);
-
     fprintf(fpasm, "\tcmp eax, 0\n"); // ¿eax == 0?
-    fprintf(fpasm, "\tjne %s", __NO_ELSE_ST__); // eax == 1
+    fprintf(fpasm, "\tje %s%d\n", __NO_ELSE_ST__, cuantos_no); // eax == 0
 
-    fprintf(fpasm, "\tdec eax\n"); // eax <= 0
+    fprintf(fpasm, "\tsub eax, 1\n"); // eax <= 1
+    fprintf(fpasm, "\tjmp %s%d\n", __NO_ENDIF_ST__, cuantos_no);
 
-    fprintf(fpasm, "%s:\n", __NO_ELSE_ST__); // eax == 0
+    fprintf(fpasm, "%s%d:\n", __NO_ELSE_ST__, cuantos_no); // eax == 0
     fprintf(fpasm, "\tinc eax\n"); // eax <= 1
 
-    fprintf(fpasm, "%s:\n", __NO_ENDIF_ST__);
-    fprintf(fpasm, "\tdec ebx\n"); // cuantos_no--
-    fprintf(fpasm, "\tjmp %s\n", __NO_LOOP_STARTS__);
+    fprintf(fpasm, "%s%d:\n", __NO_ENDIF_ST__, cuantos_no);
 
-
-    fprintf(fpasm, "%s:\n", __NO_LOOP_ENDS__); // cuantos_no == 0
     fprintf(fpasm, "\tpush dword eax\n");
 }
 
@@ -240,8 +231,7 @@ void mayor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
 /* READ & WRITE INSTRUCTIONS */
 
 void leer(FILE* fpasm, char* nombre, int tipo){
-    fprintf(fpasm, "\tmov dword eax, dword _%s\n", nombre);
-    fprintf(fpasm, "\tpush dword eax\n");
+    fprintf(fpasm, "\tpush dword _%s\n", nombre);
     fprintf(fpasm, "\t%s\n", tipo == BOOLEANO ? "call scan_boolean" : "call scan_int");
     fprintf(fpasm, "\tadd esp, 4\n");
 }

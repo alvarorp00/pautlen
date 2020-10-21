@@ -20,8 +20,6 @@ int main (int argc, char ** argv)
 	printf x+z;
 	printf z;
 
-
-
 */
 	FILE * salida;
 	int cuantos_no = 0;

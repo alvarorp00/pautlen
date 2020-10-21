@@ -1,0 +1,10 @@
+rm -rf out/generacion
+rm -rf obj/generacion.o obj/p1.o
+gcc -I inc/ -c src/p1.c src/generacion.c
+mv *.o obj/
+gcc -o output obj/p1.o obj/generacion.o
+./output asm/output.asm
+nasm -g -o obj/generacion.o -f elf32 asm/output.asm
+gcc -m32 -o out/generacion obj/generacion.o obj/alfalib.o
+echo "executing compiled file"
+./out/generacion
