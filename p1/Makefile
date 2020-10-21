@@ -42,7 +42,5 @@ main.o: $(OBJECTS) $(HEADERS)
 compile:
 	./compile.sh
 
-exe:
-	./out/generacion
 
 .PRECIOUS: $(TARGET) $(OBJECTS)
