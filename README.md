@@ -3,6 +3,7 @@ Pautlen UAM | 2020 - 202*
 
 # To Compile P1
 $ cd p1/
+
 $ ./compile.sh
 
 # Output:
