@@ -1,10 +1,30 @@
+echo "Cleaning files..."
 rm -rf out/generacion
-rm -rf obj/generacion.o obj/p1.o
-gcc -I inc/ -c src/p1.c src/generacion.c
-mv *.o obj/
-gcc -o output obj/p1.o obj/generacion.o
-./output asm/output.asm
-nasm -g -o obj/generacion.o -f elf32 asm/output.asm
-gcc -m32 -o out/generacion obj/generacion.o obj/alfalib.o
-echo "executing compiled file"
-./out/generacion
+rm -rf obj/*.o
+
+echo "Clean complete. Compiling..."
+
+gcc -I inc/ -c src/main_0_generacion.c src/generacion.c
+gcc -I inc/ -c src/main_2_generacion.c src/generacion.c
+gcc -I inc/ -c src/main_generacion.c src/generacion.c
+
+mv *.o obj/.
+
+gcc -o main_0_generacion obj/main_0_generacion.o obj/generacion.o
+gcc -o main_2_generacion obj/main_2_generacion.o obj/generacion.o
+gcc -o main_generacion obj/main_generacion.o obj/generacion.o
+
+./main_0_generacion asm/main_0_generacion.asm
+./main_2_generacion asm/main_2_generacion.asm
+./main_generacion asm/main_generacion.asm
+
+nasm -g -o obj/generacion.o -f elf32 asm/main_0_generacion.asm
+gcc -m32 -o out/main_0_generacion obj/generacion.o lib/alfalib.o
+
+nasm -g -o obj/generacion.o -f elf32 asm/main_2_generacion.asm
+gcc -m32 -o out/main_2_generacion obj/generacion.o lib/alfalib.o
+
+nasm -g -o obj/generacion.o -f elf32 asm/main_generacion.asm
+gcc -m32 -o out/main_generacion obj/generacion.o lib/alfalib.o
+
+echo "Compiled"
