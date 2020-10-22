@@ -27,4 +27,6 @@ gcc -m32 -o out/main_2_generacion obj/generacion.o lib/alfalib.o
 nasm -g -o obj/generacion.o -f elf32 asm/main_generacion.asm
 gcc -m32 -o out/main_generacion obj/generacion.o lib/alfalib.o
 
+rm -rf main_0_generacion main_2_generacion main_generacion
+
 echo "Compiled"
