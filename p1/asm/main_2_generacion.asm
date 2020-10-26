@@ -1,7 +1,8 @@
 segment .data
-	_err_msg_runtime db "Error en tiempo de ejecucion",0
-	_err_msg_div db "Intento de división por 0",0
+	_msg_div_err db 'err: division by 0',0
+	_msg_segment_err db 'err: segment out of range',0
 segment .bss
+	_msg_fail_err resd 1
 	__esp resd 1
 	_b1 resd 1
 segment .text
@@ -16,51 +17,36 @@ main:
 	add esp, 4
 	push dword _b1
 	pop dword eax
-	mov eax, [eax]
-	cmp eax, 0
-	je _no_else_st0
+	mov dword eax, [eax]
 	sub eax, 1
-	jmp _no_endif_st0
-_no_else_st0:
-	inc eax
-_no_endif_st0:
+	neg eax
 	push dword eax
 	pop dword eax
 	push dword eax
 	call print_boolean
-	add esp, 4
 	call print_endofline
+	add esp, 4
 	push dword _b1
 	pop dword eax
-	mov eax, [eax]
-	cmp eax, 0
-	je _no_else_st1
+	mov dword eax, [eax]
 	sub eax, 1
-	jmp _no_endif_st1
-_no_else_st1:
-	inc eax
-_no_endif_st1:
+	neg eax
 	push dword eax
 	pop dword eax
-	cmp eax, 0
-	je _no_else_st2
 	sub eax, 1
-	jmp _no_endif_st2
-_no_else_st2:
-	inc eax
-_no_endif_st2:
+	neg eax
 	push dword eax
 	pop dword eax
 	push dword eax
 	call print_boolean
-	add esp, 4
 	call print_endofline
-_end:
-	mov dword esp, [__esp]
-	ret
-_runtime_err:
-	push dword [_err_msg_runtime]
+	add esp, 4
+	jmp __end
+__failed:
+	push dword [_msg_fail_err]
 	call print_string
 	add esp, 4
 	call print_endofline
-	jmp _end
+__end:
+	mov dword esp, [__esp]
+	ret

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "generacion.h"
+#include "generator.h"
 
 int main (int argc, char ** argv)
 {
@@ -17,7 +17,6 @@ int main (int argc, char ** argv)
 	
 
 	salida = fopen(argv[1],"w");
-
 
 	escribir_subseccion_data(salida);
 	escribir_cabecera_bss(salida);

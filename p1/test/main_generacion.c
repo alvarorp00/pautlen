@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "generacion.h"
+#include "generator.h"
 
 int main (int argc, char ** argv)
 {
