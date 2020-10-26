@@ -22,6 +22,8 @@
 #define _ELSE_    "_%s_else_%d"
 #define _FI_      "_%s_fi_%d"
 
+void write_index_check_function(FPASM); // err control routines
+
 void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, int is_var2 ) {
 
   _ASM( "pop dword %s", reg2 );
