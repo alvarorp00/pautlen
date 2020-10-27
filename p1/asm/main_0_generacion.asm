@@ -20,13 +20,17 @@ main:
 	push dword _y
 	call scan_int
 	add esp, 4
-	push dword _y
 	push dword _x
-	pop dword ebx
+	push dword _y
+	pop dword ecx
 	pop dword eax
 	mov dword eax, [eax]
-	mov dword ebx, [ebx]
-	add eax, ebx
+	mov dword ecx, [ecx]
+	call __check_div
+	cmp ebx, 1
+	je __failed
+	mov edx, 0
+	idiv ecx
 	push dword eax
 	pop dword eax
 	mov dword [_z], eax
@@ -46,6 +50,17 @@ __failed:
 	add esp, 4
 	call print_endofline
 	jmp __end
+__check_div:
+	cmp ecx, 0
+	jne __div_ok
+	mov ebx, _msg_div_err
+	mov [_msg_fail_err], ebx
+	mov ebx, 1
+	jmp __check_div_end
+__div_ok:
+	mov ebx, 0
+__check_div_end:
+	ret
 __check_idx:
 	cmp eax, edx
 	jl __idx_vector_ok

@@ -166,6 +166,17 @@ __failed:
 	add esp, 4
 	call print_endofline
 	jmp __end
+__check_div:
+	cmp ecx, 0
+	jne __div_ok
+	mov ebx, _msg_div_err
+	mov [_msg_fail_err], ebx
+	mov ebx, 1
+	jmp __check_div_end
+__div_ok:
+	mov ebx, 0
+__check_div_end:
+	ret
 __check_idx:
 	cmp eax, edx
 	jl __idx_vector_ok

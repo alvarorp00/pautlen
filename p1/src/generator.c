@@ -24,13 +24,46 @@
 
 /* err control routines */
 
+
+/**
+ * 
+ * Writes a subroutine which
+ * checks division is not by 0
+ * ==> ecx != 0
+ * on error: edx := 1
+ * on ok: edx := 0
+ */
+
+void write_division_check(FPASM) {
+  _LABEL(__CHECK_DIV);
+  
+  _ASM("cmp ecx, 0");
+  _ASM("jne %s", __DIV_OK);
+
+  _ASM("mov ebx, %s", _MSG_DIV_ERR);
+  _ASM("mov [%s], ebx", _MSG_FAIL_ERR);
+  _ASM("mov ebx, 1");
+  _ASM("jmp %s", __CHECK_DIV_END);
+
+  _LABEL(__DIV_OK);
+  _ASM("mov ebx, 0");
+
+  _LABEL(__CHECK_DIV_END);
+  _ASM("ret");
+}
+
+
 /**
  * 
  * Writes a subroutine which checks
  * index var access is allowed
  * and no overflow occur
+ * ==> eax < edx  ===== idx < size
+ * on error: ebx := 1
+ * on ok: ebx := 0
  */
-void write_index_check_function(FPASM) {
+
+void write_index_check(FPASM) {
   _LABEL(__CHECK_IDX);
   
   _ASM("cmp eax, edx");
@@ -116,7 +149,8 @@ void write_end(FPASM) {
   _ASM( "call print_endofline" );
   _ASM( "jmp %s", __END );
 
-  write_index_check_function(FPASM_NAME);
+  write_division_check(FPASM_NAME);
+  write_index_check(FPASM_NAME);
 
 }
 
@@ -201,15 +235,10 @@ void write_div( FPASM, int is_var1, int is_var2 ) {
 
   write_double_pop( FPASM_NAME, EAX, ECX, is_var1, is_var2 );
 
-  _ASM( "cmp ecx, 0" );
-  _ASM( "jne _do_div" );
+  _ASM("call %s", __CHECK_DIV);
+  _ASM("cmp ebx, 1");
+  _ASM("je %s", __FAILED);
 
-  _ASM( "mov eax, %s", _MSG_DIV_ERR );
-  _ASM( "mov [%s], eax", _MSG_FAIL_ERR );
-  _ASM( "jmp %s", __FAILED );
-
-  // do div
-  _LABEL( "_do_div" );
   _ASM( "mov edx, 0" );
   _ASM( "idiv ecx" );
   _ASM( "push dword eax" );

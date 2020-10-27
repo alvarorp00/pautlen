@@ -33,6 +33,10 @@ typedef enum {
 #define _MSG_DIV_ERR         "_msg_div_err"
 
 // reserved labels
+#define __CHECK_DIV           "__check_div"
+#define __CHECK_DIV_END       "__check_div_end"
+#define __DIV_OK              "__div_ok"
+#define __DIV_ERR             "__div_err"
 #define __CHECK_IDX           "__check_idx"
 #define __CHECK_IDX_END       "__check_idx_end"
 #define __IDX_VECTOR_OK       "__idx_vector_ok"
