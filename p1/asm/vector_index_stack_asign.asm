@@ -4,7 +4,8 @@ segment .data
 segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
-	_b1 resd 1
+	_x resd 5
+	_y resd 1
 segment .text
 	global main
 	extern scan_int, print_int, scan_float, print_float, scan_boolean, print_boolean
@@ -12,33 +13,40 @@ segment .text
 	extern alfa_malloc, alfa_free, ld_float
 main:
 	mov dword [__esp], esp
-	push dword _b1
-	call scan_boolean
-	add esp, 4
-	push dword _b1
+	push dword 8
+	pop dword eax
+	mov dword [_y], eax
+	push dword _y
+	push dword 2
+	pop eax
+	mov edx, 5
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _x
+	mov dword edx, dword eax
+	push edx
+	pop dword ebx
 	pop dword eax
 	mov dword eax, [eax]
-	sub eax, 1
-	neg eax
-	push dword eax
-	pop dword eax
-	push dword eax
-	call print_boolean
-	call print_endofline
-	add esp, 4
-	push dword _b1
+	mov dword [ebx], dword eax
+	push dword 2
+	pop eax
+	mov edx, 5
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _x
+	mov dword edx, dword eax
+	push edx
 	pop dword eax
 	mov dword eax, [eax]
-	sub eax, 1
-	neg eax
 	push dword eax
-	pop dword eax
-	sub eax, 1
-	neg eax
-	push dword eax
-	pop dword eax
-	push dword eax
-	call print_boolean
+	call print_int
 	call print_endofline
 	add esp, 4
 __end:
