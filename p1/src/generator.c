@@ -22,7 +22,30 @@
 #define _ELSE_    "_%s_else_%d"
 #define _FI_      "_%s_fi_%d"
 
-void write_index_check_function(FPASM); // err control routines
+/* err control routines */
+
+void write_index_check_function(FPASM) {
+  _LABEL(__CHECK_IDX);
+  
+  _ASM("cmp eax, edx");
+  _ASM("jb %s", __IDX_VECTOR_OK);
+
+  _ASM("mov edx, %s", _MSG_DIV_ERR );
+  _ASM("mov [%s], edx", _MSG_SEGMENT_ERR );
+  _ASM("mov edx, 1");
+  _ASM("jmp %s", __CHECK_IDX_END);
+  
+  _LABEL(__IDX_VECTOR_OK);
+  _ASM("mov edx, 0");
+  
+  _LABEL(__CHECK_IDX_END);
+  
+  _ASM("ret");
+}
+
+// ¿Same for the division?
+
+/* required routines */
 
 void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, int is_var2 ) {
 
@@ -279,39 +302,34 @@ void write_greater( FPASM, int is_var1, int is_var2, int id ) {
 /* AFTER WHILE PART */
 
 void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
-
   _ASM("pop eax"); // eax := index
 
   if(is_dir)
-    _ASM("mov eax, [eax]");
+    _ASM("mov dword eax, dword [eax]");
   
   _ASM("mov edx, %d", max_size); // edx := max_size
-  _ASM("call %s", __CHECK_IDX);
+  _ASM("call %s", __CHECK_IDX); // call subroutine
   _ASM("cmp edx, 1"); // ¿ edx == err ?
   _ASM("je %s", __FAILED); // edx == err
 
   _ASM("mov edx, 4"); // edx = 4
-  _ASM("imul edx"); // edx := ¿?; eax := array + eax*4 -> dword == 4Bd
+  _ASM("imul edx"); // edx := ¿?; eax := array + eax*4 -> dword == 4B
   _ASM("add eax, %s", name);
-  _ASM("mov dword edx, dword eax"); // edx := array[idx]; idx == eax*4 (dword, resd)
+  _ASM("mov dword edx, dword eax"); // edx := array[idx]; idx == eax*4 (dword, resd == 4B)
   _ASM("push edx"); // edx in stack
 }
 
-void write_index_check_function(FPASM) {
-  _LABEL(__CHECK_IDX);
-  
-  _ASM("cmp eax, edx");
-  _ASM("jb %s", __IDX_VECTOR_OK);
+void asign_stack_dest(FPASM, int is_var) {
+  write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0); // ebx := offset; eax:=value
 
-  _ASM("mov edx, %s", _MSG_DIV_ERR );
-  _ASM("mov [%s], edx", _MSG_SEGMENT_ERR );
-  _ASM("mov edx, 1");
-  _ASM("jmp %s", __CHECK_IDX_END);
+  _ASM("mov dword ebx, dword [eax]");
+}
+
+void stack_optoarg(FPASM, int is_var) {
+  _ASM("pop dword eax");
+
+  if(is_var)
+    _ASM("mov dword eax, dword [eax] ");
   
-  _LABEL(__IDX_VECTOR_OK);
-  _ASM("mov edx, 0");
-  
-  _LABEL(__CHECK_IDX_END);
-  
-  _ASM("ret");
+  _ASM("push eax");
 }

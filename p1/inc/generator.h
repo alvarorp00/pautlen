@@ -65,6 +65,8 @@ typedef enum {
 #define escribir write_writing
 #define leer write_reading
 #define escribir_elemento_vector write_index_vector
+#define asignarDestinoEnPila asign_stack_dest
+#define operandoEnPilaAArgumento stack_optoarg
 
 #define ENTERO INTEGER
 #define BOOLEANO BOOLEAN
@@ -107,5 +109,8 @@ void write_reading(FPASM, char* name, int type);
 void write_writing(FPASM, int is_var, int type);
 
 void write_index_vector(FPASM, char* name, int max_size, int is_dir);
+
+void stack_asign_dest(FPASM, int is_var);
+void stack_optoarg(FPASM, int is_var);
 
 #endif
