@@ -65,8 +65,14 @@ typedef enum {
 #define escribir write_writing
 #define leer write_reading
 #define escribir_elemento_vector write_index_vector
-#define asignarDestinoEnPila asign_stack_dest
+#define declararFuncion function_declare
+#define retornarFuncion function_return
+#define llamarFuncion function_call
+#define asignarDestinoEnPila stack_asign_dest
 #define operandoEnPilaAArgumento stack_optoarg
+#define limpiarPila stack_clean
+#define escribirParametro write_param
+#define escribirVariableLocal write_local_var
 
 #define ENTERO INTEGER
 #define BOOLEANO BOOLEAN
@@ -108,9 +114,21 @@ void write_greater(FPASM, int is_var1, int is_var2, int label);
 void write_reading(FPASM, char* name, int type);
 void write_writing(FPASM, int is_var, int type);
 
+/* IF METHODS HERE */
+
+/* WHILE METHODS HERE */
+
 void write_index_vector(FPASM, char* name, int max_size, int is_dir);
+
+void function_declare(FPASM, char* name, int local_vars);
+void function_return(FPASM, int* is_var);
+void function_call(FPASM, char* name, int argc);
+
+void write_param(FPASM, int index, int total_params);
+void write_local_var(FPASM, int index);
 
 void stack_asign_dest(FPASM, int is_var);
 void stack_optoarg(FPASM, int is_var);
+void stack_clean(FPASM, int argc);
 
 #endif

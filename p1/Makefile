@@ -3,6 +3,7 @@ TARGET = main main_0_generacion main_2_generacion main_generacion
 SRC = src/
 INC = inc/
 OBJ = obj/
+OUT = out/
 TEST = test/
 LIB = lib/
 
@@ -17,6 +18,7 @@ CFLAGS = -g -Wall -m32
 VALGRIND = --leak-check=full --track-origins=yes
 
 DISPOSABLE_OBJS = *.o
+DISPOSABLE_OUTS = *
 
 default: $(TARGET)
 all: default
@@ -25,7 +27,7 @@ all: default
 clean:
 	# echo Cleaning files...
 	rm -f $(OBJ)$(DISPOSABLE_OBJS)
-
+	rm -f $(OUT)$(DISPOSABLE_OUTS)
 
 main: $(OBJECTS)
 	

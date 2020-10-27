@@ -24,6 +24,12 @@
 
 /* err control routines */
 
+/**
+ * 
+ * Writes a subroutine which checks
+ * index var access is allowed
+ * and no overflow occur
+ */
 void write_index_check_function(FPASM) {
   _LABEL(__CHECK_IDX);
   
@@ -171,6 +177,8 @@ void write_writing(FPASM, int is_var, int type) {
 
 }
 
+/* Operations */
+
 void write_sum(FPASM, int is_var1, int is_var2) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "add eax, ebx" );
@@ -256,6 +264,8 @@ void write_not( FPASM, int is_var, int nno ) {
 
 }
 
+/* Compare */
+
 void write_comparator( FPASM, const char *jf, int is_var1, int is_var2, int id ) {
 
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
@@ -299,7 +309,11 @@ void write_greater( FPASM, int is_var1, int is_var2, int id ) {
   write_comparator( FPASM_NAME, "jg", is_var1, is_var2, id );
 }
 
-/* AFTER WHILE PART */
+/* IF METHODS GOES HERE */
+
+/* WHILE PART GOES HERE */
+
+/* Index Vector */
 
 void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
   _ASM("pop eax"); // eax := index
@@ -319,10 +333,36 @@ void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
   _ASM("push edx"); // edx in stack
 }
 
-void asign_stack_dest(FPASM, int is_var) {
+/* Function Part */
+
+void function_declare(FPASM, char* name, int local_vars) {
+
+}
+
+void function_return(FPASM, int* is_var) {
+  
+}
+
+void function_call(FPASM, char* name, int argc) {
+
+}
+
+/* Params Part */
+
+void write_param(FPASM, int index, int total_params) {
+
+}
+
+void write_local_var(FPASM, int index) {
+  
+}
+
+/* Stack Part */
+
+void stack_asign_dest(FPASM, int is_var) {
   write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0); // ebx := offset; eax:=value
 
-  _ASM("mov dword ebx, dword [eax]");
+  _ASM("mov dword ebx, dword eax");
 }
 
 void stack_optoarg(FPASM, int is_var) {
@@ -332,4 +372,11 @@ void stack_optoarg(FPASM, int is_var) {
     _ASM("mov dword eax, dword [eax] ");
   
   _ASM("push eax");
+}
+
+void stack_clean(FPASM, int argc) {
+  _ASM("mov eax, %d", argc);
+  _ASM("mov ebx, 4");
+  _ASM("imul ebx");
+  _ASM("add esp, eax");
 }

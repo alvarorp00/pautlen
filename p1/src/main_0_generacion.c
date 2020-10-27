@@ -4,15 +4,9 @@
 int main (int argc, char ** argv)
 {
 /*
-	int x;
-	int y;
-	int z;
-	
-	x = 8;
-
-	scanf y;
-	z = x + y;
-	printf z;
+	int x[5];
+  y = 8;
+  	
 */
 	FILE * salida;
 
@@ -26,37 +20,12 @@ int main (int argc, char ** argv)
 	escribir_cabecera_bss(salida);
 
 
-
-	declarar_variable(salida, "x", ENTERO, 1);
-	declarar_variable(salida, "y", ENTERO, 1);
-	declarar_variable(salida, "z", ENTERO, 1);
+	declarar_variable(salida, "x", ENTERO, 5);
+  declarar_variable(salida, "y", ENTERO, 1);
 
 
 	escribir_segmento_codigo(salida);
 	escribir_inicio_main(salida);
-
-	/* x=8; */
-
-	escribir_operando(salida,"8",0);
-	asignar(salida,"x",0);
-
-	/* scanf y; */
-
-	leer(salida,"y",ENTERO);
-
-	/* z = x + y */
-
-	escribir_operando(salida,"y",1);
-	escribir_operando(salida,"x",1);
-	sumar(salida,1,1);
-
-	asignar(salida,"z",0);
-
-
-	/* printf z; */
-
-	escribir_operando(salida,"z",1);
-	escribir(salida,1,ENTERO);
 
 
 

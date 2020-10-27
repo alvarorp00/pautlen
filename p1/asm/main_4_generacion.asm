@@ -157,12 +157,23 @@ _jne_fi_5:
 	call print_boolean
 	call print_endofline
 	add esp, 4
-	jmp __end
+__end:
+	mov dword esp, [__esp]
+	ret
 __failed:
 	push dword [_msg_fail_err]
 	call print_string
 	add esp, 4
 	call print_endofline
-__end:
-	mov dword esp, [__esp]
+	jmp __end
+__check_idx:
+	cmp eax, edx
+	jb __idx_vector_ok
+	mov edx, _msg_div_err
+	mov [_msg_segment_err], edx
+	mov edx, 1
+	jmp __check_idx_end
+__idx_vector_ok:
+	mov edx, 0
+__check_idx_end:
 	ret
