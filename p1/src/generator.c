@@ -22,6 +22,8 @@
 #define _ELSE_    "_%s_else_%d"
 #define _FI_      "_%s_fi_%d"
 
+void write_index_check_function(FPASM); // err control routines
+
 void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, int is_var2 ) {
 
   _ASM( "pop dword %s", reg2 );
@@ -289,7 +291,7 @@ void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
   _ASM("je %s", __FAILED); // edx == err
 
   _ASM("mov edx, 4"); // edx = 4
-  _ASM("imul edx"); // edx := ¿?; eax := array + eax*4 -> dword == 4B
+  _ASM("imul edx"); // edx := ¿?; eax := array + eax*4 -> dword == 4Bd
   _ASM("add eax, %s", name);
   _ASM("mov dword edx, dword eax"); // edx := array[idx]; idx == eax*4 (dword, resd)
   _ASM("push edx"); // edx in stack
