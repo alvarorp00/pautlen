@@ -340,7 +340,25 @@ void write_greater( FPASM, int is_var1, int is_var2, int id ) {
 
 /* IF METHODS GOES HERE */
 
+void write_ifthenelse_start(FPASM, int exp_is_var, int label) {
+
+}
+
+void write_ifthenelse_end(FPASM, int label) {
+
+}
+
+void write_ifthen_start(FPASM, int exp_is_var, int label) {
+
+}
+
+void write_ifthen_end(FPASM, int label) {
+
+}
+
 /* WHILE PART GOES HERE */
+
+
 
 /* Index Vector */
 
@@ -365,69 +383,86 @@ void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
 
 /* Function Part */
 
-void function_declare(FPASM, char* name, int local_vars) {
-  _ASM(fd_asm, "_%s:", nombre_funcion);
-  _ASM(fd_asm, "push ebp");
-  _ASM(fd_asm, "mov ebp, esp");
-  _ASM(fd_asm, "sub esp, 4*%d", num_var_loc);
+void write_function_declare(FPASM, char* name, int local_vars) {
+  
+  _LABEL("%s", name);
+  
+  /* 
+  * save base pointer -> then save esp to ebp
+  * in order to use esp as much as 
+  * as local_vars we'll have
+  */
+  _ASM("push ebp");
+  _ASM("mov ebp, esp");
+  
+  // alloc 4*local_vars Bytes == x(local_vars) times variables
+  _ASM("sub esp, %d", 4*local_vars); //4 == resd, 4Bytes
 }
 
-void function_return(FPASM, int* is_var) {
+void write_function_return(FPASM, int* is_var) {
   _ASM("pop eax");
+
   if(is_var){
     _ASM("mov dword eax, [eax]");
   }
+  
+  // restore stack pointer
   _ASM("mov esp, ebp");
+
+  // restore base pointer
   _ASM("pop ebp");
+
+  // return
   _ASM("ret");
 }
 
-void function_call(FPASM, char* name, int argc) {
+void write_function_call(FPASM, char* name, int argc) {
+  // call function
   _ASM("call %s", name);
-  _ASM("add esp, %d", argc);
+
+  // clean stack
+  write_stack_clean(FPASM_NAME, argc);
+
+  // once args cleaned, push function return in eax by agreement
   _ASM("push dword eax");
 }
 
 /* Params Part */
 
 void write_param(FPASM, int index, int total_params) {
-  write_var_declaration(FPASM_NAME, "aux", INTEGER, DB);
+  // starting on params[0] 
+  _ASM("mov edx, %d", total_params);
+  _ASM("sub edx, %d", index);
+  _ASM("inc edx"); // idx := vector start direction
 
-  write_subtract(FPASM_NAME, total_params ,index);
-  write_sum(FPASM_NAME, total_params, 1);
-  write_mult(FPASM_NAME, total_params, 4);
-  _ASM("mov aux, total_params");
-  _ASM("lea eax, [ebp + aux]");
+  // ebp := esp, as we are inside a function
+  _ASM("lea eax, [ebp + edx*4]"); // eax := indexed element direction
+
   _ASM("push dword eax");
 }
 
 void write_local_var(FPASM, int index) {
-  write_var_declaration(FPASM_NAME, "aux", INTEGER, DB);
-  write_mult(FPASM_NAME, index, 4);
-  _ASM("lea eax, [ebp - aux]");
-  _ASM("push dword eax");
+  // starting on vars[1] so we don't increase eax by 1 and then multiply by 4
+  _ASM("mov eax, %d", 4*index);
+  _ASM("lea eax, [ebp - eax]"); // eax := address
 }
 
 /* Stack Part */
 
-void stack_asign_dest(FPASM, int is_var) {
+void write_stack_asign_dest(FPASM, int is_var) {
   write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0); // ebx := offset; eax:=value
-  write_mult();
   _ASM("mov dword [ebx], dword eax");
 }
 
-void stack_optoarg(FPASM, int is_var) {
+void write_stack_optoarg(FPASM, int is_var) {
+  if(!is_var)
+    return;
+  
   _ASM("pop dword eax");
-
-  if(is_var)
-    _ASM("mov dword eax, dword [eax] ");
-
+  _ASM("mov dword eax, dword [eax] ");
   _ASM("push eax");
 }
 
-void stack_clean(FPASM, int argc) {
-  _ASM("mov eax, %d", argc);
-  _ASM("mov ebx, 4");
-  _ASM("imul ebx");
-  _ASM("add esp, eax");
+void write_stack_clean(FPASM, int argc) {
+  _ASM("add esp, %d", 4*argc); // add x(local_vars) times variables -> clean stack
 }

@@ -20,17 +20,13 @@ main:
 	push dword _y
 	call scan_int
 	add esp, 4
-	push dword _x
 	push dword _y
-	pop dword ecx
+	push dword _x
+	pop dword ebx
 	pop dword eax
 	mov dword eax, [eax]
-	mov dword ecx, [ecx]
-	call __check_div
-	cmp ebx, 1
-	je __failed
-	mov edx, 0
-	idiv ecx
+	mov dword ebx, [ebx]
+	add eax, ebx
 	push dword eax
 	pop dword eax
 	mov dword [_z], eax

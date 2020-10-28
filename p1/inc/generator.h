@@ -69,12 +69,12 @@ typedef enum {
 #define escribir write_writing
 #define leer write_reading
 #define escribir_elemento_vector write_index_vector
-#define declararFuncion function_declare
-#define retornarFuncion function_return
-#define llamarFuncion function_call
-#define asignarDestinoEnPila stack_asign_dest
-#define operandoEnPilaAArgumento stack_optoarg
-#define limpiarPila stack_clean
+#define declararFuncion write_function_declare
+#define retornarFuncion write_function_return
+#define llamarFuncion write_function_call
+#define asignarDestinoEnPila write_stack_asign_dest
+#define operandoEnPilaAArgumento write_stack_optoarg
+#define limpiarPila write_stack_clean
 #define escribirParametro write_param
 #define escribirVariableLocal write_local_var
 
@@ -120,19 +120,27 @@ void write_writing(FPASM, int is_var, int type);
 
 /* IF METHODS HERE */
 
+void write_ifthenelse_start(FPASM, int exp_is_var, int label);
+void write_ifthenelse_end(FPASM, int label);
+void write_ifthen_start(FPASM, int exp_is_var, int label);
+void write_ifthen_end(FPASM, int label);
+
 /* WHILE METHODS HERE */
 
+
+
+/* ****** */
 void write_index_vector(FPASM, char* name, int max_size, int is_dir);
 
-void function_declare(FPASM, char* name, int local_vars);
-void function_return(FPASM, int* is_var);
-void function_call(FPASM, char* name, int argc);
+void write_function_declare(FPASM, char* name, int local_vars);
+void write_function_return(FPASM, int* is_var);
+void write_function_call(FPASM, char* name, int argc);
 
 void write_param(FPASM, int index, int total_params);
 void write_local_var(FPASM, int index);
 
-void stack_asign_dest(FPASM, int is_var);
-void stack_optoarg(FPASM, int is_var);
-void stack_clean(FPASM, int argc);
+void write_stack_asign_dest(FPASM, int is_var);
+void write_stack_optoarg(FPASM, int is_var);
+void write_stack_clean(FPASM, int argc);
 
 #endif
