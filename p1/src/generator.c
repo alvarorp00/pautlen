@@ -4,7 +4,7 @@
 #define STRINGIFY( x )        #x
 
 #define _ASML( str, ... )     \
-  fprintf( FPASM_NAME, "\t" str, ##__VA_ARGS__ ) 
+  fprintf( FPASM_NAME, "\t" str, ##__VA_ARGS__ )
 
 #define _ASM( str, ... )      \
   _ASML( str"\n", ##__VA_ARGS__ )
@@ -26,7 +26,7 @@
 
 
 /**
- * 
+ *
  * Writes a subroutine which
  * checks division is not by 0
  * ==> ecx != 0
@@ -36,7 +36,7 @@
 
 void write_division_check(FPASM) {
   _LABEL(__CHECK_DIV);
-  
+
   _ASM("cmp ecx, 0");
   _ASM("jne %s", __DIV_OK);
 
@@ -54,7 +54,7 @@ void write_division_check(FPASM) {
 
 
 /**
- * 
+ *
  * Writes a subroutine which checks
  * index var access is allowed
  * and no overflow occur
@@ -65,7 +65,7 @@ void write_division_check(FPASM) {
 
 void write_index_check(FPASM) {
   _LABEL(__CHECK_IDX);
-  
+
   _ASM("cmp eax, edx");
   _ASM("jl %s", __IDX_VECTOR_OK);
 
@@ -73,12 +73,12 @@ void write_index_check(FPASM) {
   _ASM("mov [%s], edx", _MSG_FAIL_ERR);
   _ASM("mov edx, 1");
   _ASM("jmp %s", __CHECK_IDX_END);
-  
+
   _LABEL(__IDX_VECTOR_OK);
   _ASM("mov edx, 0");
-  
+
   _LABEL(__CHECK_IDX_END);
-  
+
   _ASM("ret");
 }
 
@@ -109,7 +109,7 @@ void write_data_header( FPASM ) {
 
 }
 
-void write_bss_header( FPASM ) {  
+void write_bss_header( FPASM ) {
   _SEGMENT( "bss" );
   _ASM("%s resd 1", _MSG_FAIL_ERR );
   _ASM("__esp resd 1" );
@@ -138,12 +138,12 @@ void write_end(FPASM) {
 
   _LABEL( __END );
 
-  _ASM( "mov dword esp, [__esp]" ); 
+  _ASM( "mov dword esp, [__esp]" );
   _ASM( "ret" );
 
   _LABEL( __FAILED );
 
-  _ASM( "push dword [%s]", _MSG_FAIL_ERR ); 
+  _ASM( "push dword [%s]", _MSG_FAIL_ERR );
   _ASM( "call print_string" );
   _ASM( "add esp, 4" );
   _ASM( "call print_endofline" );
@@ -163,7 +163,7 @@ void write_operand(FPASM, char* name, int is_var) {
 }
 
 void write_assignment(FPASM, char* name, int is_var) {
-  
+
   _ASM( "pop dword eax" );
 
   if ( is_var ) {
@@ -222,7 +222,7 @@ void write_sum(FPASM, int is_var1, int is_var2) {
 void write_subtract(FPASM, int is_var1, int is_var2) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "sub eax, ebx" );
-  _ASM( "push dword eax" ); 
+  _ASM( "push dword eax" );
 }
 
 void write_mult(FPASM, int is_var1, int is_var2) {
@@ -272,7 +272,7 @@ void write_sign_change( FPASM, int is_var ) {
 }
 
 /**
- * 
+ *
  * @param nno parameter is ignored becouse it is not
  * necessary
  */
@@ -298,8 +298,8 @@ void write_not( FPASM, int is_var, int nno ) {
 void write_comparator( FPASM, const char *jf, int is_var1, int is_var2, int id ) {
 
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
-  
-  _ASM( "cmp eax, ebx" );  
+
+  _ASM( "cmp eax, ebx" );
   _ASM( "%s "_IF_, jf, jf, id );
   _ASM( "jmp "_ELSE_, jf, id );
 
@@ -344,7 +344,7 @@ void write_greater( FPASM, int is_var1, int is_var2, int id ) {
 
 /* Index Vector */
 
-void write_index_vector(FPASM, char* name, int max_size, int is_dir) {  
+void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
   _ASM("pop eax"); // eax := index
 
   if(is_dir)
@@ -352,7 +352,7 @@ void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
 
   _ASM("mov edx, %d", max_size); // edx := max_size
   _ASM("call %s", __CHECK_IDX); // call subroutine
-  
+
   _ASM("cmp edx, 1"); // ¿ edx == err ?
   _ASM("je %s", __FAILED); // edx == err
 
@@ -366,32 +366,53 @@ void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
 /* Function Part */
 
 void function_declare(FPASM, char* name, int local_vars) {
-
+  _ASM(fd_asm, "_%s:", nombre_funcion);
+  _ASM(fd_asm, "push ebp");
+  _ASM(fd_asm, "mov ebp, esp");
+  _ASM(fd_asm, "sub esp, 4*%d", num_var_loc);
 }
 
 void function_return(FPASM, int* is_var) {
-  
+  _ASM("pop eax");
+  if(is_var){
+    _ASM("mov dword eax, [eax]");
+  }
+  _ASM("mov esp, ebp");
+  _ASM("pop ebp");
+  _ASM("ret");
 }
 
 void function_call(FPASM, char* name, int argc) {
-
+  _ASM("call %s", name);
+  _ASM("add esp, %d", argc);
+  _ASM("push dword eax");
 }
 
 /* Params Part */
 
 void write_param(FPASM, int index, int total_params) {
+  write_var_declaration(FPASM, "aux", INTEGER, DB);
 
+  write_subtract(FPASM, total_params ,index);
+  write_sum(FPASM, total_params, 1);
+  write_mult(FPASM, total_params, 4);
+  _ASM("mov aux, total_params")
+  _ASM("lea eax, [ebp + aux]");
+  _ASM("push dword eax");
 }
 
 void write_local_var(FPASM, int index) {
-  
+  write_var_declaration(FPASM, "aux", INTEGER, DB);
+  write_mult(FPASM, index, 4);
+  _ASM("lea eax, [ebp - aux]");
+  _ASM("push dword eax");
 }
 
 /* Stack Part */
 
 void stack_asign_dest(FPASM, int is_var) {
   write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0); // ebx := offset; eax:=value
-
+  write_mult()
   _ASM("mov dword [ebx], dword eax");
 }
 
@@ -400,7 +421,7 @@ void stack_optoarg(FPASM, int is_var) {
 
   if(is_var)
     _ASM("mov dword eax, dword [eax] ");
-  
+
   _ASM("push eax");
 }
 
