@@ -30,8 +30,8 @@
  * Writes a subroutine which
  * checks division is not by 0
  * ==> ecx != 0
- * on error: edx := 1
- * on ok: edx := 0
+ * on error: ebx := 1
+ * on ok: ebx := 0
  */
 
 void write_division_check(FPASM) {
@@ -391,19 +391,19 @@ void function_call(FPASM, char* name, int argc) {
 /* Params Part */
 
 void write_param(FPASM, int index, int total_params) {
-  write_var_declaration(FPASM, "aux", INTEGER, DB);
+  write_var_declaration(FPASM_NAME, "aux", INTEGER, DB);
 
-  write_subtract(FPASM, total_params ,index);
-  write_sum(FPASM, total_params, 1);
-  write_mult(FPASM, total_params, 4);
-  _ASM("mov aux, total_params")
+  write_subtract(FPASM_NAME, total_params ,index);
+  write_sum(FPASM_NAME, total_params, 1);
+  write_mult(FPASM_NAME, total_params, 4);
+  _ASM("mov aux, total_params");
   _ASM("lea eax, [ebp + aux]");
   _ASM("push dword eax");
 }
 
 void write_local_var(FPASM, int index) {
-  write_var_declaration(FPASM, "aux", INTEGER, DB);
-  write_mult(FPASM, index, 4);
+  write_var_declaration(FPASM_NAME, "aux", INTEGER, DB);
+  write_mult(FPASM_NAME, index, 4);
   _ASM("lea eax, [ebp - aux]");
   _ASM("push dword eax");
 }
@@ -412,7 +412,7 @@ void write_local_var(FPASM, int index) {
 
 void stack_asign_dest(FPASM, int is_var) {
   write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0); // ebx := offset; eax:=value
-  write_mult()
+  write_mult();
   _ASM("mov dword [ebx], dword eax");
 }
 

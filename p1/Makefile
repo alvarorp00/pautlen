@@ -30,7 +30,7 @@ clean:
 	rm -f $(OUT)$(DISPOSABLE_OUTS)
 
 main: $(OBJECTS)
-	
+
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJECTS) $(LIBS)
 
 main.o: $(OBJECTS) $(HEADERS)
