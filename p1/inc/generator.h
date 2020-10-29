@@ -77,6 +77,14 @@ typedef enum {
 #define limpiarPila write_stack_clean
 #define escribirParametro write_param
 #define escribirVariableLocal write_local_var
+#define ifthenelse_inicio write_ifthenelse_begin
+#define ifthen_inicio write_ifthen_begin
+#define ifthen_fin write_ifthen_end
+#define ifthenelse_fin_then write_ifthenelse_middle
+#define ifthenelse_fin write_ifthenelse_end
+#define while_inicio write_while_begin
+#define while_exp_pila write_while_exp
+#define while_fin write_while_end
 
 #define ENTERO INTEGER
 #define BOOLEANO BOOLEAN
@@ -118,16 +126,22 @@ void write_greater(FPASM, int is_var1, int is_var2, int label);
 void write_reading(FPASM, char* name, int type);
 void write_writing(FPASM, int is_var, int type);
 
-/* IF METHODS HERE */
+/**
+ * IF-THEN-ELSE
+ */
+void write_ifthen_begin( FPASM, int exp_is_var, int label );
+void write_ifthen_end( FPASM, int label );
+void write_ifthenelse_begin( FPASM, int exp_is_var, int label );
+void write_ifthenelse_middle( FPASM, int label );
+void write_ifthenelse_end( FPASM, int label );
 
-void write_ifthenelse_start(FPASM, int exp_is_var, int label);
-void write_ifthenelse_end(FPASM, int label);
-void write_ifthen_start(FPASM, int exp_is_var, int label);
-void write_ifthen_end(FPASM, int label);
 
-/* WHILE METHODS HERE */
-
-
+/**
+ * Bucles
+ */
+void write_while_begin( FPASM, int label );
+void write_while_exp( FPASM, int exp_is_var, int label );
+void write_while_end( FPASM, int label );
 
 /* ****** */
 void write_index_vector(FPASM, char* name, int max_size, int is_dir);

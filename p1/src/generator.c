@@ -22,6 +22,13 @@
 #define _ELSE_    "_%s_else_%d"
 #define _FI_      "_%s_fi_%d"
 
+#define IF_       "_if_%d"
+#define ELSE_     "_else_%d"
+#define FI_       "_fi_%d"
+
+#define WHILE_    "while_%d"
+#define WHILE_END_ "_while_end_%d"
+
 /* err control routines */
 
 
@@ -81,8 +88,6 @@ void write_index_check(FPASM) {
 
   _ASM("ret");
 }
-
-// ¿Same for the division?
 
 /* required routines */
 
@@ -227,8 +232,8 @@ void write_subtract(FPASM, int is_var1, int is_var2) {
 
 void write_mult(FPASM, int is_var1, int is_var2) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
-  _ASM( "imul eax, ebx" );
-  _ASM( "push dowrd eax" );
+  _ASM( "imul ebx" );
+  _ASM( "push dword eax" );
 }
 
 void write_div( FPASM, int is_var1, int is_var2 ) {
@@ -338,27 +343,66 @@ void write_greater( FPASM, int is_var1, int is_var2, int id ) {
   write_comparator( FPASM_NAME, "jg", is_var1, is_var2, id );
 }
 
-/* IF METHODS GOES HERE */
+/* Conditionals */
 
-void write_ifthenelse_start(FPASM, int exp_is_var, int label) {
+void write_ifthen_begin( FPASM, int exp_is_var, int label ) {
 
+  _ASM( "pop dword eax" );
+  
+  if ( exp_is_var ) {
+    _ASM( "mov eax, [eax]" );
+  }
+
+  _ASM( "cmp eax, 0" );
+  _ASM( "je near "FI_, label );
+  
 }
 
-void write_ifthenelse_end(FPASM, int label) {
-
+void write_ifthen_end( FPASM, int label ) {
+  _LABEL( FI_, label ); 
 }
 
-void write_ifthen_start(FPASM, int exp_is_var, int label) {
+void write_ifthenelse_begin( FPASM, int exp_is_var, int label ) {
 
+  _ASM( "pop dword eax" );
+  
+  if ( exp_is_var ) {
+    _ASM( "mov eax, [eax]" );
+  }
+
+  _ASM( "cmp eax, 0" );
+  _ASM( "je near "ELSE_, label );
+  
 }
 
-void write_ifthen_end(FPASM, int label) {
-
+void write_ifthenelse_middle( FPASM, int label ) {
+  _ASM( "jmp near "FI_, label );
+  _LABEL( ELSE_, label );
 }
 
-/* WHILE PART GOES HERE */
+void write_ifthenelse_end( FPASM, int label ) {
+  _LABEL( FI_, label );
+}
 
+/* Loops */
 
+void write_while_begin( FPASM, int label ) {
+  _LABEL( WHILE_, label );
+}
+
+void write_while_exp( FPASM, int exp_is_var, int label ) {
+  _ASM( "pop dword eax" );
+  if ( exp_is_var ) {
+    _ASM( "mov eax, [eax]" );
+  }
+  _ASM( "cmp eax, 0" );
+  _ASM( "je near "WHILE_END_, label );
+}
+
+void write_while_end( FPASM, int label ) {
+  _ASM( "jmp "WHILE_, label );
+  _LABEL( WHILE_END_, label );
+}
 
 /* Index Vector */
 
@@ -385,7 +429,7 @@ void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
 
 void write_function_declare(FPASM, char* name, int local_vars) {
   
-  _LABEL("%s", name);
+  _LABEL("_%s", name);
   
   /* 
   * save base pointer -> then save esp to ebp
@@ -418,7 +462,7 @@ void write_function_return(FPASM, int* is_var) {
 
 void write_function_call(FPASM, char* name, int argc) {
   // call function
-  _ASM("call %s", name);
+  _ASM("call _%s", name);
 
   // clean stack
   write_stack_clean(FPASM_NAME, argc);
@@ -431,12 +475,16 @@ void write_function_call(FPASM, char* name, int argc) {
 
 void write_param(FPASM, int index, int total_params) {
   // starting on params[0] 
-  _ASM("mov edx, %d", total_params);
-  _ASM("sub edx, %d", index);
-  _ASM("inc edx"); // idx := vector start direction
+  _ASM("mov eax, %d", total_params);
+  _ASM("sub eax, %d", index);
+  _ASM("inc eax"); // iax := vector start direction
+
+  _ASM("mov edx, 4"); // edx := 4
+  _ASM("imul edx"); // eax := eax*edx
+  _ASM("add ebp, eax"); // ebp += eax
 
   // ebp := esp, as we are inside a function
-  _ASM("lea eax, [ebp + edx*4]"); // eax := indexed element direction
+  _ASM("lea eax, [ebp]"); // eax := indexed element direction
 
   _ASM("push dword eax");
 }
@@ -444,7 +492,9 @@ void write_param(FPASM, int index, int total_params) {
 void write_local_var(FPASM, int index) {
   // starting on vars[1] so we don't increase eax by 1 and then multiply by 4
   _ASM("mov eax, %d", 4*index);
-  _ASM("lea eax, [ebp - eax]"); // eax := address
+  _ASM("sub ebp, eax");
+  _ASM("lea eax, [ebp]"); // eax := address
+  _ASM("push dword eax");
 }
 
 /* Stack Part */

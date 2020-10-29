@@ -6,6 +6,7 @@ OBJ = obj/
 OUT = out/
 TEST = test/
 LIB = lib/
+ASM = asm/
 
 LIBS = -lm
 CC = gcc
@@ -28,6 +29,7 @@ clean:
 	# echo Cleaning files...
 	rm -f $(OBJ)$(DISPOSABLE_OBJS)
 	rm -f $(OUT)$(DISPOSABLE_OUTS)
+	rm -f $(ASM)main*
 
 main: $(OBJECTS)
 
