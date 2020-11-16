@@ -12,6 +12,5 @@ TOK { printf("TOKEN DETECTED\n"); }
 
 int main()
 {
-  
   return yylex();
 }

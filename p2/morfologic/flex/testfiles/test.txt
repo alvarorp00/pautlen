@@ -1,0 +1,11 @@
+INICIO
+cadena aleatoria
+INICIO TOK INICIOTOK
+
+MAIN
+
+PROGRAM
+
+FIN
+FIN
+TOK
