@@ -459,11 +459,11 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "files/ejemplo1_b.l"
-#line 2 "files/ejemplo1_b.l"
+#line 1 "alfa/alfa.l"
+/* Lexic Analyzer */
+#line 4 "alfa/alfa.l"
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #line 469 "lex.yy.c"
 #line 470 "lex.yy.c"
@@ -683,7 +683,7 @@ YY_DECL
 		}
 
 	{
-#line 9 "files/ejemplo1_b.l"
+#line 10 "alfa/alfa.l"
 
 
 #line 690 "lex.yy.c"
@@ -745,42 +745,42 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 11 "files/ejemplo1_b.l"
-{ printf("reconocido INICIO\n"); }
+#line 12 "alfa/alfa.l"
+{ fprintf(yyout, "reconocido INICIO\n"); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "files/ejemplo1_b.l"
-{ printf("reconocido FIN\n"); }
+#line 13 "alfa/alfa.l"
+{ fprintf(yyout, "reconocido FIN\n"); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "files/ejemplo1_b.l"
-{ printf("reconocido VECTOR\n"); }
+#line 14 "alfa/alfa.l"
+{ fprintf(yyout, "reconocido VECTOR\n"); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "files/ejemplo1_b.l"
-{ printf("reconocido ENTERO\n"); }
+#line 15 "alfa/alfa.l"
+{ fprintf(yyout, "reconocido ENTERO\n"); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "files/ejemplo1_b.l"
-{ printf("reconocido LOGICO\n"); }
+#line 16 "alfa/alfa.l"
+{ fprintf(yyout, "reconocido LOGICO\n"); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "files/ejemplo1_b.l"
-{ printf("{ body_instructions }"); }
+#line 17 "alfa/alfa.l"
+{ fprintf(yyout, "{ body_instructions }\n"); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 17 "files/ejemplo1_b.l"
-{ printf("READ\n"); }
+#line 18 "alfa/alfa.l"
+{ fprintf(yyout, "READ\n"); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 19 "files/ejemplo1_b.l"
+#line 20 "alfa/alfa.l"
 ECHO;
 	YY_BREAK
 #line 787 "lex.yy.c"
@@ -1788,28 +1788,40 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 19 "files/ejemplo1_b.l"
+#line 20 "alfa/alfa.l"
 
 
 int main(int argc, char **argv)
 {
 
-  if(argc == 1)
+  if(argc < 3)
   {
-    printf("No file received. Exiting...\n");
+    printf("No enough files received. Exiting...\n");
     return 1;
   }
 
   yyin = fopen(argv[1], "r");
   if(!yyin)
   {
-    printf("File error.\n");
+    printf("Input file error.\n");
     return 1;
   }
 
+  yyout = fopen(argv[2], "w");
+  if(!yyout)
+  {
+    printf("Output file error.\n");
+    return 1;
+  }
+
+  fflush(yyin);
+  fflush(yyout);
+
   yylex();
+  
   fclose(yyin);
+  fclose(yyout);
 
   return 0;
+  
 }
-
