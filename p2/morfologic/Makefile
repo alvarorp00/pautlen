@@ -7,6 +7,7 @@ CFLAGS = -Wall -g
 INC = inc/
 DIR = alfa/
 OUT = out/
+SRC = src/
 
 TEST = flex/testfiles/
 
@@ -34,8 +35,8 @@ TEST_VERIFY = ./testverify.sh
 
 default: all
 
-all: clean $(OYYLEX)
-		$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
+all: clean $(OYYLEX) 
+		$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c $(SRC)hash.c
 
 
 $(CYYLEX): $(INC)$(TOKEN)
@@ -63,6 +64,8 @@ third_test:
 		@ echo "\nExecuting third test"
 		@ ./$(ALFA) $(TESTFILE3) $(TESTOUTPUT3)
 		@ $(TEST_VERIFY) $(OUTPUT3) $(TESTOUTPUT3)
+
+.PHONY: clean
 
 clean:
 		rm -rf $(CYYLEX)

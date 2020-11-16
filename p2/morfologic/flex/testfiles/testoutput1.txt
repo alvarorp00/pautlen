@@ -1,9 +1,15 @@
 // Programa que eleva un numero al cuadrado
 
+TOKEN RECEIVED: 100
+Detected: main
  {
-   x, resultado;
+  TOKEN RECEIVED: 101
+Detected: int
+ x, resultado;
 
   scanf x; // Esta linea lee el valor de x
   resultado = x*x; // Esta linea calcula el cuadrado de x
-  prf resultado; // Esta linea imprime el resultado
+  prTOKEN RECEIVED: 101
+Detected: int
+f resultado; // Esta linea imprime el resultado
 }

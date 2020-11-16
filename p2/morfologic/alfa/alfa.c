@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hash.h"
 
 #ifndef _STDIN_
 #define _STDIN_
@@ -26,6 +27,7 @@ int main(int argc, char **argv)
 {
 
   int token;
+  Hash *hash;
 
   #ifndef _STDIN_
   if(setup(argc, argv))
