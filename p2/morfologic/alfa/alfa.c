@@ -6,15 +6,21 @@
 #define _STDIN_
 #endif
 
+#define READ(file) fopen(file, "r");
+#define WRITE(file) fopen(file, "w");
+
 #define BUFF 128
 
+extern char *yytext;
 extern FILE *yyin;
 extern FILE *yyout;
 extern int yylex(void);
 
 char err[BUFF];
 
+
 int setup(int argc, char **argv);
+void updatetoken(int tok);
 
 int main(int argc, char **argv)
 {
@@ -27,11 +33,14 @@ int main(int argc, char **argv)
     fprintf(stderr, "Failure: %s\n", err);
     return 1;
   }
+  #else
+  yyin = stdin;
+  yyout = stdout;
   #endif
 
-  while((token = yylex()) != 0) /* yylex() returns 0 on EOF */
+  for(token = yylex(); token != 0; token = yylex()) /* yylex() returns 0 on EOF */
   {
-
+    fprintf(yyout, "Detected: %s\n", yytext);
   }
   
   fclose(yyin);
@@ -39,6 +48,11 @@ int main(int argc, char **argv)
 
   return 0;
   
+}
+
+void updatetoken(int tok)
+{
+  fprintf(yyout, "TOKEN RECEIVED: %d\n", tok);
 }
 
 int setup(int argc, char **argv)
@@ -49,14 +63,14 @@ int setup(int argc, char **argv)
     return 1;
   }
 
-  yyin = fopen(argv[1], "r");
+  yyin = READ(argv[1]);
   if(!yyin)
   {
     strcpy(err, "Input file error.\n");
     return 1;
   }
 
-  yyout = fopen(argv[2], "w");
+  yyout = WRITE(argv[2]);
   if(!yyout)
   {
     strcpy(err, "Output file error.\n");

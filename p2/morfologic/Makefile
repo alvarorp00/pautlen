@@ -14,13 +14,13 @@ TESTFILE1 = $(TEST)entrada1.txt
 TESTFILE2 = $(TEST)entrada2.txt
 TESTFILE3 = $(TEST)entrada3.txt
 
-TESTOUTPUT1 = $(TEST)testoutput1.txt
-TESTOUTPUT2 = $(TEST)testoutput2.txt
-TESTOUTPUT3 = $(TEST)testoutput3.txt
-
 OUTPUT1 = $(TEST)salida1.txt
 OUTPUT2 = $(TEST)salida2.txt
 OUTPUT3 = $(TEST)salida3.txt
+
+TESTOUTPUT1 = $(TEST)testoutput1.txt
+TESTOUTPUT2 = $(TEST)testoutput2.txt
+TESTOUTPUT3 = $(TEST)testoutput3.txt
 
 ALFA = $(OUT)alfa
 
@@ -34,7 +34,7 @@ TEST_VERIFY = ./testverify.sh
 
 default: all
 
-all: $(OYYLEX)
+all: clean $(OYYLEX)
 		$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 
 

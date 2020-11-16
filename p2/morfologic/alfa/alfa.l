@@ -7,15 +7,15 @@
 #include <string.h>
 #include "tokens.h"
 
-#define UPDATE_COL col++
-
+#define BYTES
 #define MAX_LEN 100
-#define BUFF 128
+
+#define UPDATECOL col++
+#define TOKEN(x) updatetoken(x)
 
 static int col = 0;
-char err[BUFF];
 
-int setup(int argc, char **argv);
+extern void updatetoken(int tok);
 
 %}
 %option noyywrap
@@ -24,13 +24,11 @@ IDENTIFIER [a-zA-Z][a-zA-Z]*
 
 %%
 
-"main"
-"array"
-"int"
-"if"
-"else"
-"while"
-
-IDENTIFIER { if(strlen(yytext)>MAX_LEN); }
+"main" { UPDATECOL; TOKEN(TOK_MAIN); return TOK_MAIN; }
+"array" { UPDATECOL; TOKEN(TOK_ARRAY); return TOK_ARRAY; }
+"int" { UPDATECOL; TOKEN(TOK_INT); return TOK_INT; }
+"if" { UPDATECOL; TOKEN(TOK_IF); return TOK_IF; }
+"else" { UPDATECOL; TOKEN(TOK_ELSE); return TOK_ELSE; }
+"while" { UPDATECOL; TOKEN(TOK_WHILE); return TOK_WHILE; }
 
 %%
