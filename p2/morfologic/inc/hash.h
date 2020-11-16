@@ -12,7 +12,7 @@ typedef struct _Hash Hash;
 
 Hash* hash_init(int size);
 bool hash_encode(Hash *hash, int index, char* value);
-char* hash_retrieve(Hash *hash, int index);
+char* hash_decode(Hash *hash, int index);
 void hash_remove(Hash *hash, int index);
 void hash_destroy(Hash *hash);
 
