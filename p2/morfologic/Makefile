@@ -4,21 +4,19 @@ CC = gcc
 
 INC = inc/
 DIR = files/
-SRC = 
 OUT = out/
 
 OUT_NAME = parser
-CYYLEX = $(SRC)lex.yy.c
+CYYLEX = lex.yy.c
 
-default: all
+default: $(CYYLEX)
 
-all: $(CYYLEX) $(INC)$(TOKEN)
+all: $(CYYLEX)
 		$(CC) -I $(INC) -Wall -o $(OUT)$(OUT_NAME) $(CYYLEX)
 
 
 $(CYYLEX): $(INC)$(TOKEN)
 		flex $(DIR)$(FILE)
-		mv $(CYYLEX) $(SRC)
 
 exe:
 		./$(OUT)$(OUT_NAME)
