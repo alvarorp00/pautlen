@@ -7,19 +7,17 @@
 #     (2): file_result
 
 ON_ERROR="TEST FAILURE."
-ON_EXIT="TEST SUCCESS."
+ON_SUCCESS="TEST SUCCESS."
 
 # Main
 
 file_source=$1
 file_result=$2
 
-echo "$#"
-
 if [ $# -eq 2 ]; then
   printf 'Test Result: '
   if cmp -s "$file_source" "$file_result"; then
-    printf '%s\n' "$ON_EXIT"
+    printf '%s\n' "$ON_SUCCESS"
   else
     printf '%s\n' "$ON_ERROR"
   fi

@@ -2,7 +2,7 @@ FILE = alfa.l
 TOKEN = tokens.h
 
 CC = gcc
-FLAGS = -Wall -o
+CFLAGS = -Wall -g
 
 INC = inc/
 DIR = alfa/
@@ -23,34 +23,47 @@ OUTPUT2 = $(TEST)salida2.txt
 OUTPUT3 = $(TEST)salida3.txt
 
 ALFA = $(OUT)alfa
+
 CYYLEX = lex.yy.c
+OYYLEX = lex.yy.o
+
+CALFA = $(DIR)alfa.c
+OALFA = $(DIR)alfa.o
 
 TEST_VERIFY = ./testverify.sh
 
 default: all
 
-all: $(CYYLEX)
-		$(CC) -I $(INC) $(FLAGS) $(ALFA) $(CYYLEX)
+all: $(OYYLEX)
+		$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 
 
 $(CYYLEX): $(INC)$(TOKEN)
 		flex $(DIR)$(FILE)
 
+$(OYYLEX): $(CYYLEX) $(INC)$(TOKEN)
+		$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
+
 exe:
 		./$(ALFA)
 
-test1:
-		./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
-		$(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
+test: first_test second_test third_test
 
-test2:
-		./$(ALFA) $(TESTFILE2) $(TESTOUTPUT2)
-		$(TEST_VERIFY) $(OUTPU2) $(TESTOUTPUT2)
+first_test:
+		@ echo "\nExecuting first test"
+		@ ./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
+		@ $(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
 
-test3:
-		./$(ALFA) $(TESTFILE3) $(TESTOUTPUT3)
-		$(TEST_VERIFY) $(OUTPU3) $(TESTOUTPUT3)
+second_test:
+		@ echo "\nExecuting second test"
+		@ ./$(ALFA) $(TESTFILE2) $(TESTOUTPUT2)
+		@ $(TEST_VERIFY) $(OUTPUT2) $(TESTOUTPUT2)
+
+third_test:
+		@ echo "\nExecuting third test"
+		@ ./$(ALFA) $(TESTFILE3) $(TESTOUTPUT3)
+		@ $(TEST_VERIFY) $(OUTPUT3) $(TESTOUTPUT3)
 
 clean:
 		rm -rf $(CYYLEX)
-		rm -rf $(OUT)$(OUT_NAME)
+		rm -rf $(ALFA)
