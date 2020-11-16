@@ -25,6 +25,8 @@ OUTPUT3 = $(TEST)salida3.txt
 ALFA = $(OUT)alfa
 CYYLEX = lex.yy.c
 
+TEST_VERIFY = ./testverify.sh
+
 default: all
 
 all: $(CYYLEX)
@@ -39,15 +41,15 @@ exe:
 
 test1:
 		./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
-		cmp --silent $(OUTPUT1) $(TESTOUTPUT1) || echo "test1 failure"
+		$(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
 
 test2:
 		./$(ALFA) $(TESTFILE2) $(TESTOUTPUT2)
-		cmp --silent $(OUTPUT2) $(TESTOUTPUT2) || echo "test2 failure"
+		$(TEST_VERIFY) $(OUTPU2) $(TESTOUTPUT2)
 
 test3:
 		./$(ALFA) $(TESTFILE3) $(TESTOUTPUT3)
-		cmp --silent $(OUTPUT3) $(TESTOUTPUT3) || echo "test3 failure"
+		$(TEST_VERIFY) $(OUTPU3) $(TESTOUTPUT3)
 
 clean:
 		rm -rf $(CYYLEX)

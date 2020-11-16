@@ -3,6 +3,8 @@
 %{
 
 #include <stdio.h>
+#include <stdlib.h>
+#include "tokens.h"
 
 %}
 %option noyywrap
@@ -21,6 +23,8 @@ MAIN { fprintf(yyout, "{ body_instructions }\n"); }
 
 int main(int argc, char **argv)
 {
+
+  int token;
 
   if(argc < 3)
   {
@@ -45,7 +49,10 @@ int main(int argc, char **argv)
   fflush(yyin);
   fflush(yyout);
 
-  yylex();
+  while((token = yylex()) != 0) /* yylex() returns 0 on EOF */
+  {
+
+  }
   
   fclose(yyin);
   fclose(yyout);
