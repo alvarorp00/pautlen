@@ -9,7 +9,7 @@ OUT = out/
 OUT_NAME = parser
 CYYLEX = lex.yy.c
 
-default: $(CYYLEX)
+default: all
 
 all: $(CYYLEX)
 		$(CC) -I $(INC) -Wall -o $(OUT)$(OUT_NAME) $(CYYLEX)
@@ -22,5 +22,5 @@ exe:
 		./$(OUT)$(OUT_NAME)
 
 clean:
-		rm -rf $(SRC)$(CYYLEX)
+		rm -rf $(CYYLEX)
 		rm -rf $(OUT)$(OUT_NAME)
