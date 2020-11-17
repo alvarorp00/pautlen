@@ -60,19 +60,19 @@ exe: clean $(OYYLEX) ## Executes with yyin as stdin & yyout as stdout.
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 		@./$(ALFA)
 
-test_all: test_first test_second test_third ## Executes all tests
+test_all: all test_first test_second test_third ## Executes all tests
 
-test_first: ## Executes first test
+test_first: all ## Executes first test
 		@ echo "\nExecuting first test"
 		@ ./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
 		@ $(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
 
-test_second: ## Executes second test
+test_second: all ## Executes second test
 		@ echo "\nExecuting second test"
 		@ ./$(ALFA) $(TESTFILE2) $(TESTOUTPUT2)
 		@ $(TEST_VERIFY) $(OUTPUT2) $(TESTOUTPUT2)
 
-test_third: ## Executes third test
+test_third: all ## Executes third test
 		@ echo "\nExecuting third test"
 		@ ./$(ALFA) $(TESTFILE3) $(TESTOUTPUT3)
 		@ $(TEST_VERIFY) $(OUTPUT3) $(TESTOUTPUT3)
