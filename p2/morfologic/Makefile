@@ -9,7 +9,10 @@ DIR = alfa/
 OUT = out/
 SRC = src/
 
-TEST = flex/testfiles/
+TEST = testfiles/
+RESULTS = testresults/
+
+SYMBOLS = $(SRC)symbols.txt
 
 TESTFILE1 = $(TEST)entrada1.txt
 TESTFILE2 = $(TEST)entrada2.txt
@@ -19,9 +22,9 @@ OUTPUT1 = $(TEST)salida1.txt
 OUTPUT2 = $(TEST)salida2.txt
 OUTPUT3 = $(TEST)salida3.txt
 
-TESTOUTPUT1 = $(TEST)testoutput1.txt
-TESTOUTPUT2 = $(TEST)testoutput2.txt
-TESTOUTPUT3 = $(TEST)testoutput3.txt
+TESTOUTPUT1 = $(RESULTS)testoutput1.txt
+TESTOUTPUT2 = $(RESULTS)testoutput2.txt
+TESTOUTPUT3 = $(RESULTS)testoutput3.txt
 
 ALFA = $(OUT)alfa
 
@@ -48,6 +51,12 @@ $(OYYLEX): $(CYYLEX) $(INC)$(TOKEN)
 exe:
 		./$(ALFA)
 
+hash:
+		$(CC) -I $(INC) -o $(OUT)hash_test $(SRC)hash.c $(SRC)hash_test.c
+
+hash_test: hash
+		./$(OUT)hash_test
+
 test: first_test second_test third_test
 
 first_test:
@@ -69,4 +78,6 @@ third_test:
 
 clean:
 		rm -rf $(CYYLEX)
-		rm -rf $(ALFA)
+		rm -rf $(OYYLEX)
+		rm -rf $(OUT)*
+		rm -rf $(RESULTS)*

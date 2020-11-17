@@ -16,10 +16,11 @@ file_result=$2
 
 if [ $# -eq 2 ]; then
   printf 'Test Result: '
-  if cmp -s "$file_source" "$file_result"; then
-    printf '%s\n' "$ON_SUCCESS"
-  else
+  DIFF=$(diff -Bb $file_source $file_result)
+  if [ "$DIFF" != "" ]; then
     printf '%s\n' "$ON_ERROR"
+  else
+    printf '%s\n' "$ON_SUCCESS"
   fi
 else
   printf 'Bad args: %s FILE_SOURCE FILE_RESULT\n' "$0"
