@@ -9,7 +9,6 @@ _STD_ = _STD_
 INC = inc/
 DIR = alfa/
 OUT = out/
-SRC = src/
 
 TEST = testfiles/
 RESULTS = testresults/
@@ -61,7 +60,7 @@ exe: @clean $(OYYLEX) ## Executes with yyin as stdin & yyout as stdout.
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 		@./$(ALFA)
 
-test_all: first_test second_test third_test ## Executes all tests
+test_all: test_first test_second test_third ## Executes all tests
 
 test_first: ## Executes first test
 		@ echo "\nExecuting first test"
