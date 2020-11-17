@@ -55,7 +55,7 @@ $(OYYLEX): $(CYYLEX) $(INC)$(TOKEN)
 		@echo "Generating lex.yy.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
 
-exe: @clean $(OYYLEX) ## Executes with yyin as stdin & yyout as stdout.
+exe: clean $(OYYLEX) ## Executes with yyin as stdin & yyout as stdout.
 		@echo "Executing no input nor output file. Using stdin & stdout."
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 		@./$(ALFA)
