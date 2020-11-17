@@ -1,6 +1,10 @@
 #ifndef ALFA_H
 #define ALFA_H
 
+// #ifndef _STD_
+// #define _STD_
+// #endif
+
 #define STRINGIFY(x) #x
 
 #define READ(file) fopen(file, "r");

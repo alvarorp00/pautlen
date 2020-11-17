@@ -4,10 +4,6 @@
 #include "tokens.h"
 #include "alfa.h"
 
-// #ifndef _STD_
-// #define _STD_
-// #endif
-
 /* Externals */
 
 extern char *yytext;
