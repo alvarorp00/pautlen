@@ -134,7 +134,6 @@ Test can be tested separately:
 This rules execute **pruebaMorfo** with it's correspondant source testfile - located at _testfiles/_ - and, helped by **testverify.sh**, a script which process the result of doing `diff -Bb inputfile.txt outputfile.txt`, shows a message with the result of the test. Expected return for diff is '\0', represented as "".
 
 **testverify.sh**
-
 ```
 #!/bin/bash
 
@@ -167,7 +166,6 @@ if [ $# -eq 2 ]; then
 else
   printf 'Bad args: %s FILE_SOURCE FILE_RESULT\n' "$0"
 fi
-
 ```
 
 <div style="page-break-after: always"></div>
