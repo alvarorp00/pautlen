@@ -10,6 +10,9 @@
 
 #define MAX_LEN 100
 
+#define COPYERR(str, ...) \
+            snprintf(errbuff, BUFF, "at alfa.l: *** [at line: %d; col: %d]: "str, line, col, ##__VA_ARGS__);
+
 /* External values */
 extern int line;
 extern int col;
@@ -88,7 +91,7 @@ false { return TOK_FALSE; }
 
   /* Default option if above don't match -> Error */
 
-. { return TOK_ERROR; }
+. { COPYERR("Unknown symbol %s. ", yytext) return TOK_ERROR; }
 
 %%
 
@@ -100,7 +103,7 @@ int checkIdentifier()
   if(yyleng < 100)
     return TOK_IDENTIFICADOR;
 
-  snprintf(errbuff, BUFF, "alfa.l: *** [at line: %d; col: %d]: indentifier length > 100: %s", line, col, yytext);
+  COPYERR("Indentifier length > 100: %s", yytext);
 
   return TOK_ERROR;
 }

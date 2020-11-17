@@ -3,7 +3,6 @@
 #include <string.h>
 #include "tokens.h"
 #include "alfa.h"
-#include "hash.h"
 
 // #ifndef _STD_
 // #define _STD_
@@ -32,11 +31,10 @@ int main(int argc, char **argv)
 {
 
   int token;
-  Hash *hash;
 
   if(setup(argc, argv))
   {
-    fprintf(stderr, "Failure: %s\n", errbuff);
+    fprintf(stderr, "Failure on setup(): %s\n", errbuff);
     return 1;
   }
 
@@ -80,7 +78,6 @@ int processToken(int tok)
 
 int setup(int argc, char **argv)
 {
-  char buffer[BUFF];
   
   line = 1;
   col = 1;

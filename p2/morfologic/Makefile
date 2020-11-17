@@ -39,7 +39,7 @@ TEST_VERIFY = ./testverify.sh
 default: all
 
 all: clean $(OYYLEX) 
-		$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c $(SRC)hash.c
+		$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 
 
 $(CYYLEX): $(INC)$(TOKEN)
@@ -50,12 +50,6 @@ $(OYYLEX): $(CYYLEX) $(INC)$(TOKEN)
 
 exe:
 		./$(ALFA)
-
-hash:
-		$(CC) -I $(INC) -o $(OUT)hash_test $(SRC)hash.c $(SRC)hash_test.c
-
-hash_test: hash
-		./$(OUT)hash_test
 
 test: first_test second_test third_test
 

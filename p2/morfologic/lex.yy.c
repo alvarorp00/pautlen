@@ -543,6 +543,9 @@ char *yytext;
 
 #define MAX_LEN 100
 
+#define COPYERR(str, ...) \
+            snprintf(errbuff, BUFF, "at alfa.l: *** [at line: %d; col: %d]: "str, line, col, ##__VA_ARGS__);
+
 /* External values */
 extern int line;
 extern int col;
@@ -552,11 +555,11 @@ char errbuff[BUFF];
 /* Local method */
 int checkIdentifier();
 
-#line 556 "lex.yy.c"
-#line 24 "alfa/alfa.l"
+#line 559 "lex.yy.c"
+#line 27 "alfa/alfa.l"
   /* We want to process just one file */
   /* To get current line */
-#line 560 "lex.yy.c"
+#line 563 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -773,12 +776,12 @@ YY_DECL
 		}
 
 	{
-#line 33 "alfa/alfa.l"
+#line 36 "alfa/alfa.l"
 
 
   /* Reserved words */
 
-#line 782 "lex.yy.c"
+#line 785 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -847,222 +850,222 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 37 "alfa/alfa.l"
+#line 40 "alfa/alfa.l"
 { return TOK_MAIN; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 38 "alfa/alfa.l"
+#line 41 "alfa/alfa.l"
 { return TOK_INT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 39 "alfa/alfa.l"
+#line 42 "alfa/alfa.l"
 { return TOK_BOOLEAN; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 40 "alfa/alfa.l"
+#line 43 "alfa/alfa.l"
 { return TOK_ARRAY; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 41 "alfa/alfa.l"
+#line 44 "alfa/alfa.l"
 { return TOK_FUNCTION; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 42 "alfa/alfa.l"
+#line 45 "alfa/alfa.l"
 { return TOK_IF; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 43 "alfa/alfa.l"
+#line 46 "alfa/alfa.l"
 { return TOK_ELSE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 44 "alfa/alfa.l"
+#line 47 "alfa/alfa.l"
 { return TOK_WHILE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 45 "alfa/alfa.l"
+#line 48 "alfa/alfa.l"
 { return TOK_SCANF; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 46 "alfa/alfa.l"
+#line 49 "alfa/alfa.l"
 { return TOK_PRINTF; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 47 "alfa/alfa.l"
+#line 50 "alfa/alfa.l"
 { return TOK_RETURN; }
 	YY_BREAK
 /* Characters */
 case 12:
 YY_RULE_SETUP
-#line 51 "alfa/alfa.l"
+#line 54 "alfa/alfa.l"
 { return TOK_PUNTOYCOMA; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 52 "alfa/alfa.l"
+#line 55 "alfa/alfa.l"
 { return TOK_COMA; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 53 "alfa/alfa.l"
+#line 56 "alfa/alfa.l"
 { return TOK_PARENTESISIZQUIERDO; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 54 "alfa/alfa.l"
+#line 57 "alfa/alfa.l"
 { return TOK_PARENTESISDERECHO; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 55 "alfa/alfa.l"
+#line 58 "alfa/alfa.l"
 { return TOK_CORCHETEIZQUIERDO; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 56 "alfa/alfa.l"
+#line 59 "alfa/alfa.l"
 { return TOK_CORCHETEDERECHO; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 57 "alfa/alfa.l"
+#line 60 "alfa/alfa.l"
 { return TOK_LLAVEIZQUIERDA; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 58 "alfa/alfa.l"
+#line 61 "alfa/alfa.l"
 { return TOK_LLAVEDERECHA; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 59 "alfa/alfa.l"
+#line 62 "alfa/alfa.l"
 { return TOK_ASIGNACION; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 60 "alfa/alfa.l"
+#line 63 "alfa/alfa.l"
 { return TOK_MAS; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 61 "alfa/alfa.l"
+#line 64 "alfa/alfa.l"
 { return TOK_MENOS; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 62 "alfa/alfa.l"
+#line 65 "alfa/alfa.l"
 { return TOK_DIVISION; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 63 "alfa/alfa.l"
+#line 66 "alfa/alfa.l"
 { return TOK_ASTERISCO; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 64 "alfa/alfa.l"
+#line 67 "alfa/alfa.l"
 { return TOK_AND; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 65 "alfa/alfa.l"
+#line 68 "alfa/alfa.l"
 { return TOK_OR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 66 "alfa/alfa.l"
+#line 69 "alfa/alfa.l"
 { return TOK_NOT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 67 "alfa/alfa.l"
+#line 70 "alfa/alfa.l"
 { return TOK_IGUAL; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 68 "alfa/alfa.l"
+#line 71 "alfa/alfa.l"
 { return TOK_DISTINTO; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 69 "alfa/alfa.l"
+#line 72 "alfa/alfa.l"
 { return TOK_MENORIGUAL; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 70 "alfa/alfa.l"
+#line 73 "alfa/alfa.l"
 { return TOK_MAYORIGUAL; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 71 "alfa/alfa.l"
+#line 74 "alfa/alfa.l"
 { return TOK_MENOR; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 72 "alfa/alfa.l"
+#line 75 "alfa/alfa.l"
 { return TOK_MAYOR; }
 	YY_BREAK
 /* Constants */
 case 34:
 YY_RULE_SETUP
-#line 76 "alfa/alfa.l"
+#line 79 "alfa/alfa.l"
 { return TOK_CONSTANTE_ENTERA; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 77 "alfa/alfa.l"
+#line 80 "alfa/alfa.l"
 { return TOK_TRUE; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 78 "alfa/alfa.l"
+#line 81 "alfa/alfa.l"
 { return TOK_FALSE; }
 	YY_BREAK
 /* Identifiers */
 case 37:
 YY_RULE_SETUP
-#line 82 "alfa/alfa.l"
+#line 85 "alfa/alfa.l"
 { return checkIdentifier(); }
 	YY_BREAK
 /* Reading Rules */
 case 38:
 YY_RULE_SETUP
-#line 86 "alfa/alfa.l"
+#line 89 "alfa/alfa.l"
 { col++; } /* Do nothing on spaces */
 	YY_BREAK
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 87 "alfa/alfa.l"
+#line 90 "alfa/alfa.l"
 { line++; col=1; } /* Reset column and update line counter */
 	YY_BREAK
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
-#line 88 "alfa/alfa.l"
+#line 91 "alfa/alfa.l"
 { line++; col=1; } /* Same as above, but ignoring comments */
 	YY_BREAK
 /* Default option if above don't match -> Error */
 case 41:
 YY_RULE_SETUP
-#line 92 "alfa/alfa.l"
-{ return TOK_ERROR; }
+#line 95 "alfa/alfa.l"
+{ COPYERR("Unknown symbol %s. ", yytext) return TOK_ERROR; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 94 "alfa/alfa.l"
+#line 97 "alfa/alfa.l"
 ECHO;
 	YY_BREAK
-#line 1066 "lex.yy.c"
+#line 1069 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2079,7 +2082,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 94 "alfa/alfa.l"
+#line 97 "alfa/alfa.l"
 
 
 
@@ -2090,7 +2093,7 @@ int checkIdentifier()
   if(yyleng < 100)
     return TOK_IDENTIFICADOR;
 
-  snprintf(errbuff, BUFF, "alfa.l: *** [at line: %d; col: %d]: indentifier length > 100: %s", line, col, yytext);
+  COPYERR("Indentifier length > 100: %s", yytext);
 
   return TOK_ERROR;
 }
