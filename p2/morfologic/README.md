@@ -18,6 +18,7 @@ For help, run:
 
   **`make help`**
 ```
+❯ make help
 all                            Compile all. 
 clean                          Cleans output files
 default                        Equivalent to 'make all'
