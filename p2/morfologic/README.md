@@ -199,7 +199,7 @@ This is referred to this code (in **alfa.c**):
 
         ...
 
-114 }
+  114 }
 ```
 
 Common header file **alfa.h** contains 
