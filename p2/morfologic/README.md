@@ -172,7 +172,7 @@ fi
 
 ## For manual testing
 
-If manual testing is deserved, you can type `make exe`. This will run **alfa.c** with _stdin_ and _stdout_ as _yyin_ and _yyout_ respectively.
+If manual testing is deserved, you can type `make exe`. This will run **pruebaMorfo** with _stdin_ and _stdout_ as _yyin_ and _yyout_ respectively.
 
 ## Alfa.c and Alfa.l
 

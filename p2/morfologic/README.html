@@ -509,10 +509,32 @@ fi
 </div></code></pre>
 <div style="page-break-after: always"></div>
 <h2 id="for-manual-testing">For manual testing</h2>
-<p>If manual testing is deserved, you can type <code>make exe</code>. This will run <strong>alfa.c</strong> with <em>stdin</em> and <em>stdout</em> as <em>yyin</em> and <em>yyout</em> respectively.</p>
+<p>If manual testing is deserved, you can type <code>make exe</code>. This will run <strong>pruebaMorfo</strong> with <em>stdin</em> and <em>stdout</em> as <em>yyin</em> and <em>yyout</em> respectively.</p>
 <h2 id="alfac-and-alfal">Alfa.c and Alfa.l</h2>
-<p>Functionality is managed by <strong>alfa.c</strong>, so <strong>alfa.l</strong> just passes the information processed. Thanks to this, preprocessor directives can be passed from Makefile - controlled text regions, see <a href="https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html">gnu-c-preprocessor</a> -, which let us test either manually or automatically.</p>
-<p>Common header file <strong>alfa.h</strong> contains <code>extern char *errbuff</code>, a common buffer to manage errors detected in <strong>alfa.l</strong> and handled at <strong>alfa.c</strong>.</p>
+<p>Functionality is managed by <strong>alfa.c</strong>, so <strong>alfa.l</strong> just passes the information processed. Thanks to this, preprocessor directives can be passed from Makefile - controlled text regions, see <a href="https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html">gnu-gcc-preprocessor</a> -, which let us test either manually or automatically.</p>
+<p>This is referred to this code (in <strong>alfa.c</strong>):</p>
+<pre class="hljs"><code><div>  75  int setup(...)
+  76  {
+        ...
+  81    #ifndef _STD_
+
+        /* Select yyin and yyout from argv[1] and argv[2] */
+
+        ...
+
+  103   #else
+
+        yyin = stdin;
+        yyout = stdout;
+
+  108   #endif
+
+        ...
+
+114 }
+</div></code></pre>
+<p>Common header file <strong>alfa.h</strong> contains
+<code>extern char *errbuff</code>, a common buffer to manage errors detected in <strong>alfa.l</strong> and handled at <strong>alfa.c</strong>.</p>
 
 </body>
 </html>
