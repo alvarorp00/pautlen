@@ -176,6 +176,31 @@ If manual testing is deserved, you can type `make exe`. This will run **alfa.c**
 
 ## Alfa.c and Alfa.l
 
-Functionality is managed by **alfa.c**, so **alfa.l** just passes the information processed. Thanks to this, preprocessor directives can be passed from Makefile - controlled text regions, see [gnu-c-preprocessor](https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html) -, which let us test either manually or automatically.
+Functionality is managed by **alfa.c**, so **alfa.l** just passes the information processed. Thanks to this, preprocessor directives can be passed from Makefile - controlled text regions, see [gnu-gcc-preprocessor](https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html) -, which let us test either manually or automatically.
 
-Common header file **alfa.h** contains `extern char *errbuff`, a common buffer to manage errors detected in **alfa.l** and handled at **alfa.c**.
+This is referred to this code (in **alfa.c**):
+
+```
+  75  int setup(...)
+  76  {
+        ...
+  81    #ifndef _STD_
+
+        /* Select yyin and yyout from argv[1] and argv[2] */
+
+        ...
+
+  103   #else
+
+        yyin = stdin;
+        yyout = stdout;
+
+  108   #endif
+
+        ...
+
+114 }
+```
+
+Common header file **alfa.h** contains 
+`extern char *errbuff`, a common buffer to manage errors detected in **alfa.l** and handled at **alfa.c**.
