@@ -1,0 +1,22 @@
+# pautlen
+Pautlen UAM | 2020 - 2021
+
+Autores: Grupo 8
+
+Álvaro Rodríguez Palacios
+Javier Romera Llave
+Victor Perea Riquelme
+
+# Para compilar P1:
+$ make compile
+
+# Para limpiar P1:
+$ make clean
+
+# Output:
+> Ficheros compilados out/
+> Ficheros nasm producidos asm/
+
+# Observaciones:
+> No hemos conseguido arreglar un "segmentation fault"
+  que produce la salida del ejercicio 7
