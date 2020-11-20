@@ -107,9 +107,6 @@ int setup(int argc, char **argv)
 
   #endif
 
-  fflush(yyin);
-  fflush(yyout);
-
   return 0;
 }
 
