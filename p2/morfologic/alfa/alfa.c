@@ -7,6 +7,7 @@
 /* Externals */
 
 extern char *yytext;
+extern int yyleng;
 extern FILE *yyin;
 extern FILE *yyout;
 
@@ -56,7 +57,7 @@ int processToken(int tok)
 {
   char tok_exp[BUFF];
   
-  col++;
+  col += yyleng;
   
   if (tok == TOK_ERROR)
   {

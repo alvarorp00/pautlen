@@ -3,14 +3,10 @@
 #include <string.h>
 #include "tokens.h"
 #include "alfa.h"
-#include "hash.h"
-
-// #ifndef _STD_
-// #define _STD_
-// #endif
 
 /* Externals */
 
+extern int yyleng;
 extern char *yytext;
 extern FILE *yyin;
 extern FILE *yyout;
@@ -32,11 +28,10 @@ int main(int argc, char **argv)
 {
 
   int token;
-  Hash *hash;
 
   if(setup(argc, argv))
   {
-    fprintf(stderr, "Failure: %s\n", errbuff);
+    fprintf(stderr, "Failure on setup(): %s\n", errbuff);
     return 1;
   }
 
@@ -62,7 +57,7 @@ int processToken(int tok)
 {
   char tok_exp[BUFF];
   
-  col++;
+  col += yyleng;
   
   if (tok == TOK_ERROR)
   {
@@ -80,7 +75,6 @@ int processToken(int tok)
 
 int setup(int argc, char **argv)
 {
-  char buffer[BUFF];
   
   line = 1;
   col = 1;
@@ -114,9 +108,6 @@ int setup(int argc, char **argv)
 
   #endif
 
-  fflush(yyin);
-  fflush(yyout);
-
   return 0;
 }
 
@@ -126,147 +117,147 @@ void selectToken(int tok, char *tok_exp)
   switch (tok)
   {
   case TOK_MAIN:
-    strncpy(tok_exp, STRINGIFY(TOK_MAIN), BUFF);
+    COPY(tok_exp, STR(TOK_MAIN));
     break;
   
   case TOK_INT:
-    strncpy(tok_exp, STRINGIFY(TOK_INT), BUFF);
+    COPY(tok_exp, STR(TOK_INT));
     break;
 
   case TOK_BOOLEAN:
-    strncpy(tok_exp, STRINGIFY(TOK_BOOLEAN), BUFF);
+    COPY(tok_exp, STR(TOK_BOOLEAN));
     break;
   
   case TOK_ARRAY:
-    strncpy(tok_exp, STRINGIFY(TOK_ARRAY), BUFF);
+    COPY(tok_exp, STR(TOK_ARRAY));
     break;
 
   case TOK_FUNCTION:
-    strncpy(tok_exp, STRINGIFY(TOK_FUNCTION), BUFF);
+    COPY(tok_exp, STR(TOK_FUNCTION));
     break;
   
   case TOK_IF:
-    strncpy(tok_exp, STRINGIFY(TOK_IF), BUFF);
+    COPY(tok_exp, STR(TOK_IF));
     break;
 
   case TOK_ELSE:
-    strncpy(tok_exp, STRINGIFY(TOK_ELSE), BUFF);
+    COPY(tok_exp, STR(TOK_ELSE));
     break;
   
   case TOK_WHILE:
-    strncpy(tok_exp, STRINGIFY(TOK_WHILE), BUFF);
+    COPY(tok_exp, STR(TOK_WHILE));
     break;
 
   case TOK_SCANF:
-    strncpy(tok_exp, STRINGIFY(TOK_SCANF), BUFF);
+    COPY(tok_exp, STR(TOK_SCANF));
     break;
   
   case TOK_PRINTF:
-    strncpy(tok_exp, STRINGIFY(TOK_PRINTF), BUFF);
+    COPY(tok_exp, STR(TOK_PRINTF));
     break;
 
   case TOK_PUNTOYCOMA:
-    strncpy(tok_exp, STRINGIFY(TOK_PUNTOYCOMA), BUFF);
+    COPY(tok_exp, STR(TOK_PUNTOYCOMA));
     break;
   
   case TOK_RETURN:
-    strncpy(tok_exp, STRINGIFY(TOK_RETURN), BUFF);
+    COPY(tok_exp, STR(TOK_RETURN));
     break;
 
   case TOK_COMA:
-    strncpy(tok_exp, STRINGIFY(TOK_COMA), BUFF);
+    COPY(tok_exp, STR(TOK_COMA));
     break;
   
   case TOK_PARENTESISIZQUIERDO:
-    strncpy(tok_exp, STRINGIFY(TOK_PARENTESISIZQUIERDO), BUFF);
+    COPY(tok_exp, STR(TOK_PARENTESISIZQUIERDO));
     break;
 
   case TOK_PARENTESISDERECHO:
-    strncpy(tok_exp, STRINGIFY(TOK_PARENTESISDERECHO), BUFF);
+    COPY(tok_exp, STR(TOK_PARENTESISDERECHO));
     break;
   
   case TOK_CORCHETEIZQUIERDO:
-    strncpy(tok_exp, STRINGIFY(TOK_CORCHETEIZQUIERDO), BUFF);
+    COPY(tok_exp, STR(TOK_CORCHETEIZQUIERDO));
     break;
 
   case TOK_CORCHETEDERECHO:
-    strncpy(tok_exp, STRINGIFY(TOK_CORCHETEDERECHO), BUFF);
+    COPY(tok_exp, STR(TOK_CORCHETEDERECHO));
     break;
   
   case TOK_LLAVEIZQUIERDA:
-    strncpy(tok_exp, STRINGIFY(TOK_LLAVEIZQUIERDA), BUFF);
+    COPY(tok_exp, STR(TOK_LLAVEIZQUIERDA));
     break;
 
   case TOK_LLAVEDERECHA:
-    strncpy(tok_exp, STRINGIFY(TOK_LLAVEDERECHA), BUFF);
+    COPY(tok_exp, STR(TOK_LLAVEDERECHA));
     break;
   
   case TOK_ASIGNACION:
-    strncpy(tok_exp, STRINGIFY(TOK_ASIGNACION), BUFF);
+    COPY(tok_exp, STR(TOK_ASIGNACION));
     break;
   
   case TOK_MENOS:
-    strncpy(tok_exp, STRINGIFY(TOK_MENOS), BUFF);
+    COPY(tok_exp, STR(TOK_MENOS));
     break;
 
   case TOK_DIVISION:
-    strncpy(tok_exp, STRINGIFY(TOK_DIVISION), BUFF);
+    COPY(tok_exp, STR(TOK_DIVISION));
     break;
   
   case TOK_ASTERISCO:
-    strncpy(tok_exp, STRINGIFY(TOK_ASTERISCO), BUFF);
+    COPY(tok_exp, STR(TOK_ASTERISCO));
     break;
 
   case TOK_AND:
-    strncpy(tok_exp, STRINGIFY(TOK_AND), BUFF);
+    COPY(tok_exp, STR(TOK_AND));
     break;
   
   case TOK_OR:
-    strncpy(tok_exp, STRINGIFY(TOK_OR), BUFF);
+    COPY(tok_exp, STR(TOK_OR));
     break;
 
   case TOK_NOT:
-    strncpy(tok_exp, STRINGIFY(TOK_NOT), BUFF);
+    COPY(tok_exp, STR(TOK_NOT));
     break;
 
   case TOK_IGUAL:
-    strncpy(tok_exp, STRINGIFY(TOK_IGUAL), BUFF);
+    COPY(tok_exp, STR(TOK_IGUAL));
     break;
   
   case TOK_DISTINTO:
-    strncpy(tok_exp, STRINGIFY(TOK_DISTINTO), BUFF);
+    COPY(tok_exp, STR(TOK_DISTINTO));
     break;
 
   case TOK_MENORIGUAL:
-    strncpy(tok_exp, STRINGIFY(TOK_MENORIGUAL), BUFF);
+    COPY(tok_exp, STR(TOK_MENORIGUAL));
     break;
   
   case TOK_MAYORIGUAL:
-    strncpy(tok_exp, STRINGIFY(TOK_MAYORIGUAL), BUFF);
+    COPY(tok_exp, STR(TOK_MAYORIGUAL));
     break;
 
   case TOK_MENOR:
-    strncpy(tok_exp, STRINGIFY(TOK_MENOR), BUFF);
+    COPY(tok_exp, STR(TOK_MENOR));
     break;
   
   case TOK_MAYOR:
-    strncpy(tok_exp, STRINGIFY(TOK_MAYOR), BUFF);
+    COPY(tok_exp, STR(TOK_MAYOR));
     break;
 
   case TOK_IDENTIFICADOR:
-    strncpy(tok_exp, STRINGIFY(TOK_IDENTIFICADOR), BUFF);
+    COPY(tok_exp, STR(TOK_IDENTIFICADOR));
     break;
 
   case TOK_CONSTANTE_ENTERA:
-    strncpy(tok_exp, STRINGIFY(TOK_CONSTANTE_ENTERA), BUFF);
+    COPY(tok_exp, STR(TOK_CONSTANTE_ENTERA));
     break;
   
   case TOK_TRUE:
-    strncpy(tok_exp, STRINGIFY(TOK_TRUE), BUFF);
+    COPY(tok_exp, STR(TOK_TRUE));
     break;
 
   case TOK_FALSE:
-    strncpy(tok_exp, STRINGIFY(TOK_FALSE), BUFF);
+    COPY(tok_exp, STR(TOK_FALSE));
     break;
   
   default:
