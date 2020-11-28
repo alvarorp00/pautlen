@@ -30,16 +30,16 @@ int processToken(int tok);
 int main(int argc, char **argv)
 {
 
-  int token;
-
   if(setup(argc, argv))
   {
     fprintf(stderr, "Failure on setup(): %s\n", errbuff);
     return 1;
   }
 
-  yyparse();
-  
+  if (yyparse())
+  {
+    fprintf(stderr, "%s", errbuff);
+  }
   
   #ifndef _STD_
   

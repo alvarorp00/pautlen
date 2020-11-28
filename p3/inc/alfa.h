@@ -13,8 +13,13 @@
 #define COPY(te, tf) \
             strncpy(te, tf, BUFF)
 
-extern char errbuff[BUFF];
+#define COPYERR(file, str, ...) \
+            snprintf(errbuff, BUFF, "*** at %s: [at line: %d; col: %d]: " str, file, line, col, ##__VA_ARGS__);
 
+extern char errbuff[BUFF];
 extern bool morfofailure;
+
+extern int line;
+extern int col;
 
 #endif

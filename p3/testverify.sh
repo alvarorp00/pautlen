@@ -23,6 +23,8 @@ if [ $# -eq 2 ]; then
   DIFF=$(diff -Bb $file_source $file_result)
   if [ "$DIFF" != "" ]; then
     printf "${red}%s${end}\n" "$ON_ERROR"
+    printf "Difference:\n"
+    diff -Bb $file_source $file_result
   else
     printf "${grn}%s${end}\n" "$ON_SUCCESS"
   fi

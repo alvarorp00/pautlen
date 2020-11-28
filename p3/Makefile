@@ -11,6 +11,8 @@ _STD_ = _STD_
 INC = inc/
 DIR = alfa/
 OUT = out/
+SRC = src/
+OTHER = other/
 
 TEST = testfiles/
 RESULTS = testresults/
@@ -32,13 +34,13 @@ TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 ALFA = $(OUT)pruebaMorfo
 
 CALFA = $(DIR)alfa.c
-OALFA = alfa.o
+OALFA = $(OUT)alfa.o
 
-CYYLEX = lex.yy.c
-OYYLEX = lex.yy.o
+CYYLEX = $(SRC)lex.yy.c
+OYYLEX = $(OUT)lex.yy.o
 
-CYYPARSE = y.tab.c
-OYYPARSE = y.tab.o
+CYYPARSE = $(SRC)y.tab.c
+OYYPARSE = $(OUT)y.tab.o
 
 TEST_VERIFY = ./testverify.sh
 
@@ -54,23 +56,28 @@ all: clean $(OALFA) ## Compile all.
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
+		@mv alfa.o $(OUT).
 
 $(CYYLEX): $(CYYPARSE)
 		@echo "Generating lex.yy.c"
 		@flex $(DIR)$(FLEXFILE)
+		@mv lex.yy.c $(SRC).
 
 $(OYYLEX): $(CYYLEX)
 		@echo "Generating lex.yy.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
+		@mv lex.yy.o $(OUT).
 
 $(CYYPARSE):
 		@echo "Generating y.tab.c"
 		@bison $(BISONFLAGS) $(DIR)$(BISONFILE)
 		@mv y.tab.h $(INC).
+		@mv y.tab.c $(SRC).
 
 $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
+		@mv y.tab.o $(OUT).
 
 exe_manual: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout as stdout.
 		@echo "Executing no input nor output file. Using stdin & stdout."
@@ -101,10 +108,9 @@ test_third: all ## Executes third test
 
 clean: ## Cleans output files
 		@rm -rf $(CYYLEX)
-		@rm -rf $(OYYLEX)
 		@rm -rf $(CYYPARSE)
-		@rm -rf $(OYYPARSE)
-		@rm -rf y.tab.h
+		@rm -rf $(INC)/y.tab.h
 		@rm -rf $(OUT)*
 		@rm -rf $(RESULTS)*
+		@rm -rf y.output
 		@echo "Data cleaned."

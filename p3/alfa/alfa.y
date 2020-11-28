@@ -132,14 +132,14 @@ statements: statement { PRINT_RULE("<sentencias> ::= <sentencia>", RULE_STATEMEN
           | statement statements { PRINT_RULE("<sentencias> ::= <sentencia> <sentencias>", RULE_STATEMENTS + 1); }
           ;
 
-statement: simple_statement TOK_PUNTOYCOMA { PRINT_RULE("<sentencia> ::= <sentecia_simple> ;", RULE_STATEMENT); }
+statement: simple_statement TOK_PUNTOYCOMA { PRINT_RULE("<sentencia> ::= <sentencia_simple> ;", RULE_STATEMENT); }
         | block { PRINT_RULE("<sentencia> ::= <bloque>", RULE_STATEMENT + 1); }
         ;
 
-simple_statement: assignment { PRINT_RULE("<sentecia_simple> ::= <asignacion>", RULE_STATEMENT_SIMPLE); }
-              | reading { PRINT_RULE("<sentecia_simple> ::= <lectura>", RULE_STATEMENT_SIMPLE + 1); }
-              | writing { PRINT_RULE("<sentecia_simple> ::= <escritura>", RULE_STATEMENT_SIMPLE + 2); }
-              | function_return { PRINT_RULE("<sentecia_simple> ::= <retorno_funcion>", RULE_STATEMENT_SIMPLE + 4); }
+simple_statement: assignment { PRINT_RULE("<sentencia_simple> ::= <asignacion>", RULE_STATEMENT_SIMPLE); }
+              | reading { PRINT_RULE("<sentencia_simple> ::= <lectura>", RULE_STATEMENT_SIMPLE + 1); }
+              | writing { PRINT_RULE("<sentencia_simple> ::= <escritura>", RULE_STATEMENT_SIMPLE + 2); }
+              | function_return { PRINT_RULE("<sentencia_simple> ::= <retorno_funcion>", RULE_STATEMENT_SIMPLE + 4); }
               ;
 
 block: conditional { PRINT_RULE("<bloque> ::= <condicional>", RULE_BLOCK); }
@@ -166,8 +166,8 @@ function_return: TOK_RETURN exp { PRINT_RULE("<retorno_funcion> ::= return <exp>
 
 exp: exp TOK_MAS exp { PRINT_RULE("<exp> ::= <exp> + <exp>", RULE_EXP); }
     | exp TOK_MENOS exp { PRINT_RULE("<exp> ::= <exp> - <exp>", RULE_EXP + 1); }
-    | exp TOK_DIVISION exp { PRINT_RULE("<exp> ::= <exp> / <exp>", RULE_EXP + 3); }
-    | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 2); }
+    | exp TOK_DIVISION exp { PRINT_RULE("<exp> ::= <exp> / <exp>", RULE_EXP + 2); }
+    | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 3); }
     | TOK_MENOS exp { PRINT_RULE("<exp> ::= - <exp>", RULE_EXP + 4); }
     | exp TOK_AND exp { PRINT_RULE("<exp> ::= <exp> && <exp>", RULE_EXP + 5); }
     | exp TOK_OR exp { PRINT_RULE("<exp> ::= <exp> || <exp>", RULE_EXP + 6); }
@@ -217,10 +217,10 @@ int yyerror(char *s)
 {
   if(morfofailure)
   {
-    fprintf(yyout, "ERROR MORFOLOGICO: %s.\n", errbuff);
     return -1;
   }
   
-  fprintf(yyout, "ERROR SINTACTICO: %s.\n", s);
+  COPYERR("alfa.y", "Syntactic error: %s", s);
+  
   return -1;
 }

@@ -12,14 +12,10 @@
 
 #define MAX_LEN 100
 
-#define COPYERR(str, ...) \
-            snprintf(errbuff, BUFF, "at alfa.l: *** [at line: %d; col: %d]: "str, line, col, ##__VA_ARGS__);
-
 #define PRINT_TOK(str) fprintf(yyout, ";D:\t%s\n", str);
 
-/* External values */
-extern int line;
-extern int col;
+int line;
+int col;
 
 char errbuff[BUFF];
 bool morfofailure;
@@ -111,18 +107,16 @@ int checkIdentifier()
     processToken();
     return TOK_IDENTIFICADOR;
   }
-  else
-  {
-    morfofailure = true;
-    COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
-    return TOK_ERROR;
-  }
+
+  morfofailure = true;
+  COPYERR("alfa.l", "Indentifier length > %d: %s", MAX_LEN, yytext);
+  return TOK_ERROR;
 
 }
 
 void unknownSymbol()
 {
-  COPYERR("Unknown symbol %s. ", yytext);
+  COPYERR("alfa.l", "Unknown symbol %s. ", yytext);
   morfofailure = true;
 }
 
