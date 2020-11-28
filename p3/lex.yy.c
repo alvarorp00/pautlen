@@ -385,7 +385,7 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[101] =
     {   0,
         0,    0,   43,   41,   38,   39,   29,   41,   14,   15,
-       24,   21,   13,   22,   23,   34,   12,   25,   20,   26,
+       23,   21,   13,   22,   24,   34,   12,   25,   20,   26,
        37,   16,   17,   37,   37,   37,   37,   37,   37,   37,
        37,   37,   37,   37,   18,   41,   19,   31,   27,    0,
        34,   32,   30,   33,   37,   37,   37,   37,   37,   37,
@@ -914,77 +914,77 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 #line 61 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_PUNTOYCOMA; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 62 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_COMA; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 63 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_PARENTESISIZQUIERDO; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 64 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_PARENTESISDERECHO; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 65 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_CORCHETEIZQUIERDO; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 66 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_CORCHETEDERECHO; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 67 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_LLAVEIZQUIERDA; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 68 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_LLAVEDERECHA; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 69 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_ASIGNACION; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 70 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_MAS; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 71 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_MENOS; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 72 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_ASTERISCO; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 73 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_DIVISION; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 74 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_MENOR; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 75 "alfa/alfa.l"
-{ processToken(); return yytext[0]; }
+{ processToken(); return TOK_MAYOR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
@@ -2094,16 +2094,19 @@ void yyfree (void * ptr )
 
 int checkIdentifier()
 {
+  
   if(yyleng < MAX_LEN)
   {
     processToken();
     return TOK_IDENTIFICADOR;
   }
+  else
+  {
+    morfofailure = true;
+    COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
+    return TOK_ERROR;
+  }
 
-  morfofailure = true;
-  COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
-
-  return TOK_ERROR;
 }
 
 void unknownSymbol()

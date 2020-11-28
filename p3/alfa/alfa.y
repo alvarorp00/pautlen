@@ -9,7 +9,9 @@
   #include "alfa.h"
   #include "rules.h"
 
-  #define PRINT_RULE(str, val) fprintf(yyout, ";R%d:\t%s", val, str);
+  #define PRINT_RULE(str, val) fprintf(yyout, ";R%d:\t%s\n", val, str);
+
+  extern char errbuff[BUFF];
 
   extern int yylex();
   extern FILE* yyin;
@@ -54,6 +56,8 @@
 %token TOK_MENOS
 %token TOK_ASTERISCO
 %token TOK_DIVISION
+%token TOK_MENOR
+%token TOK_MAYOR
 
 %token TOK_AND
 %token TOK_OR
@@ -62,8 +66,6 @@
 %token TOK_DISTINTO
 %token TOK_MENORIGUAL
 %token TOK_MAYORIGUAL
-%token TOK_MENOR
-%token TOK_MAYOR
 
 %token <num> TOK_CTE_ENTERA 
 %token <str> TOK_IDENTIFICADOR
@@ -94,7 +96,7 @@ class: class_scalar { PRINT_RULE("<clase> ::= <clase_escalar>", RULE_CLASS); }
       | class_vector { PRINT_RULE("<clase> ::= <clase_vector>", RULE_CLASS + 2); }
       ;
 
-class_scalar: type { PRINT_RULE("<clase> ::= <tipo> ", RULE_CLASS_SCALAR); };
+class_scalar: type { PRINT_RULE("<clase_escalar> ::= <tipo> ", RULE_CLASS_SCALAR); };
 
 type: TOK_INT { PRINT_RULE("<tipo> ::= int", RULE_TYPE); }
     | TOK_BOOLEAN { PRINT_RULE("<tipo> ::= boolean", RULE_TYPE + 1); }
@@ -103,11 +105,11 @@ type: TOK_INT { PRINT_RULE("<tipo> ::= int", RULE_TYPE); }
 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO { PRINT_RULE("<clase_vector> ::= array <tipo> [ <constante_entera> ]", RULE_CLASS_VECTOR); };
 
 identifiers: identifier { PRINT_RULE("<identificadores> ::= <identificador>", RULE_IDENTIFIERS); }
-          | identifier TOK_COMA identifiers { PRINT_RULE("<identificadores> ::= <identificador> <identificadores>", RULE_IDENTIFIERS + 1); }
+          | identifier TOK_COMA identifiers { PRINT_RULE("<identificadores> ::= <identificador> , <identificadores>", RULE_IDENTIFIERS + 1); }
           ;
 
 functions: function functions { PRINT_RULE("<funciones> :: <funcion> <funciones>", RULE_FUNCTIONS); }
-        | { PRINT_RULE("<functions> ::= ", RULE_FUNCTIONS + 1); }
+        | { PRINT_RULE("<funciones> ::= ", RULE_FUNCTIONS + 1); }
         ;
 
 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA { PRINT_RULE("<funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }", RULE_FUNCTION); };
@@ -144,8 +146,8 @@ block: conditional { PRINT_RULE("<bloque> ::= <condicional>", RULE_BLOCK); }
     | loop { PRINT_RULE("<bloque> ::= <bubcle>", RULE_BLOCK + 1); }
     ;
 
-assignment: identifier TOK_IGUAL exp  { PRINT_RULE("<asignacion> ::= <identificador> = <exp>", RULE_ASSIGNMENT); }
-          | vector_element TOK_IGUAL exp { PRINT_RULE("<asignacion> ::= <elemento_vector> = <exp>", RULE_ASSIGNMENT + 1); }
+assignment: identifier TOK_ASIGNACION exp  { PRINT_RULE("<asignacion> ::= <identificador> = <exp>", RULE_ASSIGNMENT); }
+          | vector_element TOK_ASIGNACION exp { PRINT_RULE("<asignacion> ::= <elemento_vector> = <exp>", RULE_ASSIGNMENT + 1); }
           ;
 
 vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO { PRINT_RULE("<elemento_vector> ::= <identificador> [ <exp> ]", RULE_ARRAY_ELEM); };
@@ -162,7 +164,7 @@ writing: TOK_PRINTF exp { PRINT_RULE("<escritura> ::= printf <exp>", RULE_WRITIN
 
 function_return: TOK_RETURN exp { PRINT_RULE("<retorno_funcion> ::= return <exp>", RULE_FUNCTION_RETURN); };
 
-exp : exp TOK_MAS exp { PRINT_RULE("<exp> ::= <exp> + <exp>", RULE_EXP); }
+exp: exp TOK_MAS exp { PRINT_RULE("<exp> ::= <exp> + <exp>", RULE_EXP); }
     | exp TOK_MENOS exp { PRINT_RULE("<exp> ::= <exp> - <exp>", RULE_EXP + 1); }
     | exp TOK_DIVISION exp { PRINT_RULE("<exp> ::= <exp> / <exp>", RULE_EXP + 3); }
     | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 2); }
@@ -213,9 +215,11 @@ identifier: TOK_IDENTIFICADOR { PRINT_RULE("<identificador> ::= TOK_IDENTIFICADO
 
 int yyerror(char *s)
 {
-  // if(morfofailure)
-    /* PROCESS ERROR */
-    // ¡¡¡¡¡TODO!!!!!!
+  if(morfofailure)
+  {
+    fprintf(yyout, "ERROR MORFOLOGICO: %s.\n", errbuff);
+    return -1;
+  }
   
   fprintf(yyout, "ERROR SINTACTICO: %s.\n", s);
   return -1;

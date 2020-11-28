@@ -72,9 +72,13 @@ $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
 
-exe: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout as stdout.
+exe_manual: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout as stdout.
 		@echo "Executing no input nor output file. Using stdin & stdout."
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
+		@clear
+		@./$(ALFA)
+
+manual:
 		@./$(ALFA)
 
 test_all: all test_first test_second test_third ## Executes all tests

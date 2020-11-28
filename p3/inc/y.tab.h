@@ -73,15 +73,15 @@ extern int yydebug;
     TOK_MENOS = 279,
     TOK_ASTERISCO = 280,
     TOK_DIVISION = 281,
-    TOK_AND = 282,
-    TOK_OR = 283,
-    TOK_NOT = 284,
-    TOK_IGUAL = 285,
-    TOK_DISTINTO = 286,
-    TOK_MENORIGUAL = 287,
-    TOK_MAYORIGUAL = 288,
-    TOK_MENOR = 289,
-    TOK_MAYOR = 290,
+    TOK_MENOR = 282,
+    TOK_MAYOR = 283,
+    TOK_AND = 284,
+    TOK_OR = 285,
+    TOK_NOT = 286,
+    TOK_IGUAL = 287,
+    TOK_DISTINTO = 288,
+    TOK_MENORIGUAL = 289,
+    TOK_MAYORIGUAL = 290,
     TOK_CTE_ENTERA = 291,
     TOK_IDENTIFICADOR = 292,
     TOK_CONSTANTE_ENTERA = 293,
@@ -115,15 +115,15 @@ extern int yydebug;
 #define TOK_MENOS 279
 #define TOK_ASTERISCO 280
 #define TOK_DIVISION 281
-#define TOK_AND 282
-#define TOK_OR 283
-#define TOK_NOT 284
-#define TOK_IGUAL 285
-#define TOK_DISTINTO 286
-#define TOK_MENORIGUAL 287
-#define TOK_MAYORIGUAL 288
-#define TOK_MENOR 289
-#define TOK_MAYOR 290
+#define TOK_MENOR 282
+#define TOK_MAYOR 283
+#define TOK_AND 284
+#define TOK_OR 285
+#define TOK_NOT 286
+#define TOK_IGUAL 287
+#define TOK_DISTINTO 288
+#define TOK_MENORIGUAL 289
+#define TOK_MAYORIGUAL 290
 #define TOK_CTE_ENTERA 291
 #define TOK_IDENTIFICADOR 292
 #define TOK_CONSTANTE_ENTERA 293
@@ -135,7 +135,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 27 "alfa/alfa.y"
+#line 29 "alfa/alfa.y"
 
       char* str;
       int num;

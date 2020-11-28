@@ -1,6 +1,5 @@
 Terminals unused in grammar
 
-    TOK_ASIGNACION
     TOK_CTE_ENTERA
     TOK_ERROR
 
@@ -71,8 +70,8 @@ Grammar
    31 block: conditional
    32      | loop
 
-   33 assignment: identifier TOK_IGUAL exp
-   34           | vector_element TOK_IGUAL exp
+   33 assignment: identifier TOK_ASIGNACION exp
+   34           | vector_element TOK_ASIGNACION exp
 
    35 vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 
@@ -149,20 +148,20 @@ Terminals, with rules where they appear
     TOK_CORCHETEDERECHO (274) 10 35
     TOK_LLAVEIZQUIERDA (275) 1 15 36 37 38
     TOK_LLAVEDERECHA (276) 1 15 36 37 38
-    TOK_ASIGNACION (277)
+    TOK_ASIGNACION (277) 33 34
     TOK_MAS (278) 42
     TOK_MENOS (279) 43 46
     TOK_ASTERISCO (280) 45
     TOK_DIVISION (281) 44
-    TOK_AND (282) 47
-    TOK_OR (283) 48
-    TOK_NOT (284) 49
-    TOK_IGUAL (285) 33 34 60
-    TOK_DISTINTO (286) 61
-    TOK_MENORIGUAL (287) 62
-    TOK_MAYORIGUAL (288) 63
-    TOK_MENOR (289) 64
-    TOK_MAYOR (290) 65
+    TOK_MENOR (282) 64
+    TOK_MAYOR (283) 65
+    TOK_AND (284) 47
+    TOK_OR (285) 48
+    TOK_NOT (286) 49
+    TOK_IGUAL (287) 60
+    TOK_DISTINTO (288) 61
+    TOK_MENORIGUAL (289) 62
+    TOK_MAYORIGUAL (290) 63
     TOK_CTE_ENTERA <num> (291)
     TOK_IDENTIFICADOR <str> (292) 71
     TOK_CONSTANTE_ENTERA (293) 70
@@ -633,9 +632,9 @@ State 33
 
 State 34
 
-   34 assignment: vector_element . TOK_IGUAL exp
+   34 assignment: vector_element . TOK_ASIGNACION exp
 
-    TOK_IGUAL  shift, and go to state 65
+    TOK_ASIGNACION  shift, and go to state 65
 
 
 State 35
@@ -675,11 +674,11 @@ State 39
 
 State 40
 
-   33 assignment: identifier . TOK_IGUAL exp
+   33 assignment: identifier . TOK_ASIGNACION exp
    35 vector_element: identifier . TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 
     TOK_CORCHETEIZQUIERDO  shift, and go to state 66
-    TOK_IGUAL              shift, and go to state 67
+    TOK_ASIGNACION         shift, and go to state 67
 
 
 State 41
@@ -954,7 +953,7 @@ State 64
 
 State 65
 
-   34 assignment: vector_element TOK_IGUAL . exp
+   34 assignment: vector_element TOK_ASIGNACION . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -994,7 +993,7 @@ State 66
 
 State 67
 
-   33 assignment: identifier TOK_IGUAL . exp
+   33 assignment: identifier TOK_ASIGNACION . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1095,14 +1094,14 @@ State 73
     TOK_MENOS              shift, and go to state 78
     TOK_ASTERISCO          shift, and go to state 79
     TOK_DIVISION           shift, and go to state 80
+    TOK_MENOR              shift, and go to state 91
+    TOK_MAYOR              shift, and go to state 92
     TOK_AND                shift, and go to state 81
     TOK_OR                 shift, and go to state 82
-    TOK_IGUAL              shift, and go to state 91
-    TOK_DISTINTO           shift, and go to state 92
-    TOK_MENORIGUAL         shift, and go to state 93
-    TOK_MAYORIGUAL         shift, and go to state 94
-    TOK_MENOR              shift, and go to state 95
-    TOK_MAYOR              shift, and go to state 96
+    TOK_IGUAL              shift, and go to state 93
+    TOK_DISTINTO           shift, and go to state 94
+    TOK_MENORIGUAL         shift, and go to state 95
+    TOK_MAYORIGUAL         shift, and go to state 96
 
 
 State 74
@@ -1295,7 +1294,7 @@ State 83
 
 State 84
 
-   34 assignment: vector_element TOK_IGUAL exp .
+   34 assignment: vector_element TOK_ASIGNACION exp .
    42 exp: exp . TOK_MAS exp
    43    | exp . TOK_MENOS exp
    44    | exp . TOK_DIVISION exp
@@ -1334,7 +1333,7 @@ State 85
 
 State 86
 
-   33 assignment: identifier TOK_IGUAL exp .
+   33 assignment: identifier TOK_ASIGNACION exp .
    42 exp: exp . TOK_MAS exp
    43    | exp . TOK_MENOS exp
    44    | exp . TOK_DIVISION exp
@@ -1390,7 +1389,7 @@ State 90
 
 State 91
 
-   60 comparison: exp TOK_IGUAL . exp
+   64 comparison: exp TOK_MENOR . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1410,7 +1409,7 @@ State 91
 
 State 92
 
-   61 comparison: exp TOK_DISTINTO . exp
+   65 comparison: exp TOK_MAYOR . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1430,7 +1429,7 @@ State 92
 
 State 93
 
-   62 comparison: exp TOK_MENORIGUAL . exp
+   60 comparison: exp TOK_IGUAL . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1450,7 +1449,7 @@ State 93
 
 State 94
 
-   63 comparison: exp TOK_MAYORIGUAL . exp
+   61 comparison: exp TOK_DISTINTO . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1470,7 +1469,7 @@ State 94
 
 State 95
 
-   64 comparison: exp TOK_MENOR . exp
+   62 comparison: exp TOK_MENORIGUAL . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1490,7 +1489,7 @@ State 95
 
 State 96
 
-   65 comparison: exp TOK_MAYOR . exp
+   63 comparison: exp TOK_MAYORIGUAL . exp
 
     TOK_PARENTESISIZQUIERDO  shift, and go to state 50
     TOK_MENOS                shift, and go to state 51
@@ -1764,6 +1763,46 @@ State 112
    45    | exp . TOK_ASTERISCO exp
    47    | exp . TOK_AND exp
    48    | exp . TOK_OR exp
+   64 comparison: exp TOK_MENOR exp .
+
+    TOK_MAS        shift, and go to state 77
+    TOK_MENOS      shift, and go to state 78
+    TOK_ASTERISCO  shift, and go to state 79
+    TOK_DIVISION   shift, and go to state 80
+    TOK_AND        shift, and go to state 81
+    TOK_OR         shift, and go to state 82
+
+    $default  reduce using rule 64 (comparison)
+
+
+State 113
+
+   42 exp: exp . TOK_MAS exp
+   43    | exp . TOK_MENOS exp
+   44    | exp . TOK_DIVISION exp
+   45    | exp . TOK_ASTERISCO exp
+   47    | exp . TOK_AND exp
+   48    | exp . TOK_OR exp
+   65 comparison: exp TOK_MAYOR exp .
+
+    TOK_MAS        shift, and go to state 77
+    TOK_MENOS      shift, and go to state 78
+    TOK_ASTERISCO  shift, and go to state 79
+    TOK_DIVISION   shift, and go to state 80
+    TOK_AND        shift, and go to state 81
+    TOK_OR         shift, and go to state 82
+
+    $default  reduce using rule 65 (comparison)
+
+
+State 114
+
+   42 exp: exp . TOK_MAS exp
+   43    | exp . TOK_MENOS exp
+   44    | exp . TOK_DIVISION exp
+   45    | exp . TOK_ASTERISCO exp
+   47    | exp . TOK_AND exp
+   48    | exp . TOK_OR exp
    60 comparison: exp TOK_IGUAL exp .
 
     TOK_MAS        shift, and go to state 77
@@ -1776,7 +1815,7 @@ State 112
     $default  reduce using rule 60 (comparison)
 
 
-State 113
+State 115
 
    42 exp: exp . TOK_MAS exp
    43    | exp . TOK_MENOS exp
@@ -1796,7 +1835,7 @@ State 113
     $default  reduce using rule 61 (comparison)
 
 
-State 114
+State 116
 
    42 exp: exp . TOK_MAS exp
    43    | exp . TOK_MENOS exp
@@ -1816,7 +1855,7 @@ State 114
     $default  reduce using rule 62 (comparison)
 
 
-State 115
+State 117
 
    42 exp: exp . TOK_MAS exp
    43    | exp . TOK_MENOS exp
@@ -1834,46 +1873,6 @@ State 115
     TOK_OR         shift, and go to state 82
 
     $default  reduce using rule 63 (comparison)
-
-
-State 116
-
-   42 exp: exp . TOK_MAS exp
-   43    | exp . TOK_MENOS exp
-   44    | exp . TOK_DIVISION exp
-   45    | exp . TOK_ASTERISCO exp
-   47    | exp . TOK_AND exp
-   48    | exp . TOK_OR exp
-   64 comparison: exp TOK_MENOR exp .
-
-    TOK_MAS        shift, and go to state 77
-    TOK_MENOS      shift, and go to state 78
-    TOK_ASTERISCO  shift, and go to state 79
-    TOK_DIVISION   shift, and go to state 80
-    TOK_AND        shift, and go to state 81
-    TOK_OR         shift, and go to state 82
-
-    $default  reduce using rule 64 (comparison)
-
-
-State 117
-
-   42 exp: exp . TOK_MAS exp
-   43    | exp . TOK_MENOS exp
-   44    | exp . TOK_DIVISION exp
-   45    | exp . TOK_ASTERISCO exp
-   47    | exp . TOK_AND exp
-   48    | exp . TOK_OR exp
-   65 comparison: exp TOK_MAYOR exp .
-
-    TOK_MAS        shift, and go to state 77
-    TOK_MENOS      shift, and go to state 78
-    TOK_ASTERISCO  shift, and go to state 79
-    TOK_DIVISION   shift, and go to state 80
-    TOK_AND        shift, and go to state 81
-    TOK_OR         shift, and go to state 82
-
-    $default  reduce using rule 65 (comparison)
 
 
 State 118

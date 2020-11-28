@@ -57,21 +57,21 @@ return { processToken(); return TOK_RETURN; }
 
   /* Characters */
 
-";" { processToken(); return yytext[0]; }
-"," { processToken(); return yytext[0]; }
-"(" { processToken(); return yytext[0]; }
-")" { processToken(); return yytext[0]; }
-"[" { processToken(); return yytext[0]; }
-"]" { processToken(); return yytext[0]; }
-"{" { processToken(); return yytext[0]; }
-"}" { processToken(); return yytext[0]; }
-"=" { processToken(); return yytext[0]; }
-"+" { processToken(); return yytext[0]; }
-"-" { processToken(); return yytext[0]; }
-"/" { processToken(); return yytext[0]; }
-"*" { processToken(); return yytext[0]; }
-"<" { processToken(); return yytext[0]; }
-">" { processToken(); return yytext[0]; }
+";" { processToken(); return TOK_PUNTOYCOMA; }
+"," { processToken(); return TOK_COMA; }
+"(" { processToken(); return TOK_PARENTESISIZQUIERDO; }
+")" { processToken(); return TOK_PARENTESISDERECHO; }
+"[" { processToken(); return TOK_CORCHETEIZQUIERDO; }
+"]" { processToken(); return TOK_CORCHETEDERECHO; }
+"{" { processToken(); return TOK_LLAVEIZQUIERDA; }
+"}" { processToken(); return TOK_LLAVEDERECHA; }
+"=" { processToken(); return TOK_ASIGNACION; }
+"+" { processToken(); return TOK_MAS; }
+"-" { processToken(); return TOK_MENOS; }
+"*" { processToken(); return TOK_ASTERISCO; }
+"/" { processToken(); return TOK_DIVISION; }
+"<" { processToken(); return TOK_MENOR; }
+">" { processToken(); return TOK_MAYOR; }
 
 "&&" { processToken(); return TOK_AND; }
 "||" { processToken(); return TOK_OR; }
@@ -105,16 +105,19 @@ false { processToken(); return TOK_FALSE; }
 
 int checkIdentifier()
 {
+  
   if(yyleng < MAX_LEN)
   {
     processToken();
     return TOK_IDENTIFICADOR;
   }
+  else
+  {
+    morfofailure = true;
+    COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
+    return TOK_ERROR;
+  }
 
-  morfofailure = true;
-  COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
-
-  return TOK_ERROR;
 }
 
 void unknownSymbol()
