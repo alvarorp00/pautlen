@@ -1,6 +1,9 @@
 #ifndef ALFA_H
 #define ALFA_H
 
+#include <stdbool.h>
+#include "tokens.h"
+
 #define STR(x) #x
 
 #define READ(file) fopen(file, "r");
@@ -12,5 +15,7 @@
             strncpy(te, tf, BUFF)
 
 extern char errbuff[BUFF];
+
+extern bool morfofailure;
 
 #endif

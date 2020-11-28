@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tokens.h"
 #include "alfa.h"
 
 /* Externals */
@@ -16,6 +15,7 @@ extern int yylex(void);
 /* Locals */
 
 char errbuff[BUFF];
+int morfofailure;
 
 int line;
 int col;
@@ -78,6 +78,8 @@ int setup(int argc, char **argv)
   
   line = 1;
   col = 1;
+
+  morfofailure = false;
   
   #ifndef _STD_
 

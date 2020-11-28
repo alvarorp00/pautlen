@@ -1,4 +1,5 @@
-FILE = alfa.l
+FLEXFILE = alfa.l
+BISONFILE = alfa.y
 TOKEN = tokens.h
 
 CC = gcc
@@ -15,25 +16,25 @@ RESULTS = testresults/
 
 SYMBOLS = $(SRC)symbols.txt
 
-TESTFILE1 = $(TEST)entrada1.txt
-TESTFILE2 = $(TEST)entrada2.txt
-TESTFILE3 = $(TEST)entrada3.txt
+TESTFILE1 = $(TEST)entrada_sin_1.txt
+TESTFILE2 = $(TEST)entrada_sin_2.txt
+TESTFILE3 = $(TEST)entrada_sin_3.txt
 
-OUTPUT1 = $(TEST)salida1.txt
-OUTPUT2 = $(TEST)salida2.txt
-OUTPUT3 = $(TEST)salida3.txt
+OUTPUT1 = $(TEST)salida_sin_1.txt
+OUTPUT2 = $(TEST)salida_sin_2.txt
+OUTPUT3 = $(TEST)salida_sin_3.txt
 
-TESTOUTPUT1 = $(RESULTS)testoutput1.txt
-TESTOUTPUT2 = $(RESULTS)testoutput2.txt
-TESTOUTPUT3 = $(RESULTS)testoutput3.txt
+TESTOUTPUT1 = $(RESULTS)testoutput_sin_1.txt
+TESTOUTPUT2 = $(RESULTS)testoutput_sin_2.txt
+TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 
 ALFA = $(OUT)pruebaMorfo
 
 CYYLEX = lex.yy.c
 OYYLEX = lex.yy.o
 
-CALFA = $(DIR)alfa.c
-OALFA = $(DIR)alfa.o
+CYYPARSE = y.tab.c
+OYYPARSE = y.tab.o
 
 TEST_VERIFY = ./testverify.sh
 
@@ -42,18 +43,26 @@ default: all ## Equivalent to 'make all'
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: clean $(OYYLEX) ## Compile all. 
+all: clean $(OYYLEX) $(OYYPARSE) ## Compile all. 
 		@echo "Compiling all..."
 		@$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
 
 
 $(CYYLEX): $(INC)$(TOKEN)
 		@echo "Generating lex.yy.c"
-		@flex $(DIR)$(FILE)
+		@flex $(DIR)$(FLEXFILE)
 
 $(OYYLEX): $(CYYLEX) $(INC)$(TOKEN)
 		@echo "Generating lex.yy.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
+
+$(CYYPARSE):
+		@echo "Generating y.tab.c"
+		@bison -d -y -v $(DIR)$(BISONFILE)
+
+$(OYYPARSE): $(CYYPARSE)
+		@echo "Generating y.tab.o"
+		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
 
 exe: clean $(OYYLEX) ## Executes with yyin as stdin & yyout as stdout.
 		@echo "Executing no input nor output file. Using stdin & stdout."
@@ -81,6 +90,8 @@ test_third: all ## Executes third test
 clean: ## Cleans output files
 		@rm -rf $(CYYLEX)
 		@rm -rf $(OYYLEX)
+		@rm -rf $(CYYPARSE)
+		@rm -rf $(OYYPARSE)
 		@rm -rf $(OUT)*
 		@rm -rf $(RESULTS)*
 		@echo "Data cleaned."

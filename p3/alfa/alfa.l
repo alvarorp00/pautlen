@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tokens.h"
 #include "alfa.h"
+#include "y.tab.h"
 
 #define MAX_LEN 100
 
@@ -18,6 +18,7 @@ extern int line;
 extern int col;
 
 char errbuff[BUFF];
+bool morfofailure;
 
 /* Local method */
 int checkIdentifier();
@@ -50,19 +51,22 @@ return { return TOK_RETURN; }
 
   /* Characters */
 
-";" { return TOK_PUNTOYCOMA; }
-"," { return TOK_COMA; }
-"(" { return TOK_PARENTESISIZQUIERDO; }
-")" { return TOK_PARENTESISDERECHO; }
-"[" { return TOK_CORCHETEIZQUIERDO; }
-"]" { return TOK_CORCHETEDERECHO; }
-"{" { return TOK_LLAVEIZQUIERDA; }
-"}" { return TOK_LLAVEDERECHA; }
-"=" { return TOK_ASIGNACION; }
-"+" { return TOK_MAS; }
-"-" { return TOK_MENOS; }
-"/" { return TOK_DIVISION; }
-"*" { return TOK_ASTERISCO; }
+";" { return yytext[0]; }
+"," { return yytext[0]; }
+"(" { return yytext[0]; }
+")" { return yytext[0]; }
+"[" { return yytext[0]; }
+"]" { return yytext[0]; }
+"{" { return yytext[0]; }
+"}" { return yytext[0]; }
+"=" { return yytext[0]; }
+"+" { return yytext[0]; }
+"-" { return yytext[0]; }
+"/" { return yytext[0]; }
+"*" { return yytext[0]; }
+"<" { return yytext[0]; }
+">" { return yytext[0]; }
+
 "&&" { return TOK_AND; }
 "||" { return TOK_OR; }
 "!" { return TOK_NOT; }
@@ -70,8 +74,6 @@ return { return TOK_RETURN; }
 "!=" { return TOK_DISTINTO; }
 "<=" { return TOK_MENORIGUAL; }
 ">=" { return TOK_MAYORIGUAL; }
-"<" { return TOK_MENOR; }
-">" { return TOK_MAYOR; }
 
   /* Constants */
 
@@ -91,19 +93,17 @@ false { return TOK_FALSE; }
 
   /* Default option if above don't match -> Error */
 
-. { COPYERR("Unknown symbol %s. ", yytext) return TOK_ERROR; }
+. { COPYERR("Unknown symbol %s. ", yytext); morfofailure = 1; return TOK_ERROR; }
 
 %%
 
-
-/* { return __TOKEN__; } */
-
 int checkIdentifier()
 {
-  if(yyleng < 100)
+  if(yyleng < MAX_LEN)
     return TOK_IDENTIFICADOR;
 
-  COPYERR("Indentifier length > 100: %s", yytext);
+  morfofailure = true;
+  COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
 
   return TOK_ERROR;
 }
