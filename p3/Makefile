@@ -4,6 +4,7 @@ TOKEN = tokens.h
 
 CC = gcc
 CFLAGS = -Wall -g
+BISONFLAGS = -d -y -v
 
 _STD_ = _STD_
 
@@ -30,6 +31,9 @@ TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 
 ALFA = $(OUT)pruebaMorfo
 
+CALFA = $(DIR)alfa.c
+OALFA = alfa.o
+
 CYYLEX = lex.yy.c
 OYYLEX = lex.yy.o
 
@@ -43,30 +47,34 @@ default: all ## Equivalent to 'make all'
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: clean $(OYYLEX) $(OYYPARSE) ## Compile all. 
+all: clean $(OALFA) ## Compile all. 
 		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
+		@$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(OYYPARSE) $(OALFA)
 
+$(OALFA): $(OYYPARSE) $(OYYLEX)
+		@echo "Generating alfa.o"
+		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
 
-$(CYYLEX): $(INC)$(TOKEN)
+$(CYYLEX): $(CYYPARSE)
 		@echo "Generating lex.yy.c"
 		@flex $(DIR)$(FLEXFILE)
 
-$(OYYLEX): $(CYYLEX) $(INC)$(TOKEN)
+$(OYYLEX): $(CYYLEX)
 		@echo "Generating lex.yy.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
 
 $(CYYPARSE):
 		@echo "Generating y.tab.c"
-		@bison -d -y -v $(DIR)$(BISONFILE)
+		@bison $(BISONFLAGS) $(DIR)$(BISONFILE)
+		@mv y.tab.h $(INC).
 
 $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
 
-exe: clean $(OYYLEX) ## Executes with yyin as stdin & yyout as stdout.
+exe: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout as stdout.
 		@echo "Executing no input nor output file. Using stdin & stdout."
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(DIR)alfa.c
+		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
 		@./$(ALFA)
 
 test_all: all test_first test_second test_third ## Executes all tests
@@ -92,6 +100,7 @@ clean: ## Cleans output files
 		@rm -rf $(OYYLEX)
 		@rm -rf $(CYYPARSE)
 		@rm -rf $(OYYPARSE)
+		@rm -rf y.tab.h
 		@rm -rf $(OUT)*
 		@rm -rf $(RESULTS)*
 		@echo "Data cleaned."

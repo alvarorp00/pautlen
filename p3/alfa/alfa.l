@@ -5,13 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "alfa.h"
+#include "y.tab.h"
 #include "y.tab.h"
 
 #define MAX_LEN 100
 
 #define COPYERR(str, ...) \
             snprintf(errbuff, BUFF, "at alfa.l: *** [at line: %d; col: %d]: "str, line, col, ##__VA_ARGS__);
+
+#define PRINT_TOK(str) fprintf(yyout, ";D:\t%s\n", str);
 
 /* External values */
 extern int line;
@@ -22,6 +26,8 @@ bool morfofailure;
 
 /* Local method */
 int checkIdentifier();
+void unknownSymbol();
+void processToken();
 
 %}
   /* We want to process just one file */
@@ -37,49 +43,49 @@ CONSTANT [0-9]+
 
   /* Reserved words */
 
-main { return TOK_MAIN; }
-int { return TOK_INT; }
-boolean { return TOK_BOOLEAN; }
-array { return TOK_ARRAY; }
-function { return TOK_FUNCTION; }
-if { return TOK_IF; }
-else { return TOK_ELSE; }
-while { return TOK_WHILE; }
-scanf { return TOK_SCANF; }
-printf { return TOK_PRINTF; }
-return { return TOK_RETURN; }
+main { processToken(); return TOK_MAIN; }
+int { processToken(); return TOK_INT; }
+boolean { processToken(); return TOK_BOOLEAN; }
+array { processToken(); return TOK_ARRAY; }
+function { processToken(); return TOK_FUNCTION; }
+if { processToken(); return TOK_IF; }
+else { processToken(); return TOK_ELSE; }
+while { processToken(); return TOK_WHILE; }
+scanf { processToken(); return TOK_SCANF; }
+printf { processToken(); return TOK_PRINTF; }
+return { processToken(); return TOK_RETURN; }
 
   /* Characters */
 
-";" { return yytext[0]; }
-"," { return yytext[0]; }
-"(" { return yytext[0]; }
-")" { return yytext[0]; }
-"[" { return yytext[0]; }
-"]" { return yytext[0]; }
-"{" { return yytext[0]; }
-"}" { return yytext[0]; }
-"=" { return yytext[0]; }
-"+" { return yytext[0]; }
-"-" { return yytext[0]; }
-"/" { return yytext[0]; }
-"*" { return yytext[0]; }
-"<" { return yytext[0]; }
-">" { return yytext[0]; }
+";" { processToken(); return yytext[0]; }
+"," { processToken(); return yytext[0]; }
+"(" { processToken(); return yytext[0]; }
+")" { processToken(); return yytext[0]; }
+"[" { processToken(); return yytext[0]; }
+"]" { processToken(); return yytext[0]; }
+"{" { processToken(); return yytext[0]; }
+"}" { processToken(); return yytext[0]; }
+"=" { processToken(); return yytext[0]; }
+"+" { processToken(); return yytext[0]; }
+"-" { processToken(); return yytext[0]; }
+"/" { processToken(); return yytext[0]; }
+"*" { processToken(); return yytext[0]; }
+"<" { processToken(); return yytext[0]; }
+">" { processToken(); return yytext[0]; }
 
-"&&" { return TOK_AND; }
-"||" { return TOK_OR; }
-"!" { return TOK_NOT; }
-"==" { return TOK_IGUAL; }
-"!=" { return TOK_DISTINTO; }
-"<=" { return TOK_MENORIGUAL; }
-">=" { return TOK_MAYORIGUAL; }
+"&&" { processToken(); return TOK_AND; }
+"||" { processToken(); return TOK_OR; }
+"!" { processToken(); return TOK_NOT; }
+"==" { processToken(); return TOK_IGUAL; }
+"!=" { processToken(); return TOK_DISTINTO; }
+"<=" { processToken(); return TOK_MENORIGUAL; }
+">=" { processToken(); return TOK_MAYORIGUAL; }
 
   /* Constants */
 
-{CONSTANT} { return TOK_CONSTANTE_ENTERA; }
-true { return TOK_TRUE; }
-false { return TOK_FALSE; }
+{CONSTANT} { processToken(); return TOK_CONSTANTE_ENTERA; }
+true { processToken(); return TOK_TRUE; }
+false { processToken(); return TOK_FALSE; }
 
   /* Identifiers */
 
@@ -93,17 +99,33 @@ false { return TOK_FALSE; }
 
   /* Default option if above don't match -> Error */
 
-. { COPYERR("Unknown symbol %s. ", yytext); morfofailure = 1; return TOK_ERROR; }
+. { unknownSymbol(); return TOK_ERROR; }
 
 %%
 
 int checkIdentifier()
 {
   if(yyleng < MAX_LEN)
+  {
+    processToken();
     return TOK_IDENTIFICADOR;
+  }
 
   morfofailure = true;
   COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
 
   return TOK_ERROR;
+}
+
+void unknownSymbol()
+{
+  COPYERR("Unknown symbol %s. ", yytext);
+  morfofailure = true;
+}
+
+void processToken()
+{
+  col += yyleng;
+  
+  PRINT_TOK(yytext);
 }

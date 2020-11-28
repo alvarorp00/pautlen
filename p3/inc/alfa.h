@@ -2,7 +2,6 @@
 #define ALFA_H
 
 #include <stdbool.h>
-#include "tokens.h"
 
 #define STR(x) #x
 

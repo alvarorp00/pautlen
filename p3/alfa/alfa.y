@@ -4,18 +4,22 @@
 
 /* C delimiters */
 
+  #include <stdio.h>
+  #include <stdbool.h>
+  #include "alfa.h"
   #include "rules.h"
 
-  #define PRINT_RULE(str, val) printRes(str, val, false)
-  #define PRINT_TOK(str, val) printRes(str, val, true)
+  #define PRINT_RULE(str, val) fprintf(yyout, ";R%d:\t%s", val, str);
 
   extern int yylex();
   extern FILE* yyin;
+  extern FILE* yyout;
 
   bool morfofailure;
 
-  void printRes(char *str, int value)
   int yyerror(char *s);
+
+  int yylex();
 
 %}
 
@@ -55,7 +59,7 @@
 %token TOK_OR
 %token TOK_NOT
 %token TOK_IGUAL
-%token TOK_DISINTO
+%token TOK_DISTINTO
 %token TOK_MENORIGUAL
 %token TOK_MAYORIGUAL
 %token TOK_MENOR
@@ -78,7 +82,7 @@
 
 %%
 
-program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations functions statements TOK_LLAVEDERECHA { PRINT_RULE("<programa>", RULE_PROGRAM); };
+program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations functions statements TOK_LLAVEDERECHA { PRINT_RULE("<programa> ::= main { <declaraciones> <funciones> <sentencias> }", RULE_PROGRAM); };
 
 declarations: declaration { PRINT_RULE("<declaraciones> ::= <declaracion>", RULE_DECLARATIONS); }
             | declaration declarations { PRINT_RULE("<declaraciones> ::= <declaracion> <declaraciones>", RULE_DECLARATIONS + 1); }
@@ -156,12 +160,12 @@ reading: TOK_SCANF identifier { PRINT_RULE("<lectura> ::= scanf <identificador>"
 
 writing: TOK_PRINTF exp { PRINT_RULE("<escritura> ::= printf <exp>", RULE_WRITING); };
 
-function_return: TOK_RETURN exp { PRINT_RULE("<retorno_funcion> ::= return <exp>", RULE_FUNTION_RETURN); };
+function_return: TOK_RETURN exp { PRINT_RULE("<retorno_funcion> ::= return <exp>", RULE_FUNCTION_RETURN); };
 
 exp : exp TOK_MAS exp { PRINT_RULE("<exp> ::= <exp> + <exp>", RULE_EXP); }
     | exp TOK_MENOS exp { PRINT_RULE("<exp> ::= <exp> - <exp>", RULE_EXP + 1); }
-    | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 2); }
     | exp TOK_DIVISION exp { PRINT_RULE("<exp> ::= <exp> / <exp>", RULE_EXP + 3); }
+    | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 2); }
     | TOK_MENOS exp { PRINT_RULE("<exp> ::= - <exp>", RULE_EXP + 4); }
     | exp TOK_AND exp { PRINT_RULE("<exp> ::= <exp> && <exp>", RULE_EXP + 5); }
     | exp TOK_OR exp { PRINT_RULE("<exp> ::= <exp> || <exp>", RULE_EXP + 6); }
@@ -183,7 +187,7 @@ exp_remaining_list: TOK_COMA exp exp_remaining_list { PRINT_RULE("<resto_lista_e
                   ;
 
 comparison: exp TOK_IGUAL exp { PRINT_RULE("<comparacion> ::= <exp> == <exp>", RULE_COMP); }
-          | exp TOK_DISINTO exp { PRINT_RULE("<comparacion> ::= <exp> != <exp>", RULE_COMP + 1); }
+          | exp TOK_DISTINTO exp { PRINT_RULE("<comparacion> ::= <exp> != <exp>", RULE_COMP + 1); }
           | exp TOK_MENORIGUAL exp { PRINT_RULE("<comparacion> ::= <exp> <= <exp>", RULE_COMP + 2); }
           | exp TOK_MAYORIGUAL exp { PRINT_RULE("<comparacion> ::= <exp> >= <exp>", RULE_COMP + 3); }
           | exp TOK_MENOR exp { PRINT_RULE("<comparacion> ::= <exp> < <exp>", RULE_COMP + 4); }
@@ -199,30 +203,20 @@ constant_logic: TOK_TRUE { PRINT_RULE("<constante_logica> ::= true", RULE_CONST_
               | TOK_FALSE { PRINT_RULE("<constante_logica> ::= false", RULE_CONST_LOGIC + 1); }
               ;
 
-constant_int: number { PRINT_RULE("<constante_entera> ::= <numero>", RULE_CONST_INT); };
+constant_int: TOK_CONSTANTE_ENTERA { PRINT_RULE("<constante_entera> ::= TOK_CONSTANTE_ENTERA", RULE_CONST_INT); };
 
-identifier: letter { PRINT_RULE("<identificador> ::= <letra>", RULE_IDENTIFIER); }
-          | letter identifier_queue { PRINT_RULE("<identificador> ::= <letra> <cola_identificador>", RULE_IDENTIFIER + 1); }
-          ;
+identifier: TOK_IDENTIFICADOR { PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", RULE_IDENTIFIER); }
 
 %%
 
 /* User functions definitions */
 
-void printRes(char *str, int value, bool is_rule)
-{
-  if(is_rule)
-    printf(";R%d:\t%s", value, str);
-  else
-    printf(";D:\t%s\n", str);
-}
-
 int yyerror(char *s)
 {
-  if(morfofailure)
+  // if(morfofailure)
     /* PROCESS ERROR */
-    ¡¡¡¡¡TODO!!!!!!
+    // ¡¡¡¡¡TODO!!!!!!
   
-  printf("ERROR SINTACTICO: %s.\n", s);
+  fprintf(yyout, "ERROR SINTACTICO: %s.\n", s);
   return -1;
 }
