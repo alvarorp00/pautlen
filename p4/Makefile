@@ -15,22 +15,7 @@ OBJ = obj/
 SRC = src/
 OTHER = other/
 
-TEST = testfiles/
-RESULTS = testresults/
-
 SYMBOLS = $(SRC)symbols.txt
-
-TESTFILE1 = $(TEST)entrada_sin_1.txt
-TESTFILE2 = $(TEST)entrada_sin_2.txt
-TESTFILE3 = $(TEST)entrada_sin_3.txt
-
-OUTPUT1 = $(TEST)salida_sin_1.txt
-OUTPUT2 = $(TEST)salida_sin_2.txt
-OUTPUT3 = $(TEST)salida_sin_3.txt
-
-TESTOUTPUT1 = $(RESULTS)testoutput_sin_1.txt
-TESTOUTPUT2 = $(RESULTS)testoutput_sin_2.txt
-TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 
 ALFA = $(OUT)pruebaMorfo
 
@@ -42,8 +27,6 @@ OYYLEX = $(OBJ)lex.yy.o
 
 CYYPARSE = $(SRC)y.tab.c
 OYYPARSE = $(OBJ)y.tab.o
-
-TEST_VERIFY = ./testverify.sh
 
 default: all ## Equivalent to 'make all'
 
@@ -88,23 +71,6 @@ $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
 		@mv y.tab.o $(OBJ).
-
-test_all: all test_first test_second test_third ## Executes all tests
-
-test_first: all ## Executes first test
-		@ echo "\nExecuting first test"
-		@ ./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
-		@ $(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
-
-test_second: all ## Executes second test
-		@ echo "\nExecuting second test"
-		@ ./$(ALFA) $(TESTFILE2) $(TESTOUTPUT2)
-		@ $(TEST_VERIFY) $(OUTPUT2) $(TESTOUTPUT2)
-
-test_third: all ## Executes third test
-		@ echo "\nExecuting third test"
-		@ ./$(ALFA) $(TESTFILE3) $(TESTOUTPUT3)
-		@ $(TEST_VERIFY) $(OUTPUT3) $(TESTOUTPUT3)
 
 .PHONY: clean
 
