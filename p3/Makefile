@@ -11,6 +11,7 @@ _STD_ = _STD_
 INC = inc/
 DIR = alfa/
 OUT = out/
+OBJ = obj/
 SRC = src/
 OTHER = other/
 
@@ -34,13 +35,13 @@ TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 ALFA = $(OUT)pruebaMorfo
 
 CALFA = $(DIR)alfa.c
-OALFA = $(OUT)alfa.o
+OALFA = $(OBJ)alfa.o
 
 CYYLEX = $(SRC)lex.yy.c
-OYYLEX = $(OUT)lex.yy.o
+OYYLEX = $(OBJ)lex.yy.o
 
 CYYPARSE = $(SRC)y.tab.c
-OYYPARSE = $(OUT)y.tab.o
+OYYPARSE = $(OBJ)y.tab.o
 
 TEST_VERIFY = ./testverify.sh
 
@@ -65,7 +66,7 @@ manual: ## Same as exe_manual without recompiling
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
-		@mv alfa.o $(OUT).
+		@mv alfa.o $(OBJ).
 
 $(CYYLEX): $(CYYPARSE)
 		@echo "Generating lex.yy.c"
@@ -75,7 +76,7 @@ $(CYYLEX): $(CYYPARSE)
 $(OYYLEX): $(CYYLEX)
 		@echo "Generating lex.yy.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
-		@mv lex.yy.o $(OUT).
+		@mv lex.yy.o $(OBJ).
 
 $(CYYPARSE):
 		@echo "Generating y.tab.c"
@@ -86,7 +87,7 @@ $(CYYPARSE):
 $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
-		@mv y.tab.o $(OUT).
+		@mv y.tab.o $(OBJ).
 
 test_all: all test_first test_second test_third ## Executes all tests
 test_first: all ## Executes first test
@@ -109,8 +110,9 @@ test_third: all ## Executes third test
 clean: ## Cleans output files
 		@rm -rf $(CYYLEX)
 		@rm -rf $(CYYPARSE)
-		@rm -rf $(INC)/y.tab.h
+		@rm -rf $(INC)y.tab.h
 		@rm -rf $(OUT)*
+		@rm -rf $(OBJ)*
 		@rm -rf $(RESULTS)*
 		@rm -rf y.output
 		@echo "Data cleaned."
