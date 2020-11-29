@@ -53,6 +53,15 @@ all: clean $(OALFA) ## Compile all.
 		@echo "Compiling all..."
 		@$(CC) -I $(INC) $(CFLAGS) -o $(ALFA) $(OYYLEX) $(OYYPARSE) $(OALFA)
 
+exe_manual: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout as stdout.
+		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
+		@clear
+		@echo "Executing no input nor output file. Using stdin & stdout."
+		@./$(ALFA)
+
+manual: ## Same as exe_manual without recompiling
+		@./$(ALFA)
+
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
@@ -78,15 +87,6 @@ $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
 		@mv y.tab.o $(OUT).
-
-exe_manual: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout as stdout.
-		@echo "Executing no input nor output file. Using stdin & stdout."
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(ALFA) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
-		@clear
-		@./$(ALFA)
-
-manual:
-		@./$(ALFA)
 
 test_all: all test_first test_second test_third ## Executes all tests
 test_first: all ## Executes first test

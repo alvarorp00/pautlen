@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 
   if (yyparse())
   {
-    fprintf(stderr, "%s", errbuff);
+    fprintf(stderr, "%s.\n", errbuff);
   }
   
   #ifndef _STD_
