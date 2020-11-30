@@ -4,11 +4,7 @@
  * 
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "symbolsTable.h"
-#include "hash.h"
 
 struct _SymbolsTable
 {
@@ -29,8 +25,6 @@ SymbolsTable *symbolsTableInit()
   {
     symbolsTableClean(symbolsTable);
   }
-  
-  symbolsTable->localScope = hash_init();
 
   return symbolsTable;
 }
@@ -50,8 +44,3 @@ void symbolsTableClean(SymbolsTable *self)
 
   return;
 }
-
-// bool declareGlobal(String identifier, )
-// {
-
-// }

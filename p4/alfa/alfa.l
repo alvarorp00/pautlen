@@ -10,8 +10,6 @@
 #include "y.tab.h"
 #include "y.tab.h"
 
-#define MAX_LEN 100
-
 #define PRINT_TOK(str) fprintf(yyout, ";D:\t%s\n", str);
 
 int line;
