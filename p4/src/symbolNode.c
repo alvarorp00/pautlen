@@ -9,6 +9,16 @@
 #include "symbolNode.h"
 
 /**
+ * Structure that stores scalar value or vector length
+ */
+union _Data
+{
+  __u_int size; /* Size of the parametre in case it's a VECTOR */
+  int value; /* Value if it's scalar */
+};
+
+
+/**
  * Structure with alfa's variables info
  */
 struct _Variable
@@ -17,7 +27,7 @@ struct _Variable
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   Scope scope; /* Scope {LOCAL, GLOBAL} */
   __u_short pos; /* Position in function in case it's in LOCAL Scope */
-  __u_int size; /* Size of the variable in case it's a VECTOR */
+  Data data; /* Size for vector, Value for Scalar */
 };
 
 /**
@@ -28,7 +38,7 @@ struct _Parametre
   DataType basicType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   __u_short pos; /* Position of the parametre in function call */
-  __u_int size; /* Size of the parametre in case it's a VECTOR */
+  Data data; /* Size for vector, Value for Scalar */
 };
 
 /**
@@ -38,6 +48,7 @@ struct _Function
 {
   __u_short params; /* Number of function parametres */
   __u_short localvars; /* Number of function local variables */
+  int value;
 };
 
 /**
@@ -74,7 +85,7 @@ SymbolNode *node_init(ElementCategory elemCat, String key)
   return sn;
 }
 
-void node_configure_scalar_variable(SymbolNode *sn, DataType basicType, Scope scope, __u_short pos)
+void node_configure_scalar_variable(SymbolNode *sn, DataType basicType, Scope scope, __u_short pos, int value)
 {
   if(!sn)
     return;
@@ -84,7 +95,7 @@ void node_configure_scalar_variable(SymbolNode *sn, DataType basicType, Scope sc
   sn->element.var.basicType = basicType;
   sn->element.var.scope = scope;
   sn->element.var.pos = pos;
-  sn->element.var.size = 0;
+  sn->element.var.data.value = value;
 }
 
 void node_configure_vector_variable(SymbolNode *sn, DataType basicType, Scope scope, __u_short pos, __u_int size)
@@ -97,10 +108,10 @@ void node_configure_vector_variable(SymbolNode *sn, DataType basicType, Scope sc
   sn->element.var.basicType = basicType;
   sn->element.var.scope = scope;
   sn->element.var.pos = pos;
-  sn->element.var.size = size;
+  sn->element.var.data.size = size;
 }
 
-void node_configure_scalar_parametre(SymbolNode *sn, DataType basicType, __u_short pos)
+void node_configure_scalar_parametre(SymbolNode *sn, DataType basicType, __u_short pos, int value)
 {
   if(!sn)
     return;
@@ -108,7 +119,7 @@ void node_configure_scalar_parametre(SymbolNode *sn, DataType basicType, __u_sho
   sn->element.param.classCat = SCALAR;
   sn->element.param.basicType = basicType;
   sn->element.param.pos = pos;
-  sn->element.param.size = 0;
+  sn->element.param.data.value = value;
 }
 
 void node_configure_vector_parametre(SymbolNode *sn, DataType basicType, __u_short pos, __u_int size)
@@ -119,16 +130,17 @@ void node_configure_vector_parametre(SymbolNode *sn, DataType basicType, __u_sho
   sn->element.param.classCat = VECTOR;
   sn->element.param.basicType = basicType;
   sn->element.param.pos = pos;
-  sn->element.param.size = size;
+  sn->element.param.data.size = size;
 }
 
-void node_configure_function(SymbolNode *sn, __u_short params, __u_short localvars)
+void node_configure_function(SymbolNode *sn, __u_short params, __u_short localvars, int value)
 {
   if(!sn)
     return;
   sn->elemCat = FUNCT;
   sn->element.func.params = params;
   sn->element.func.localvars = localvars;
+  sn->element.func.value = value;
 }
 
 String node_get_key(SymbolNode *sn)

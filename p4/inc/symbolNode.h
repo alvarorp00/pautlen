@@ -8,6 +8,7 @@ typedef struct _Parametre Parametre;
 typedef struct _Function Function;
 
 typedef union _Element Element;
+typedef union _Data Data;
 
 /**
  * Starts a new node_init structure
@@ -32,11 +33,26 @@ bool node_equals(SymbolNode *sn1, SymbolNode *sn2);
 /**
  * Configures node as a scalar variable
  */
-void node_configure_scalar_variable(SymbolNode *sn, DataType basicType, Scope scope, __u_short pos);
+void node_configure_scalar_variable(SymbolNode *sn, DataType basicType, Scope scope, __u_short pos, int value);
 
 /**
  * Configures node as a vector variable
  */
 void node_configure_vector_variable(SymbolNode *sn, DataType basictype, Scope scope, __u_short pos, __u_int size);
+
+/**
+ * Configures node as a scalar parametre
+ */
+void node_configure_scalar_parametre(SymbolNode *sn, DataType basicType, __u_short pos, int value);
+
+/**
+ * Configures node as a vector parametre
+ */
+void node_configure_vector_parametre(SymbolNode *sn, DataType basicType, __u_short pos, __u_int size);
+
+/**
+ * Configure Function
+ */
+void node_configure_function(SymbolNode *sn, __u_short params, __u_short localvars, int value);
 
 #endif

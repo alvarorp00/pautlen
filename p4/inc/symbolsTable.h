@@ -14,9 +14,11 @@ void symbolsTableClean(SymbolsTable *self);
 /* ------------------------------------------------ */
 
 bool declareGlobal(String identifier, int value);
+bool declareLocal(String identifier, int value);
+SymbolNode* globalUse(String identifier);
+SymbolNode* localUse(String identifier);
+bool declareFunction(String identifier, int value);
 
 /* ------------------------------------------------ */
-
-bool declareFunction(String identifier, __u_short params, __u_short localvars);
 
 #endif

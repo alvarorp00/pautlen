@@ -95,8 +95,6 @@ SymbolNode* hash_decode(Hash *self, String identifier)
   if(!hash_contains(self, identifier))
     return NULL;
 
-  fprintf(stdout, "IT'S OK!");
-
   return self->values[linearProbing(self, identifier)];
 }
 
