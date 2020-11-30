@@ -28,6 +28,10 @@ OYYLEX = $(OBJ)lex.yy.o
 CYYPARSE = $(SRC)y.tab.c
 OYYPARSE = $(OBJ)y.tab.o
 
+PHASH = $(SRC)pruebaHash.c
+HASH = $(SRC)hash.c
+TSYMBOLS = $(SRC)symbolsTable.c
+
 default: all ## Equivalent to 'make all'
 
 help:	## This guide
@@ -45,6 +49,9 @@ exe_manual: clean $(OYYLEX) $(OYYPARSE) ## Executes with yyin as stdin & yyout a
 
 manual: ## Same as exe_manual without recompiling
 		@./$(ALFA)
+
+hash:
+		$(CC) -I $(INC) $(CFLAGS) -o pruebaHash $(HASH) $(PHASH) $(TSYMBOLS)
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
@@ -74,12 +81,12 @@ $(OYYPARSE): $(CYYPARSE)
 
 .PHONY: clean
 
-clean: ## Cleans output files
-		@rm -rf $(CYYLEX)
-		@rm -rf $(CYYPARSE)
-		@rm -rf $(INC)y.tab.h
-		@rm -rf $(OUT)*
-		@rm -rf $(OBJ)*
-		@rm -rf $(RESULTS)*
-		@rm -rf y.output
-		@echo "Data cleaned."
+# clean: ## Cleans output files
+# 		@rm -rf $(CYYLEX)
+# 		@rm -rf $(CYYPARSE)
+# 		@rm -rf $(INC)y.tab.h
+# 		@rm -rf $(OUT)*
+# 		@rm -rf $(OBJ)*
+# 		@rm -rf $(RESULTS)*
+# 		@rm -rf y.output
+# 		@echo "Data cleaned."

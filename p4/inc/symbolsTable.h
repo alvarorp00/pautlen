@@ -3,4 +3,8 @@
 
 typedef struct _SymbolsTable SymbolsTable;
 
+SymbolsTable *symbolsTableInit();
+
+void symbolsTableClean(SymbolsTable *self);
+
 #endif

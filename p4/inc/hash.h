@@ -51,6 +51,8 @@ Hash *hash_init();
 
 bool hash_encode(Hash *self, String identifier);
 
+void *hash_decode(Hash *self, String identifier);
+
 void hash_clean(Hash *self);
 
 #endif
