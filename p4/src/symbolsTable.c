@@ -52,6 +52,8 @@ void symbolsTableClean(SymbolsTable *self)
   return;
 }
 
+/* -------------------------------------------- */
+
 bool declareGlobal(SymbolsTable *st, String identifier, int value)
 {
   Symbol *s;
@@ -104,7 +106,33 @@ Symbol* localUse(SymbolsTable *st, String identifier)
 
 bool declareFunction(SymbolsTable *st, String identifier, int value)
 {
+  Symbol *s;
+  
+  if(!st || !identifier)
+    return false;
+  if(searchSymbol(st->globalScope, identifier) != NULL)
+    return false;
+  
+  s = symbol_init(identifier, value);
+    
+  if(!hash_encode(st->globalScope, s))
+    return false;
+  
+  st->localScope = hash_init(
+    (Hashcode)symbol_hashcode,
+    (Equals)symbol_equals,
+    (Clean)symbol_delete
+  );
 
+  if(!st->localScope)
+    return false;
+  
+  if(!hash_encode(st->localScope, s))
+    return false;
+  
+  st->currentScope = LOCAL;
+
+  return true;
 }
 
 static Symbol* searchSymbol(Hash *hash, String identifier)
@@ -121,3 +149,6 @@ static Symbol* searchSymbol(Hash *hash, String identifier)
 
   return _tmp;
 }
+
+/* -------------------------------------------- */
+

@@ -16,7 +16,18 @@ int main(int argc, char const *argv[])
   Symbol *s = globalUse(st, "hola_mundo");
 
   if(s != NULL)
-    printf("Found!!\n");
+    printf("Found!! ::: %s :=: %d\n", symbol_get_key(s), symbol_get_value(s));
+  else
+    printf("Not Found... :[\n");
+
+  printf("Reinsert:: %s\n", declareGlobal(st, "hola_mundo", 5) ? "OK!" : "ERR");
+
+  s = globalUse(st, "hola_mundo");
+
+  if(s != NULL)
+    printf("Found!! ::: %s :=: %d\n", symbol_get_key(s), symbol_get_value(s));
+  else
+    printf("Not Found... :[\n");
 
   symbolsTableClean(st);
   

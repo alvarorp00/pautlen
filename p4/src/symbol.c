@@ -60,6 +60,12 @@ struct _Symbol {
   int value;
 };
 
+/* Local Functs */
+
+static bool symbol_set_key(Symbol *s, String key);
+
+/* ------------ */
+
 Symbol *symbol_init(String key, int value)
 {
   Symbol *s;
@@ -142,7 +148,7 @@ String symbol_get_key(Symbol *s)
   return s->key;
 }
 
-bool symbol_set_key(Symbol *s, String key)
+static bool symbol_set_key(Symbol *s, String key)
 {
   if(!s)
     return false;
@@ -153,6 +159,14 @@ bool symbol_set_key(Symbol *s, String key)
   strcpy(s->key, key);
 
   return true;
+}
+
+int symbol_get_value(Symbol *s)
+{
+  if(!s)
+    return NONE;
+
+  return s->value;
 }
 
 void symbol_set_category(Symbol *s, ElementCategory elemCat)

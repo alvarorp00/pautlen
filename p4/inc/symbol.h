@@ -32,9 +32,9 @@ ElementCategory symbol_get_category(Symbol *s);
 String symbol_get_key(Symbol *sn);
 
 /**
- * Sets symbol's key
+ * Returns symbol's value
  */
-bool symbol_set_key(Symbol *sn, String key);
+int symbol_get_value(Symbol *s);
 
 /**
  * Configures symbol as a scalar variable
