@@ -56,7 +56,7 @@ typedef enum _DataType DataType;
 typedef enum _IdentifierCategory IdentifierCategory;
 typedef enum _Scope Scope;
 
-typedef struct _SymbolNode SymbolNode;
+typedef struct _Symbol Symbol;
 
 typedef char* String;
 

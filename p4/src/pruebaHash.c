@@ -12,21 +12,21 @@ int main(int argc, char const *argv[])
 
   symbolsTableClean(symbolsTable);
 
-  SymbolNode *sn;
+  Symbol *s, *ret;
 
-  sn = node_init(VAR, "hola_mundo");
+  s = symbol_init(VAR, "hola_mundo");
 
   Hash *hash;
 
-  hash = hash_init();
+  hash = hash_init((Hashcode)symbol_hashcode, (Equals)symbol_equals, (Clean)symbol_delete);
 
-  hash_encode(hash, sn);
+  hash_encode(hash, s);
 
-  SymbolNode *ret;
+  printf("Hash contains ::::: %s\n", hash_contains(hash, s) ? "True" : "False");
 
-  ret = hash_decode(hash, "hola_mundo");
+  ret = (Symbol*)hash_decode(hash, "hola_mundo");
 
-  fprintf(stdout, "Retval: %s.\n", node_get_key(ret));
+  fprintf(stdout, "Retval: %s.\n", symbol_get_key(ret));
 
   hash_clean(hash);
   

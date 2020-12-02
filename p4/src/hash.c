@@ -5,34 +5,53 @@
  * 
  */
 
+#include <stdint.h>
 #include "hash.h"
+#include "symbol.h"
+
+typedef struct _Node Node;
+
+struct _Node {
+  bool empty;
+  void *value;
+};
 
 /**
  * Main hash structure
  */
 struct _Hash {
-  SymbolNode **values; /* Hash nodes which store info */
+  uint_fast32_t max_size;
+  uint_fast32_t curr_size;
+  float factor;
+  Node **nodes; /* Hash nodes which store info */
+  Hashcode hashcode;
+  Equals equals;
+  Clean clean;
 };
 
 /* ----------------------- */
 
-/* SELF FUNCTIONS DECLARATIONS */
+/* hash FUNCTIONS DECLARATIONS */
 
 static bool init_nodes(Hash *hash);
+static bool node_isEmpty(Node *node);
 
-static size_t hashcode(String identifier);
-static size_t linearProbing(Hash *self, String identifier);
+static size_t linearProbing(Hash *hash, void *value);
 
 
 /* ----------------------- */
 
-Hash *hash_init()
+Hash *hash_init(Hashcode hashcode, Equals equals, Clean clean)
 {
   Hash *hash;
 
   hash = (Hash*)calloc(1,sizeof(Hash));
   if(!hash)
     return NULL;
+  
+  hash->hashcode = hashcode;
+  hash->equals = equals;
+  hash->clean = clean;
 
   if(!init_nodes(hash))
   {
@@ -45,93 +64,105 @@ Hash *hash_init()
 
 static bool init_nodes(Hash *hash)
 {
+  size_t i;
+  
   if(!hash)
     return false;
 
-  hash->values = (SymbolNode**)calloc(_DEF_HASHLEN_, sizeof(SymbolNode*));
+  hash->nodes = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
+  hash->max_size = _DEF_HASHLEN_;
+  hash->curr_size = 0;
 
-  return true;
-}
-
-void hash_clean(Hash *self)
-{
-  size_t i;
-  
-  if(!self)
-    return;
-
-  for (i = 0; i < _DEF_HASHLEN_; i++)
+  if(!hash->nodes)
   {
-    if(self->values[i])
+    hash_clean(hash);
+    return false;
+  }
+
+  for(i = 0; i < hash->max_size; i++)
+  {
+    hash->nodes[i] = (Node*)calloc(1, sizeof(Node));
+    if(!hash->nodes[i])
     {
-      free(self->values[i]);
+      hash_clean(hash);
+      return false;
     }
   }
 
-  free(self->values);
-
-  free(self);
-  
-}
-
-bool hash_encode(Hash *self, SymbolNode *sn)
-{
-  size_t hashed;
-  
-  if(!sn)
-    return false;
-  if(hash_contains(self, node_get_key(sn)))
-    return false;
-
-  hashed = linearProbing(self, node_get_key(sn));
-
-  self->values[hashed] = sn;
-  
   return true;
 }
 
-SymbolNode* hash_decode(Hash *self, String identifier)
+void hash_clean(Hash *hash)
 {
-  if(!hash_contains(self, identifier))
+  size_t i;
+  
+  if(!hash)
+    return;
+
+  for(i = 0; i < hash->max_size; i++)
+  {
+    if(hash->nodes[i]->value != NULL)
+    {
+      hash->clean(hash->nodes[i]->value);
+    }
+  }
+
+  free(hash);
+  
+}
+
+bool hash_encode(Hash *hash, void* value)
+{
+  size_t hashed;
+  
+  if(!value)
+    return false;
+  if(hash_contains(hash, value))
+    return false;
+
+  hashed = linearProbing(hash, value);
+
+  hash->nodes[hashed]->value = value;
+
+  return true;
+}
+
+void* hash_decode(Hash *hash, void* value)
+{
+  if(!hash_contains(hash, value))
     return NULL;
 
-  return self->values[linearProbing(self, identifier)];
+  return hash->nodes[linearProbing(hash, value)]->value;
 }
 
-static size_t hashcode(String identifier)
+void hash_deleteValue(Hash *hash, void* value)
 {
-  size_t hashed = 5381;
-  int c;
+  size_t hashed;
+ 
+  if(!hash || !value)
+    return;
 
-  while ((c = *identifier++) != '\0')
-    hashed = c + ((hashed << 5) + hashed) + c; /* hashed * 33 + c */
+  if(!hash_contains(hash, value))
+    return;
   
-  hashed = hashed % _DEF_HASHLEN_;
-  
-  return hashed;
+  hashed = linearProbing(hash, value);
+  hash->clean(hash->nodes[hashed]->value);
 }
 
-static size_t linearProbing(Hash *self, String identifier)
+static size_t linearProbing(Hash *hash, void* value)
 {
   size_t hashed, val;
   size_t i;
   
-  hashed = hashcode(identifier);
-  val = hashed;
+  hashed = hash->hashcode(value) % hash->max_size;
 
-  if (self->values[hashed] == NULL)
-    return hashed;
-  else
-    if (strcmp(node_get_key(self->values[val]), identifier) == 0)
-      return hashed;
-
-  for (i = 1; i < _DEF_HASHLEN_; i++)
+  for (i = 0; i < hash->max_size; i++)
   {
-    val = (hashed + i)%_DEF_HASHLEN_;
+    val = (hashed + i)%hash->max_size;
 
-    if(self->values[val] != NULL)
+    if(!node_isEmpty(hash->nodes[val]))
     {
-      if(strcmp(node_get_key(self->values[val]), identifier) == 0)
+      if(hash->equals(hash->nodes[val], value))
         {
           return val;
         }
@@ -142,22 +173,28 @@ static size_t linearProbing(Hash *self, String identifier)
   return i;
 }
 
-bool hash_contains(Hash *self, String identifier)
+bool hash_contains(Hash *hash, void* value)
 {
   size_t hashed;
 
-  if(!self || !identifier)
+  if(!hash || !value)
     return false;
 
-  hashed = linearProbing(self, identifier);
+  hashed = linearProbing(hash, value);
 
-  fprintf(stdout, "VALUE HASHED: %ld\n", hashed);
-
-  if(hashed == _DEF_HASHLEN_)
+  if(hashed == hash->max_size)
     return false;
 
-  if(self->values[hashed] == NULL)
+  if(node_isEmpty(hash->nodes[hashed]))
     return false;
+  
+  return hash->equals(hash->nodes[hashed]->value, value);
+}
 
-  return (strcmp(node_get_key(self->values[hashed]), identifier) == 0);
+bool node_isEmpty(Node *node)
+{
+  if(!node)
+    return false;
+  
+  return node->value == NULL;
 }

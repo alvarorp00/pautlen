@@ -31,7 +31,7 @@ OYYPARSE = $(OBJ)y.tab.o
 PHASH = $(SRC)pruebaHash.c
 HASH = $(SRC)hash.c
 TSYMBOLS = $(SRC)symbolsTable.c
-SNODE = $(SRC)symbolNode.c
+SYMBOL = $(SRC)symbol.c
 
 default: all ## Equivalent to 'make all'
 
@@ -52,7 +52,7 @@ manual: ## Same as exe_manual without recompiling
 		@./$(ALFA)
 
 hash:
-		$(CC) -I $(INC) $(CFLAGS) -o pruebaHash $(HASH) $(PHASH) $(TSYMBOLS) $(SNODE)
+		$(CC) -I $(INC) $(CFLAGS) -o pruebaHash $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
