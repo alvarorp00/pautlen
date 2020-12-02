@@ -5,54 +5,20 @@
 int main(int argc, char const *argv[])
 {
 
-  SymbolsTable *symbolsTable;
+  SymbolsTable *st;
 
-  symbolsTable = symbolsTableInit();
+  st = symbolsTableInit();
 
-  printf("INIT:: %s\n", symbolsTable == NULL ? "ERROR" : "OK");
+  printf("INIT:: %s\n", st == NULL ? "ERROR" : "OK");
 
-  symbolsTableClean(symbolsTable);
+  declareGlobal(st, "hola_mundo", 1);
 
-  Symbol *s, *ret;
+  Symbol *s = globalUse(st, "hola_mundo");
 
-  s = symbol_init(VAR, "hola_mundo");
+  if(s != NULL)
+    printf("Found!!\n");
 
-  Hash *hash;
-
-  hash = hash_init((Hashcode)symbol_hashcode, (Equals)symbol_equals, (Clean)symbol_delete);
-
-  hash_encode(hash, s);
-
-  printf("Hash contains ::::: %s\n", hash_contains(hash, s) ? "True" : "False");
-
-  ret = (Symbol*)hash_decode(hash, "hola_mundo");
-
-  fprintf(stdout, "Retval: %s.\n", symbol_get_key(ret));
-
-  printf("Starting LOOP::: \n");
-
-  char name[20];
-
-  for (size_t i = 0; i < 1000; i++)
-  {
-    sprintf(name, "Henlo_fren%ld", i);
-    s = symbol_init(VAR, name);
-    hash_encode(hash, s);
-    s = hash_decode(hash, s);
-    fprintf(stdout, "\t\tRetval: %s.\n", symbol_get_key(s));
-  }
-  
-  printf("\n\n\nDELETE TEST::: \n\n\n");
-  sleep(2);
-
-  // for (size_t i = 0; i < 1000; i++)
-  // {
-  //   sprintf(name, "Henlo_fren%ld", i);
-  //   hash_deleteValue(hash, s);
-  //   // fprintf(stdout, "\t\tRetval: %s.\n", s == NULL ? "OKKK!" : "ERR");
-  // }
-
-  hash_clean(hash);
+  symbolsTableClean(st);
   
   return 0;
 }

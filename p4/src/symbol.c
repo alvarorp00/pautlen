@@ -9,16 +9,6 @@
 #include "symbol.h"
 
 /**
- * Structure that stores scalar value or vector length
- */
-union _Data
-{
-  __u_int size; /* Size of the parametre in case it's a VECTOR */
-  int value; /* Value if it's scalar */
-};
-
-
-/**
  * Structure with alfa's variables info
  */
 struct _Variable
@@ -26,8 +16,8 @@ struct _Variable
   DataType basicType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   Scope scope; /* Scope {LOCAL, GLOBAL} */
-  __u_short pos; /* Position in function in case it's in LOCAL Scope */
-  Data data; /* Size for vector, Value for Scalar */
+  uint_fast16_t pos; /* Position in function in case it's in LOCAL Scope */
+  uint_fast16_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -37,8 +27,8 @@ struct _Parametre
 {
   DataType basicType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
-  __u_short pos; /* Position of the parametre in function call */
-  Data data; /* Size for vector, Value for Scalar */
+  uint_fast16_t pos; /* Position of the parametre in function call */
+  uint_fast16_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -46,9 +36,8 @@ struct _Parametre
  */
 struct _Function
 {
-  __u_short params; /* Number of function parametres */
-  __u_short localvars; /* Number of function local variables */
-  int value;
+  uint_fast16_t params; /* Number of function parametres */
+  uint_fast16_t localvars; /* Number of function local variables */
 };
 
 /**
@@ -68,24 +57,30 @@ struct _Symbol {
   char key[_KEY_MAX_SIZE_]; /* Key to access this element */
   ElementCategory elemCat; /* Type of element stored in union {Function, Parametre, Variable} */
   Element element; /* Element */
+  int value;
 };
 
-Symbol *symbol_init(ElementCategory elemCat, String key)
+Symbol *symbol_init(String key, int value)
 {
   Symbol *s;
+
+  if(strlen(key) > _KEY_MAX_SIZE_)
+    return NULL;
 
   s = (Symbol*)calloc(1, sizeof(Symbol));
 
   if(!s)
     return NULL;
 
-  s->elemCat = elemCat;
   symbol_set_key(s, key);
+  
+  if(value != NONE)
+    s->value = value;
 
   return s;
 }
 
-void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope, __u_short pos, int value)
+void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope, uint_fast16_t pos)
 {
   if(!s)
     return;
@@ -95,10 +90,9 @@ void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope
   s->element.var.basicType = basicType;
   s->element.var.scope = scope;
   s->element.var.pos = pos;
-  s->element.var.data.value = value;
 }
 
-void symbol_configure_vector_variable(Symbol *s, DataType basicType, Scope scope, __u_short pos, __u_int size)
+void symbol_configure_vector_variable(Symbol *s, DataType basicType, Scope scope, uint_fast16_t pos, uint_fast32_t size)
 {
   if(!s)
     return;
@@ -108,10 +102,10 @@ void symbol_configure_vector_variable(Symbol *s, DataType basicType, Scope scope
   s->element.var.basicType = basicType;
   s->element.var.scope = scope;
   s->element.var.pos = pos;
-  s->element.var.data.size = size;
+  s->element.var.size = size;
 }
 
-void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, __u_short pos, int value)
+void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, uint_fast16_t pos)
 {
   if(!s)
     return;
@@ -119,10 +113,9 @@ void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, __u_short 
   s->element.param.classCat = SCALAR;
   s->element.param.basicType = basicType;
   s->element.param.pos = pos;
-  s->element.param.data.value = value;
 }
 
-void symbol_configure_vector_parametre(Symbol *s, DataType basicType, __u_short pos, __u_int size)
+void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast16_t pos, uint_fast32_t size)
 {
   if(!s)
     return;
@@ -130,17 +123,16 @@ void symbol_configure_vector_parametre(Symbol *s, DataType basicType, __u_short 
   s->element.param.classCat = VECTOR;
   s->element.param.basicType = basicType;
   s->element.param.pos = pos;
-  s->element.param.data.size = size;
+  s->element.param.size = size;
 }
 
-void symbol_configure_function(Symbol *s, __u_short params, __u_short localvars, int value)
+void symbol_configure_function(Symbol *s, uint_fast16_t params, uint_fast16_t localvars)
 {
   if(!s)
     return;
   s->elemCat = FUNCT;
   s->element.func.params = params;
   s->element.func.localvars = localvars;
-  s->element.func.value = value;
 }
 
 String symbol_get_key(Symbol *s)
@@ -161,6 +153,20 @@ bool symbol_set_key(Symbol *s, String key)
   strcpy(s->key, key);
 
   return true;
+}
+
+void symbol_set_category(Symbol *s, ElementCategory elemCat)
+{
+  if(!s)
+    return;
+  s->elemCat = elemCat;
+}
+
+ElementCategory symbol_get_category(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->elemCat;
 }
 
 bool symbol_equals(Symbol *s1, Symbol *s2)

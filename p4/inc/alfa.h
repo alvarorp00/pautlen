@@ -1,11 +1,12 @@
-#ifndef ALFA_H
-#define ALFA_H
+#ifndef _ALFA_H_
+#define _ALFA_H_
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
+#include <limits.h>
 
 #define STR(x) #x
 
@@ -14,6 +15,9 @@
 
 #define BUFF 128
 #define MAX_LEN 100
+
+#define UNSP_ERR INT_MIN
+#define NONE INT_MAX
 
 #define _KEY_MAX_SIZE_ MAX_LEN
 

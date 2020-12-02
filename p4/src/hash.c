@@ -73,6 +73,7 @@ static bool init_nodes(Hash *hash)
   hash->nodes = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
   hash->max_size = _DEF_HASHLEN_;
   hash->curr_size = 0;
+  hash->factor = 0;
 
   if(!hash->nodes)
   {
@@ -113,8 +114,6 @@ bool hash_encode(Hash *hash, void* value)
 
   hashed = linearProbing(hash, value);
 
-  printf("Accessed:: %ld\n", hashed);
-
   hash->nodes[hashed] = init_node(hash->nodes[hashed], value);
   hash->curr_size += 1;
 
@@ -128,8 +127,6 @@ void* hash_decode(Hash *hash, void* value)
   uint_fast64_t hashed;
 
   hashed = linearProbing(hash, value);
-  
-  printf("\tAccessed:: %ld\n", hashed);
   
   if(!hash_contains(hash, value))
     return NULL;
@@ -205,24 +202,15 @@ static void refactor_ifNeeded(Hash *hash)
 {
   if(!hash)
     return;
-
-  printf("Load: %ld\n", hash->curr_size);
-  printf("Max: %ld\n", hash->max_size);
   
   hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
-
-  printf("\tFactor: %f\n", hash->factor);
 
   if(!(hash->factor > _CRITICAL_FACTOR_))
     return;
   
   hash->max_size <<= 1;
 
-  printf("New max size: %ld\n", hash->max_size);
-
   hash->nodes = (Node**)realloc(hash->nodes, sizeof(Node*)*hash->max_size);
-
-  printf("Realloc'd\n");
 }
 
 static Node* init_node(Node *node, void* value)

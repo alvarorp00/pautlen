@@ -13,11 +13,11 @@ void symbolsTableClean(SymbolsTable *self);
 
 /* ------------------------------------------------ */
 
-bool declareGlobal(String identifier, int value);
-bool declareLocal(String identifier, int value);
-Symbol* globalUse(String identifier);
-Symbol* localUse(String identifier);
-bool declareFunction(String identifier, int value);
+bool declareGlobal(SymbolsTable *st, String identifier, int value);
+bool declareLocal(SymbolsTable *st, String identifier, int value);
+Symbol* globalUse(SymbolsTable *st, String identifier);
+Symbol* localUse(SymbolsTable *st, String identifier);
+bool declareFunction(SymbolsTable *st, String identifier, int value);
 
 /* ------------------------------------------------ */
 
