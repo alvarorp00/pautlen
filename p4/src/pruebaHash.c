@@ -29,6 +29,17 @@ int main(int argc, char const *argv[])
   else
     printf("Not Found... :[\n");
 
+  declareGlobal(st, "my_variable", 10);
+  if(st_set_vector_variable(st, "my_variable", INT, GLOBAL, NONE, 3))
+    printf("Update ok\n");
+
+  s = globalUse(st, "my_variable");
+
+  if(s != NULL)
+    printf("Found!! ::: %s :=: %d @@ %d\n", symbol_get_key(s), symbol_get_value(s), symbol_get_category(s));
+  else
+    printf("Not Found... :[\n");
+
   symbolsTableClean(st);
   
   return 0;

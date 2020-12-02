@@ -63,10 +63,13 @@ bool declareGlobal(SymbolsTable *st, String identifier, int value)
   if(st->currentScope != GLOBAL)
     return false;
   
+  if (searchSymbol(st->globalScope, identifier) != NULL)
+    return false;
+  
   s = symbol_init(identifier, value);
 
   if(!s)
-    return false;
+    return false;  
 
   return hash_encode(st->globalScope, s);;
 }
@@ -78,6 +81,9 @@ bool declareLocal(SymbolsTable *st, String identifier, int value)
   if(!st || !identifier)
     return false;
   if(st->currentScope != LOCAL)
+    return false;
+
+  if (searchSymbol(st->localScope, identifier) != NULL)
     return false;
   
   s = symbol_init(identifier, value);
@@ -101,7 +107,12 @@ Symbol* localUse(SymbolsTable *st, String identifier)
   if(!st || !identifier)
     return NULL;
 
-  return searchSymbol(st->localScope, identifier); 
+  if(st->currentScope != LOCAL)
+    return NULL;
+
+  if(!searchSymbol(st->localScope, identifier))
+
+  return searchSymbol(st->globalScope, identifier); 
 }
 
 bool declareFunction(SymbolsTable *st, String identifier, int value)
@@ -135,6 +146,127 @@ bool declareFunction(SymbolsTable *st, String identifier, int value)
   return true;
 }
 
+/* -------------------------------------------- */
+
+bool st_set_scalar_variable(
+  SymbolsTable *st,
+  String identifier,
+  DataType dt,
+  Scope scope,
+  uint_fast16_t pos
+)
+{
+  Symbol *s;
+  Hash *dst;
+  
+  if(!st || !identifier)
+    return false;
+  
+  dst = (scope == GLOBAL) ? st->globalScope : st->localScope;
+
+  if((s = searchSymbol(dst, identifier)) == NULL)
+    return false;
+
+  symbol_configure_scalar_variable(s, dt, scope, scope == LOCAL ? pos : NONE);
+
+  return true;
+}
+
+bool st_set_vector_variable(
+  SymbolsTable *st,
+  String identifier,
+  DataType dt,
+  Scope scope,
+  uint_fast16_t pos,
+  uint_fast32_t size
+)
+{
+  Symbol *s;
+  Hash *dst;
+  
+  if(!st || !identifier || pos == 0)
+    return false;
+  
+  dst = (scope == GLOBAL) ? st->globalScope : st->localScope;
+
+  if((s = searchSymbol(dst, identifier)) == NULL)
+    return false;
+
+  symbol_configure_vector_variable(s, dt, scope, scope == LOCAL ? pos : NONE, size);
+
+  return true;
+}
+
+bool st_set_scalar_parametre(
+  SymbolsTable *st,
+  String identifier,
+  DataType dt,
+  uint_fast16_t pos
+)
+{
+  Symbol *s;
+  
+  if(!st || !identifier)
+    return false;
+
+  if(st->currentScope != LOCAL)
+    return false;
+
+  if((s = searchSymbol(st->localScope, identifier)) == NULL)
+    return false;
+
+  symbol_configure_scalar_parametre(s, dt, pos);
+
+  return true;
+}
+
+bool st_set_vector_parametre(
+  SymbolsTable *st,
+  String identifier,
+  DataType dt,
+  uint_fast16_t pos,
+  uint_fast32_t size
+)
+{
+  Symbol *s;
+  
+  if(!st || !identifier)
+    return false;
+
+  if(st->currentScope != LOCAL)
+    return false;
+  
+  if((s = searchSymbol(st->localScope, identifier)) == NULL)
+    return false;
+
+  symbol_configure_vector_parametre(s, dt, pos, size);
+
+  return true;
+}
+
+bool st_set_function(
+  SymbolsTable *st,
+  String identifier,
+  uint_fast16_t params,
+  uint_fast16_t localvars
+)
+{
+  Symbol *s;
+  
+  if(!st || !identifier)
+    return false;
+
+  if(st->currentScope != GLOBAL)
+    return false;
+
+  if((s = searchSymbol(st->globalScope, identifier)) == NULL)
+    return false;
+
+  symbol_configure_function(s, params, localvars);
+}
+
+/* -------------------------------------------- */
+
 static Symbol* searchSymbol(Hash *hash, String identifier)
 {
   Symbol *tmp, *_tmp;
@@ -149,6 +281,3 @@ static Symbol* searchSymbol(Hash *hash, String identifier)
 
   return _tmp;
 }
-
-/* -------------------------------------------- */
-

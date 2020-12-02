@@ -86,7 +86,12 @@ Symbol *symbol_init(String key, int value)
   return s;
 }
 
-void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope, uint_fast16_t pos)
+void symbol_configure_scalar_variable(
+  Symbol *s,
+  DataType basicType,
+  Scope scope,
+  uint_fast16_t pos
+)
 {
   if(!s)
     return;
@@ -98,7 +103,13 @@ void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope
   s->element.var.pos = pos;
 }
 
-void symbol_configure_vector_variable(Symbol *s, DataType basicType, Scope scope, uint_fast16_t pos, uint_fast32_t size)
+void symbol_configure_vector_variable(
+  Symbol *s,
+  DataType basicType,
+  Scope scope,
+  uint_fast16_t pos,
+  uint_fast32_t size
+)
 {
   if(!s)
     return;
@@ -111,7 +122,11 @@ void symbol_configure_vector_variable(Symbol *s, DataType basicType, Scope scope
   s->element.var.size = size;
 }
 
-void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, uint_fast16_t pos)
+void symbol_configure_scalar_parametre(
+  Symbol *s,
+  DataType basicType,
+  uint_fast16_t pos
+)
 {
   if(!s)
     return;
@@ -121,7 +136,12 @@ void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, uint_fast1
   s->element.param.pos = pos;
 }
 
-void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast16_t pos, uint_fast32_t size)
+void symbol_configure_vector_parametre(
+  Symbol *s,
+  DataType basicType,
+  uint_fast16_t pos,
+  uint_fast32_t size
+)
 {
   if(!s)
     return;
@@ -132,7 +152,11 @@ void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast1
   s->element.param.size = size;
 }
 
-void symbol_configure_function(Symbol *s, uint_fast16_t params, uint_fast16_t localvars)
+void symbol_configure_function(
+  Symbol *s,
+  uint_fast16_t params,
+  uint_fast16_t localvars
+)
 {
   if(!s)
     return;

@@ -21,4 +21,23 @@ bool declareFunction(SymbolsTable *st, String identifier, int value);
 
 /* ------------------------------------------------ */
 
+bool st_set_scalar_variable(
+  SymbolsTable *st,
+  String identifier,
+  DataType dt,
+  Scope scope,
+  uint_fast16_t pos
+);
+
+bool st_set_vector_variable(
+  SymbolsTable *st,
+  String identifier,
+  DataType dt,
+  Scope scope,
+  uint_fast16_t pos,
+  uint_fast32_t size
+);
+
+/* ------------------------------------------------ */
+
 #endif
