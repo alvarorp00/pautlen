@@ -1,6 +1,7 @@
 #ifndef _SYMBOL_H_
 #define _SYMBOL_H_
 
+#include <stdint.h>
 #include "alfa.h"
 
 typedef struct _Variable Variable;
@@ -58,7 +59,7 @@ bool symbol_equals(Symbol *s1, Symbol *s2);
 /**
  * Hashcode funct
  */
-size_t symbol_hashcode(void *s);
+uint_fast64_t symbol_hashcode(void *s);
 
 /**
  * Cleans symbol

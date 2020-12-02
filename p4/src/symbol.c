@@ -171,9 +171,9 @@ bool symbol_equals(Symbol *s1, Symbol *s2)
   return (strcmp(symbol_get_key(s1), symbol_get_key(s2)) == 0);
 }
 
-size_t symbol_hashcode(void *s)
+uint_fast64_t symbol_hashcode(void *s)
 {
-  size_t hashed = 5381;
+  uint_fast64_t hashed = 5381;
   String identifier;
   int c;
 
