@@ -10,14 +10,22 @@
 #include "y.tab.h"
 #include "y.tab.h"
 
+/* Maximum length for Identifiers */
 #define MAX_LEN 100
 
+/* Prints token in default flex output */
 #define PRINT_TOK(str) fprintf(yyout, ";D:\t%s\n", str);
 
+/* Common line value defined in "alfa.h" */
 int line;
+
+/* Common column value defined in "alfa.h" */
 int col;
 
+/* Common errbuff defined in "alfa.h" */
 char errbuff[BUFF];
+
+/* Common morfologic failure flag def in "alfa.h" */
 bool morfofailure;
 
 /* Local method */
@@ -99,6 +107,7 @@ false { processToken(); return TOK_FALSE; }
 
 %%
 
+/* Checks if identifier read is valid and manages situation */
 int checkIdentifier()
 {
   
@@ -114,12 +123,14 @@ int checkIdentifier()
 
 }
 
+/* Process response on morfologic failure */
 void unknownSymbol()
 {
   COPYERR("alfa.l", "Unknown symbol %s. ", yytext);
   morfofailure = true;
 }
 
+/* Do default action for each token identified by yylex() */
 void processToken()
 {
   col += yyleng;

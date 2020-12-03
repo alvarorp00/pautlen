@@ -13,15 +13,20 @@
 
   extern char errbuff[BUFF];
 
+  /* Function to extract tokens from morfologic */
   extern int yylex();
+
+  /* Default input file */
   extern FILE* yyin;
+
+  /* Default output file */
   extern FILE* yyout;
 
+  /* Common morfoligic error flag defined in "alfa.h" */
   bool morfofailure;
 
+  /* Function launched in case of failure */
   int yyerror(char *s);
-
-  int yylex();
 
 %}
 

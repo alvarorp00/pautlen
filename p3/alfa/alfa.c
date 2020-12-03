@@ -5,27 +5,36 @@
 #include "y.tab.h"
 #include "alfa.h"
 
-/* Externals */
+/* Externals values */
 
-extern int yyleng;
-extern char *yytext;
+/* Input file of Flex */
 extern FILE *yyin;
+
+/* Output file of Flex */
 extern FILE *yyout;
 
-extern int yylex(void);
+/* Bison's parser. Returns 0 on OK, 1 on FAILURE */
 extern int yyparse(void);
 
 /* Locals */
 
+/* Common errbuff defined in "alfa.h" */
 char errbuff[BUFF];
+
+/* Common flag defined in "alfa.h" */
 bool morfofailure;
 
+/* Common line value defined in "alfa.h" */
 int line;
+
+/* Common column value defined in "alfa.h" */
 int col;
 
+/* Prototypes */
+
 int setup(int argc, char **argv);
-int processToken(int tok);
-// void selectToken(int tok, char *tok_exp);
+
+/* Main function, runs bison parser */
 
 int main(int argc, char **argv)
 {
@@ -52,7 +61,11 @@ int main(int argc, char **argv)
   
 }
 
-
+/**
+ * 
+ * Configures basic things for the execution.
+ * If _STD_ is specified, will run in manual mode
+ */
 int setup(int argc, char **argv)
 {
   

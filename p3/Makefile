@@ -32,7 +32,7 @@ TESTOUTPUT1 = $(RESULTS)testoutput_sin_1.txt
 TESTOUTPUT2 = $(RESULTS)testoutput_sin_2.txt
 TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 
-ALFA = $(OUT)pruebaMorfo
+ALFA = $(OUT)pruebaSintactico
 
 CALFA = $(DIR)alfa.c
 OALFA = $(OBJ)alfa.o

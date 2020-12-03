@@ -377,6 +377,8 @@ code {
 <blockquote>
 <p>Javier Romera Llave       | javier.romeral@estudiante.uam.es</p>
 </blockquote>
+<h2 id=""></h2>
+<p>Assignment 3 - Syntactic</p>
 <hr>
 <h2 id="makefile">Makefile</h2>
 <p>For help, run:</p>
@@ -385,52 +387,41 @@ code {
 all                            Compile all. 
 clean                          Cleans output files
 default                        Equivalent to 'make all'
-exe                            Executes with yyin as stdin &amp; yyout as stdout.
+exe_manual                     Execution as (stdin, stdout):(yyin, yyout)
 help                           This guide
+manual                         Same as exe_manual without recompiling
 test_all                       Executes all tests
 test_first                     Executes first test
 test_second                    Executes second test
 test_third                     Executes third test
 </div></code></pre>
-<h3 id="comment-about-tokens-processing">Comment about tokens processing</h3>
-<p>Token catch is kinda messy (for now!):</p>
-<pre class="hljs"><code><div>
-switch(token)
-{
-  case TOK_MAIN:
-    /* PROCESS TOK_MAIN */
-  ...
-  ...
-  ...
-  default:
-    break;
-}
-
-</div></code></pre>
+<div style="page-break-after: always"></div>
 <h3 id="folder-structure">Folder structure</h3>
 <p><strong>Important:</strong> shown tree before <strong><code>make</code></strong> and after <strong><code>make clean</code></strong>:</p>
 <pre class="hljs"><code><div>root
 .
 ├── alfa
 │   ├── alfa.c
-│   └── alfa.l
+│   ├── alfa.l
+│   └── alfa.y
 ├── inc
 │   ├── alfa.h
+│   ├── rules.h
 │   └── tokens.h
 ├── Makefile
+├── obj
 ├── out
+├── README.html
 ├── README.md
 ├── README.pdf
-├── symbols
-│   └── symbols.txt
+├── src
 ├── testfiles
-│   ├── entrada1.txt
-│   ├── entrada2.txt
-│   ├── entrada3.txt
-│   ├── leeme.txt
-│   ├── salida1.txt
-│   ├── salida2.txt
-│   └── salida3.txt
+│   ├── entrada_sin_1.txt
+│   ├── entrada_sin_2.txt
+│   ├── entrada_sin_3.txt
+│   ├── salida_sin_1.txt
+│   ├── salida_sin_2.txt
+│   └── salida_sin_3.txt
 ├── testresults
 └── testverify.sh
 </div></code></pre>
@@ -440,46 +431,50 @@ switch(token)
 .
 ├── alfa
 │   ├── alfa.c
-│   └── alfa.l
+│   ├── alfa.l
+│   └── alfa.y
 ├── inc
 │   ├── alfa.h
-│   └── tokens.h
-├── lex.yy.c
-├── lex.yy.o
+│   ├── rules.h
+│   ├── tokens.h
+│   └── y.tab.h
 ├── Makefile
+├── obj
+│   ├── alfa.o
+│   ├── lex.yy.o
+│   └── y.tab.o
 ├── out
-│   └── pruebaMorfo
+│   └── pruebaSintactico
+├── README.html
 ├── README.md
 ├── README.pdf
-├── symbols
-│   └── symbols.txt
+├── src
+│   ├── lex.yy.c
+│   └── y.tab.c
 ├── testfiles
-│   ├── entrada1.txt
-│   ├── entrada2.txt
-│   ├── entrada3.txt
-│   ├── leeme.txt
-│   ├── salida1.txt
-│   ├── salida2.txt
-│   └── salida3.txt
+│   ├── entrada_sin_1.txt
+│   ├── entrada_sin_2.txt
+│   ├── entrada_sin_3.txt
+│   ├── salida_sin_1.txt
+│   ├── salida_sin_2.txt
+│   └── salida_sin_3.txt
 ├── testresults
-│   ├── testoutput1.txt
-│   ├── testoutput2.txt
-│   └── testoutput3.txt
-└── testverify.sh
+├── testverify.sh
+└── y.output
+
 </div></code></pre>
 <div style="page-break-after: always"></div>
 <h2 id="tests">Tests</h2>
-<p>In order to help either us or whoever, we have provided a Makefile rule - <code>make test_all</code> - which will throw the result of all test.</p>
-<p>Test can be tested separately:</p>
+<p>In order to help either us or whoever, we have provided a Makefile rule - <code>make test_all</code> - which will throw the result of all test. Also separately:</p>
 <p><code>make test_first</code></p>
 <p><code>make test_second</code></p>
 <p><code>make test_third</code></p>
-<p>This rules execute <strong>pruebaMorfo</strong> with it's correspondant source testfile - located at <em>testfiles/</em> - and, helped by <strong>testverify.sh</strong>, a script which process the result of doing <code>diff -Bb inputfile.txt outputfile.txt</code>, shows a message with the result of the test. Expected return for diff is '\0'.</p>
+<p>This rules execute <strong>pruebaSintactico</strong> with it's correspondant source testfile - located at <em>testfiles/</em> - and, helped by <strong>testverify.sh</strong>, a script which process the result of doing <code>diff -Bb inputfile.txt outputfile.txt</code>, shows a message with the result of the test. Expected return for diff is '\0'.</p>
 <p><strong>testverify.sh</strong></p>
 <pre class="hljs"><code><div>#!/bin/bash
 
 # info: checks if file_source is same to file_result
-# args: 
+# args:
 #     (0): script exec
 #     (1): file_source
 #     (2): file_result
@@ -501,6 +496,8 @@ if [ $# -eq 2 ]; then
   DIFF=$(diff -Bb $file_source $file_result)
   if [ &quot;$DIFF&quot; != &quot;&quot; ]; then
     printf &quot;${red}%s${end}\n&quot; &quot;$ON_ERROR&quot;
+    printf &quot;Difference:\n&quot;
+    diff -Bb $file_source $file_result
   else
     printf &quot;${grn}%s${end}\n&quot; &quot;$ON_SUCCESS&quot;
   fi
@@ -508,34 +505,13 @@ else
   printf 'Bad args: %s FILE_SOURCE FILE_RESULT\n' &quot;$0&quot;
 fi
 </div></code></pre>
-<div style="page-break-after: always"></div>
 <h2 id="for-manual-testing">For manual testing</h2>
-<p>If manual testing is deserved, you can type <code>make exe</code>. This will run <strong>pruebaMorfo</strong> with <em>stdin</em> and <em>stdout</em> as <em>yyin</em> and <em>yyout</em> respectively.</p>
-<h2 id="alfac-and-alfal">Alfa.c and Alfa.l</h2>
-<p>Functionality is managed by <strong>alfa.c</strong>, so <strong>alfa.l</strong> just passes the information processed. Thanks to this, preprocessor directives can be passed from Makefile - controlled text regions, see <a href="https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html">gnu-gcc-preprocessor</a> -, which let us test either manually or automatically.</p>
-<p>This is referred to this code (in <strong>alfa.c</strong>):</p>
-<pre class="hljs"><code><div>  75  int setup(...)
-  76  {
-        ...
-  81    #ifndef _STD_
-
-        /* Select yyin and yyout from argv[1] and argv[2] */
-
-        ...
-
-  103   #else
-
-        yyin = stdin;
-        yyout = stdout;
-
-  108   #endif
-
-        ...
-
-  114 }
-</div></code></pre>
+<p>If manual testing is deserved, you can type <code>make exe_manual</code> to compile and next time <code>make manual</code>. This will run <strong>pruebaSintactico</strong> with <em>stdin</em> and <em>stdout</em> as <em>yyin</em> and <em>yyout</em> respectively.</p>
+<h2 id="alfac-alfay-and-alfal-and-common-header">Alfa.c, Alfa.y and Alfa.l and Common Header</h2>
+<p>Code is run from <strong>main()</strong> which is in <strong>alfa.c</strong>; <em>yyin</em> and <em>yyout</em> set up from desired option (if manual standards ones, else specified files), then <strong>yyparse()</strong> is called.</p>
+<p><strong>yyparse()</strong> - Bison's parser - will &quot;talk&quot; with <strong>yylex()</strong> - Flex's parser -, whose return value will be used by Bison's function in order to build and complete syntactic tree, and then give feedback about how has been the result - exit code and file type and source error -.</p>
 <p>Common header file <strong>alfa.h</strong> contains
-<code>extern char *errbuff</code>, a common buffer to manage errors detected in <strong>alfa.l</strong> and handled at <strong>alfa.c</strong>.</p>
+<code>extern char *errbuff</code>, a common buffer to manage errors detected in <strong>alfa.l</strong> and handled at <strong>alfa.c</strong>, as well as <code>*extern int line*</code>, <code>*extern int column*</code> for error's feedback purposes, also <code>*extern bool morfofailure*</code> to distinguish if failure comes from <strong>alfa.l</strong> or from <strong>alfa.y</strong>.</p>
 
 </body>
 </html>

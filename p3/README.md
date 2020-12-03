@@ -10,6 +10,10 @@ Pautlen UAM | 2020 - 2021
 
 > Javier Romera Llave       | javier.romeral@estudiante.uam.es
 
+##
+
+Assignment 3 - Syntactic
+
 ---
 
 ## Makefile
@@ -22,33 +26,16 @@ For help, run:
 all                            Compile all. 
 clean                          Cleans output files
 default                        Equivalent to 'make all'
-exe                            Executes with yyin as stdin & yyout as stdout.
+exe_manual                     Execution as (stdin, stdout):(yyin, yyout)
 help                           This guide
+manual                         Same as exe_manual without recompiling
 test_all                       Executes all tests
 test_first                     Executes first test
 test_second                    Executes second test
 test_third                     Executes third test
 ```
 
-### Comment about tokens processing
-
-Token catch is kinda messy (for now!):
-
-```
-
-switch(token)
-{
-  case TOK_MAIN:
-    /* PROCESS TOK_MAIN */
-  ...
-  ...
-  ...
-  default:
-    break;
-}
-
-```
-
+<div style="page-break-after: always"></div>
 
 ### Folder structure
 
@@ -59,24 +46,26 @@ root
 .
 ├── alfa
 │   ├── alfa.c
-│   └── alfa.l
+│   ├── alfa.l
+│   └── alfa.y
 ├── inc
 │   ├── alfa.h
+│   ├── rules.h
 │   └── tokens.h
 ├── Makefile
+├── obj
 ├── out
+├── README.html
 ├── README.md
 ├── README.pdf
-├── symbols
-│   └── symbols.txt
+├── src
 ├── testfiles
-│   ├── entrada1.txt
-│   ├── entrada2.txt
-│   ├── entrada3.txt
-│   ├── leeme.txt
-│   ├── salida1.txt
-│   ├── salida2.txt
-│   └── salida3.txt
+│   ├── entrada_sin_1.txt
+│   ├── entrada_sin_2.txt
+│   ├── entrada_sin_3.txt
+│   ├── salida_sin_1.txt
+│   ├── salida_sin_2.txt
+│   └── salida_sin_3.txt
 ├── testresults
 └── testverify.sh
 ```
@@ -90,41 +79,44 @@ root
 .
 ├── alfa
 │   ├── alfa.c
-│   └── alfa.l
+│   ├── alfa.l
+│   └── alfa.y
 ├── inc
 │   ├── alfa.h
-│   └── tokens.h
-├── lex.yy.c
-├── lex.yy.o
+│   ├── rules.h
+│   ├── tokens.h
+│   └── y.tab.h
 ├── Makefile
+├── obj
+│   ├── alfa.o
+│   ├── lex.yy.o
+│   └── y.tab.o
 ├── out
-│   └── pruebaMorfo
+│   └── pruebaSintactico
+├── README.html
 ├── README.md
 ├── README.pdf
-├── symbols
-│   └── symbols.txt
+├── src
+│   ├── lex.yy.c
+│   └── y.tab.c
 ├── testfiles
-│   ├── entrada1.txt
-│   ├── entrada2.txt
-│   ├── entrada3.txt
-│   ├── leeme.txt
-│   ├── salida1.txt
-│   ├── salida2.txt
-│   └── salida3.txt
+│   ├── entrada_sin_1.txt
+│   ├── entrada_sin_2.txt
+│   ├── entrada_sin_3.txt
+│   ├── salida_sin_1.txt
+│   ├── salida_sin_2.txt
+│   └── salida_sin_3.txt
 ├── testresults
-│   ├── testoutput1.txt
-│   ├── testoutput2.txt
-│   └── testoutput3.txt
-└── testverify.sh
+├── testverify.sh
+└── y.output
+
 ```
 
 <div style="page-break-after: always"></div>
 
 ## Tests
 
-In order to help either us or whoever, we have provided a Makefile rule - `make test_all` - which will throw the result of all test.
-
-Test can be tested separately:
+In order to help either us or whoever, we have provided a Makefile rule - `make test_all` - which will throw the result of all test. Also separately:
 
   `make test_first`
 
@@ -132,14 +124,14 @@ Test can be tested separately:
   
   `make test_third`
 
-This rules execute **pruebaMorfo** with it's correspondant source testfile - located at _testfiles/_ - and, helped by **testverify.sh**, a script which process the result of doing `diff -Bb inputfile.txt outputfile.txt`, shows a message with the result of the test. Expected return for diff is '\0'.
+This rules execute **pruebaSintactico** with it's correspondant source testfile - located at _testfiles/_ - and, helped by **testverify.sh**, a script which process the result of doing `diff -Bb inputfile.txt outputfile.txt`, shows a message with the result of the test. Expected return for diff is '\0'.
 
 **testverify.sh**
 ```
 #!/bin/bash
 
 # info: checks if file_source is same to file_result
-# args: 
+# args:
 #     (0): script exec
 #     (1): file_source
 #     (2): file_result
@@ -161,6 +153,8 @@ if [ $# -eq 2 ]; then
   DIFF=$(diff -Bb $file_source $file_result)
   if [ "$DIFF" != "" ]; then
     printf "${red}%s${end}\n" "$ON_ERROR"
+    printf "Difference:\n"
+    diff -Bb $file_source $file_result
   else
     printf "${grn}%s${end}\n" "$ON_SUCCESS"
   fi
@@ -169,39 +163,16 @@ else
 fi
 ```
 
-<div style="page-break-after: always"></div>
 
 ## For manual testing
 
-If manual testing is deserved, you can type `make exe`. This will run **pruebaMorfo** with _stdin_ and _stdout_ as _yyin_ and _yyout_ respectively.
+If manual testing is deserved, you can type `make exe_manual` to compile and next time `make manual`. This will run **pruebaSintactico** with _stdin_ and _stdout_ as _yyin_ and _yyout_ respectively.
 
-## Alfa.c and Alfa.l
+## Alfa.c, Alfa.y and Alfa.l and Common Header
 
-Functionality is managed by **alfa.c**, so **alfa.l** just passes the information processed. Thanks to this, preprocessor directives can be passed from Makefile - controlled text regions, see [gnu-gcc-preprocessor](https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html) -, which let us test either manually or automatically.
+Code is run from **main()** which is in **alfa.c**; _yyin_ and _yyout_ set up from desired option (if manual standards ones, else specified files), then **yyparse()** is called.
 
-This is referred to this code (in **alfa.c**):
-
-```
-  75  int setup(...)
-  76  {
-        ...
-  81    #ifndef _STD_
-
-        /* Select yyin and yyout from argv[1] and argv[2] */
-
-        ...
-
-  103   #else
-
-        yyin = stdin;
-        yyout = stdout;
-
-  108   #endif
-
-        ...
-
-  114 }
-```
+**yyparse()** - Bison's parser - will "talk" with **yylex()** - Flex's parser -, whose return value will be used by Bison's function in order to build and complete syntactic tree, and then give feedback about how has been the result - exit code and file type and source error -.
 
 Common header file **alfa.h** contains 
-`extern char *errbuff`, a common buffer to manage errors detected in **alfa.l** and handled at **alfa.c**.
+`extern char *errbuff`, a common buffer to manage errors detected in **alfa.l** and handled at **alfa.c**, as well as `*extern int line*`, `*extern int column*` for error's feedback purposes, also `*extern bool morfofailure*` to distinguish if failure comes from **alfa.l** or from **alfa.y**.
