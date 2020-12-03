@@ -16,8 +16,6 @@
 #define PRINT_HELP(fname) \
             TO_STDOUT("Args err --> ./%s FILE_IN FILE_OUT", fname)
 
-#define _EXPLAIN_
-
 void doParse(FILE *f_in, FILE *f_out);
 void processLine(String line);
 void searchSymbol(String identifier);
