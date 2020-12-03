@@ -1,10 +1,5 @@
-FLEXFILE = alfa.l
-BISONFILE = alfa.y
-TOKEN = tokens.h
-
 CC = gcc
 CFLAGS = -g
-BISONFLAGS = -d -y -v
 
 _EXPLAIN_ = _EXPLAIN_
 
@@ -14,15 +9,21 @@ OUT = out/
 OBJ = obj/
 SRC = src/
 OTHER = other/
+RESULTS = testresults/
 
-SYMBOLS = $(SRC)symbols.txt
+TESTFILES = testfiles/
 
-COMPILED = $(OUT)pruebaSintactico
+COMPILED = pruebaSintactico
 
 PHASH = $(SRC)pruebaTS.c
 HASH = $(SRC)hash.c
 TSYMBOLS = $(SRC)symbolsTable.c
 SYMBOL = $(SRC)symbol.c
+
+TESTFILEIN = $(TESTFILES)pruebaTS.txt
+TESTFILEOUT = $(TESTFILES)expectedResTS.txt
+
+TESTRESULT = $(RESULTS)testresult.txt
 
 default: all ## Equivalent to 'make all'
 
@@ -31,22 +32,19 @@ help:	## This guide
 
 all: ## Compile all. 
 		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -o pruebaSintactico $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
+		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
 
 explain:
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_EXPLAIN_) -o pruebaSintactico $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
+		@$(CC) -I $(INC) $(CFLAGS) -D $(_EXPLAIN_) -o $(COMPILED) $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
 
-hash:
-		$(CC) -I $(INC) $(CFLAGS) -o pruebaSintactico $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
+test:
+		@echo "Executing test..."
+		./$(COMPILED) $(TESTFILEIN) $(TESTRESULT)
+		@./testverify.sh $(TESTFILEOUT) $(TESTRESULT)
 
 .PHONY: clean
 
-# clean: ## Cleans output files
-# 		@rm -rf $(CYYLEX)
-# 		@rm -rf $(CYYPARSE)
-# 		@rm -rf $(INC)y.tab.h
-# 		@rm -rf $(OUT)*
-# 		@rm -rf $(OBJ)*
-# 		@rm -rf $(RESULTS)*
-# 		@rm -rf y.output
-# 		@echo "Data cleaned.
+clean: ## Cleans output files
+		@rm -rf $(RESULTS)*
+		@rm -rf $(COMPILED)
+		@echo "Data cleaned."
