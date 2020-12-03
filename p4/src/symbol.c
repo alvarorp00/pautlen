@@ -70,6 +70,9 @@ Symbol *symbol_init(String key, int value)
 {
   Symbol *s;
 
+  if(!key)
+    return NULL;
+
   if(strlen(key) > _KEY_MAX_SIZE_)
     return NULL;
 
@@ -174,7 +177,7 @@ String symbol_get_key(Symbol *s)
 
 static bool symbol_set_key(Symbol *s, String key)
 {
-  if(!s)
+  if(!s || !key)
     return false;
 
   if(strlen(key) > _KEY_MAX_SIZE_)

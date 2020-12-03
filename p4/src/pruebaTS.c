@@ -11,7 +11,7 @@
 #include "symbolsTable.h"
 
 #define PRINT_RESPONSE(response, name, mode) \
-            TO_STDOUT("SCOPE: %s @-->%s of %s<--- %s",st_getScope(st) == GLOBAL ? "GLOBAL" : "LOCAL" ,mode, name, response == true ? "Success" : "Failure")
+            TO_STDOUT("SCOPE: %s @-->%s of %s<--- %s",st_getScope(st) == GLOBAL ? "GLOBAL" : "LOCAL", mode, name, response == true ? "Success" : "Failure")
 
 #define PRINT_HELP(fname) \
             TO_STDOUT("Args err --> ./%s FILE_IN FILE_OUT", fname)
@@ -164,6 +164,8 @@ void insertSymbol(String identifier, int value)
 void formatString(String str)
 {
   const char* format = str;
+  if(!str)
+    return;
   do {
       while (*format == ' ' || *format == 1) {
           ++format;
