@@ -181,12 +181,6 @@ String symbol_get_key(Symbol *s)
   return s->key;
 }
 
-/**
- * Set symbol's key
- * @param s symbol
- * @param key key to insert
- * @return if was posible
- */
 static bool symbol_set_key(Symbol *s, String key)
 {
   if(!s || !key)

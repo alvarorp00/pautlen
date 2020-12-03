@@ -15,6 +15,12 @@ struct _SymbolsTable
 
 /* Helper functions */
 
+/**
+ * Searchs a symbol in given hash
+ * @param hash where to search
+ * @param identifier of symbol to search
+ * @return symbol found or NULL
+ */
 static Symbol *searchSymbol(Hash *hash, String identifier);
 
 /* ---------------- */
@@ -38,18 +44,18 @@ SymbolsTable *symbolsTableInit()
   return symbolsTable;
 }
 
-void symbolsTableClean(SymbolsTable *self)
+void symbolsTableClean(SymbolsTable *st)
 {
-  if(!self)
+  if(!st)
     return;
 
-  if(self->globalScope != NULL)
-    hash_clean(self->globalScope);
+  if(st->globalScope != NULL)
+    hash_clean(st->globalScope);
 
-  if(self->currentScope == LOCAL)
-    hash_clean(self->localScope);
+  if(st->currentScope == LOCAL)
+    hash_clean(st->localScope);
   
-  free(self);
+  free(st);
 
   return;
 }

@@ -31,12 +31,47 @@ struct _Hash {
 
 /* hash FUNCTIONS DECLARATIONS */
 
+/**
+ * Starts hash nodes array
+ * @param hash where nodes will be stored
+ * @return if was posible
+ */
 static bool init_nodes(Hash *hash);
+
+/**
+ * Checks if node is empty
+ * @param node to check
+ * @return if it's empty
+ */
 static bool node_isEmpty(Node *node);
+
+/**
+ * Initializes a new node
+ * @param node to initialize
+ * @param value to store in node
+ * @return same node
+ */
 static Node* init_node(Node *node, void* value);
+
+/**
+ * Deleted a node and it's value
+ * @param node to clean
+ * @param clean value's clean function
+ */
 static void delete_node(Node *node, Clean clean);
 
+/**
+ * Linear probing for hash structure
+ * @param hash to check
+ * @param value value to check
+ * @return index in hash
+ */
 static uint_fast64_t linearProbing(Hash *hash, void *value);
+
+/**
+ * Refactors hash size if it's needed
+ * @param hash to resize
+ */
 static void refactor_ifNeeded(Hash *hash);
 
 /* ----------------------- */
