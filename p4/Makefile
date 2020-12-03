@@ -9,7 +9,7 @@ RESULTS = testresults/
 
 TESTFILES = testfiles/
 
-COMPILED = pruebaSintactico
+COMPILED = pruebaTabla
 
 PHASH = $(SRC)pruebaTS.c
 HASH = $(SRC)hash.c
