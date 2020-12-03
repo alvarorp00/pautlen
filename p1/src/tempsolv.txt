@@ -1,0 +1,31 @@
+void escribirParametro(FILE* fpasm, int pos_parametro, int num_total_parametros)
+{
+// IMPORTNTE, EL PRIMER ARGUMENTO LE CORRESPONDE POSICION 0
+    int d_ebp;
+
+ 
+
+    fprintf(fpasm, "; escribirParametro: %d (origen 0) \n", pos_parametro);
+    d_ebp = 4*( 1 + (num_total_parametros - pos_parametro));
+    fprintf(fpasm, "\tlea eax ,[ebp + %d]   ; direccion parametro %d\n",d_ebp, pos_parametro);
+    fprintf(fpasm, "\tpush dword eax\n");
+
+ 
+
+}
+
+ 
+
+void escribirVariableLocal(FILE* fpasm, int posicion_variable_local)
+{
+// IMPORTANTE, EL PRIMER ARGUMENTO LE CORRESPONDE POSICION 1
+    int d_ebp;
+    
+    fprintf(fpasm, "; escribirVariableLocal: %d (origen 1) \n",posicion_variable_local);
+    d_ebp = 4*posicion_variable_local;
+    fprintf(fpasm, "\tlea eax , [ebp - %d]\n",d_ebp);
+    fprintf(fpasm, "\tpush dword eax\n");
+
+ 
+
+}
