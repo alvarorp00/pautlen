@@ -475,25 +475,19 @@ void write_function_call(FPASM, char* name, int argc) {
 
 void write_param(FPASM, int index, int total_params) {
   // starting on params[0] 
-  _ASM("mov eax, %d", total_params);
-  _ASM("sub eax, %d", index);
-  _ASM("inc eax"); // iax := vector start direction
-
-  _ASM("mov edx, 4"); // edx := 4
-  _ASM("imul edx"); // eax := eax*edx
-  _ASM("add ebp, eax"); // ebp += eax
+  _ASM("mov edx, %d", total_params);
+  _ASM("sub edx, %d", index);
+  _ASM("inc edx"); // idx := vector start direction
 
   // ebp := esp, as we are inside a function
-  _ASM("lea eax, [ebp]"); // eax := indexed element direction
+  _ASM("lea eax, [ebp + edx*4]"); // eax := indexed element direction
 
   _ASM("push dword eax");
 }
 
 void write_local_var(FPASM, int index) {
   // starting on vars[1] so we don't increase eax by 1 and then multiply by 4
-  _ASM("mov eax, %d", 4*index);
-  _ASM("sub ebp, eax");
-  _ASM("lea eax, [ebp]"); // eax := address
+  _ASM("lea eax, [ebp - %d]", 4*index); // eax := address
   _ASM("push dword eax");
 }
 

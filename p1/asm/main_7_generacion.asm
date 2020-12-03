@@ -14,30 +14,22 @@ _doble:
 	push ebp
 	mov ebp, esp
 	sub esp, 4
-	mov eax, 1
-	sub eax, 0
-	inc eax
-	mov edx, 4
-	imul edx
-	add ebp, eax
-	lea eax, [ebp]
+	mov edx, 1
+	sub edx, 0
+	inc edx
+	lea eax, [ebp + edx*4]
 	push dword eax
-	mov eax, 4
-	sub ebp, eax
-	lea eax, [ebp]
+	lea eax, [ebp - 4]
 	push dword eax
 	pop dword ebx
 	pop dword eax
 	mov dword eax, [eax]
 	mov dword [ebx], dword eax
 	push dword 2
-	mov eax, 1
-	sub eax, 0
-	inc eax
-	mov edx, 4
-	imul edx
-	add ebp, eax
-	lea eax, [ebp]
+	mov edx, 1
+	sub edx, 0
+	inc edx
+	lea eax, [ebp + edx*4]
 	push dword eax
 	pop dword ebx
 	pop dword eax
