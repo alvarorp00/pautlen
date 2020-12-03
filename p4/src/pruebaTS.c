@@ -64,6 +64,8 @@ void doParse(FILE *f_in, FILE *f_out)
   {
     processLine(line);
   }
+
+  symbolsTableClean(st);
 }
 
 void processLine(String line)

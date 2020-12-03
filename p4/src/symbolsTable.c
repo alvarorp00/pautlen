@@ -46,7 +46,7 @@ void symbolsTableClean(SymbolsTable *self)
   if(self->globalScope != NULL)
     hash_clean(self->globalScope);
 
-  if(self->localScope != NULL)
+  if(self->currentScope == LOCAL)
     hash_clean(self->localScope);
   
   free(self);
