@@ -4,11 +4,7 @@ CFLAGS = -g
 _EXPLAIN_ = _EXPLAIN_
 
 INC = inc/
-DIR = alfa/
-OUT = out/
-OBJ = obj/
 SRC = src/
-OTHER = other/
 RESULTS = testresults/
 
 TESTFILES = testfiles/
@@ -34,10 +30,10 @@ all: ## Compile all.
 		@echo "Compiling all..."
 		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
 
-explain:
+explain: ## Prints exec process in stdout
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_EXPLAIN_) -o $(COMPILED) $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
 
-test:
+test: ## Executes test and compares result
 		@echo "Executing test..."
 		./$(COMPILED) $(TESTFILEIN) $(TESTRESULT)
 		@./testverify.sh $(TESTFILEOUT) $(TESTRESULT)
