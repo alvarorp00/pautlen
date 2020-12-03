@@ -38,6 +38,8 @@ bool st_set_vector_variable(
   uint_fast32_t size
 );
 
+bool stopLocalScope(SymbolsTable *st);
+
 /* ------------------------------------------------ */
 
 #endif

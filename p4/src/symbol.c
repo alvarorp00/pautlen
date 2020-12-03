@@ -57,7 +57,7 @@ struct _Symbol {
   char key[_KEY_MAX_SIZE_]; /* Key to access this element */
   ElementCategory elemCat; /* Type of element stored in union {Function, Parametre, Variable} */
   Element element; /* Element */
-  int value;
+  int value; /* Element's associated value */
 };
 
 /* Local Functs */

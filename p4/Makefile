@@ -28,12 +28,12 @@ OYYLEX = $(OBJ)lex.yy.o
 CYYPARSE = $(SRC)y.tab.c
 OYYPARSE = $(OBJ)y.tab.o
 
-PHASH = $(SRC)pruebaHash.c
+PHASH = $(SRC)pruebaTS.c
 HASH = $(SRC)hash.c
 TSYMBOLS = $(SRC)symbolsTable.c
 SYMBOL = $(SRC)symbol.c
 
-default: all ## Equivalent to 'make all'
+default: hash ## Equivalent to 'make all'
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

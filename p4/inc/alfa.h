@@ -13,6 +13,12 @@
 #define READ(file) fopen(file, "r");
 #define WRITE(file) fopen(file, "w");
 
+#define TO_STDERR(format, ...) \
+            fprintf(stderr, ">>> " format ".\n", ##__VA_ARGS__)
+
+#define TO_STDOUT(format, ...) \
+            fprintf(stdout, ">>> " format ".\n", ##__VA_ARGS__)
+
 #define BUFF 128
 #define MAX_LEN 100
 

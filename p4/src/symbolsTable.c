@@ -33,6 +33,8 @@ SymbolsTable *symbolsTableInit()
     symbolsTableClean(symbolsTable);
   }
 
+  symbolsTable->currentScope = GLOBAL;
+
   return symbolsTable;
 }
 
@@ -57,6 +59,9 @@ void symbolsTableClean(SymbolsTable *self)
 bool declareGlobal(SymbolsTable *st, String identifier, int value)
 {
   Symbol *s;
+
+  if(value < 0)
+    return declareFunction(st, identifier, value);
   
   if(!st || !identifier)
     return false;
@@ -78,7 +83,7 @@ bool declareLocal(SymbolsTable *st, String identifier, int value)
 {
   Symbol *s;
   
-  if(!st || !identifier)
+  if(!st || !identifier || value < 0)
     return false;
   if(st->currentScope != LOCAL)
     return false;
@@ -110,8 +115,6 @@ Symbol* localUse(SymbolsTable *st, String identifier)
   if(st->currentScope != LOCAL)
     return NULL;
 
-  if(!searchSymbol(st->localScope, identifier))
-
   return searchSymbol(st->globalScope, identifier); 
 }
 
@@ -119,7 +122,7 @@ bool declareFunction(SymbolsTable *st, String identifier, int value)
 {
   Symbol *s;
   
-  if(!st || !identifier)
+  if(!st || !identifier || value >= 0)
     return false;
   if(searchSymbol(st->globalScope, identifier) != NULL)
     return false;
@@ -142,6 +145,19 @@ bool declareFunction(SymbolsTable *st, String identifier, int value)
     return false;
   
   st->currentScope = LOCAL;
+
+  return true;
+}
+
+bool stopLocalScope(SymbolsTable *st)
+{
+  if(!st || st->currentScope != LOCAL)
+    return false;
+
+  if(!st->localScope)
+    return false;
+
+  hash_clean(st->localScope);
 
   return true;
 }
@@ -263,6 +279,18 @@ bool st_set_function(
     return false;
 
   symbol_configure_function(s, params, localvars);
+
+  return true;
+}
+
+/* ------------------------------------------- */
+
+Scope st_getScope(SymbolsTable *st)
+{
+  if(!st)
+    return UNSP_ERR;
+
+  return st->currentScope;
 }
 
 /* -------------------------------------------- */
