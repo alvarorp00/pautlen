@@ -109,11 +109,16 @@ Symbol* globalUse(SymbolsTable *st, String identifier)
 
 Symbol* localUse(SymbolsTable *st, String identifier)
 {
+  Symbol *s;
+  
   if(!st || !identifier)
     return NULL;
 
   if(st->currentScope != LOCAL)
     return NULL;
+
+  if((s = searchSymbol(st->localScope, identifier)) != NULL)
+    return s;
 
   return searchSymbol(st->globalScope, identifier); 
 }
@@ -140,6 +145,8 @@ bool declareFunction(SymbolsTable *st, String identifier, int value)
 
   if(!st->localScope)
     return false;
+
+  s = symbol_init(identifier, value); /* Start other again */
   
   if(!hash_encode(st->localScope, s))
     return false;
@@ -158,6 +165,8 @@ bool stopLocalScope(SymbolsTable *st)
     return false;
 
   hash_clean(st->localScope);
+
+  st->currentScope = GLOBAL;
 
   return true;
 }

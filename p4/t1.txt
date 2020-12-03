@@ -6,15 +6,15 @@ uno
 dos 
 cuatro
 cinco
-funcion1	100
+funcion1	-10
 uno 	10
 uno	 10
 funcion1	100
 tres	3
 uno 
 funcion1
-tres 
-dos
+tres
+dos 
 cuatro
 cierre	-999
 funcion1

@@ -39,6 +39,7 @@ bool st_set_vector_variable(
 );
 
 bool stopLocalScope(SymbolsTable *st);
+Scope st_getScope(SymbolsTable *st);
 
 /* ------------------------------------------------ */
 

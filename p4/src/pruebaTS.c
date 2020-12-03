@@ -11,7 +11,7 @@
 #include "symbolsTable.h"
 
 #define PRINT_RESPONSE(response, name, mode) \
-            TO_STDOUT("-->%s of %s<--- %s", mode, name, response == true ? "Success" : "Failure")
+            TO_STDOUT("SCOPE: %s @-->%s of %s<--- %s",st_getScope(st) == GLOBAL ? "GLOBAL" : "LOCAL" ,mode, name, response == true ? "Success" : "Failure")
 
 #define PRINT_HELP(fname) \
             TO_STDOUT("Args err --> ./%s FILE_IN FILE_OUT", fname)
@@ -22,10 +22,10 @@ void doParse(FILE *f_in, FILE *f_out);
 void processLine(String line);
 void searchSymbol(String identifier);
 void insertSymbol(String identifier, int value);
+void formatString(String str);
 void copySubstring(String dest, String src, uint32_t from, uint32_t to);
 
 static SymbolsTable *st; /* Global */
-Scope curr_scope;
 bool response;
 
 int main(int argc, char const *argv[])
@@ -60,8 +60,6 @@ void doParse(FILE *f_in, FILE *f_out)
   if(!st)
     return;
 
-  curr_scope = GLOBAL;
-
   while (fgets(line, sizeof(line), f_in) != NULL)
   {
     processLine(line);
@@ -83,6 +81,7 @@ void processLine(String line)
   if(line[i] != '\t')
   {
     strncpy(identifier, line, i);
+    formatString(identifier);
     searchSymbol(identifier);
   }
   else
@@ -93,6 +92,7 @@ void processLine(String line)
 
     copySubstring(c_value, line, i+1, j);
     i_value = atoi(c_value);
+    formatString(identifier);
     insertSymbol(identifier, i_value);
   }
   
@@ -109,8 +109,8 @@ void searchSymbol(String identifier)
    return; // ¿What should we do here? 
   }
 
-  if(curr_scope == LOCAL)
-    response = localUse(st, identifier);
+  if(st_getScope(st) == LOCAL)
+      response = localUse(st, identifier);
   else
     response = globalUse(st, identifier);
   #ifdef _EXPLAIN_
@@ -123,10 +123,9 @@ void insertSymbol(String identifier, int value)
   if(!identifier)
     return;
 
-  if (strcmp(identifier, "cierre") && value < 0)
+  if (strcmp(identifier, "cierre") == 0 && value < 0)
   {
     /* Scope GLOBAL again */
-    curr_scope = GLOBAL;
     response = stopLocalScope(st);
     #ifdef _EXPLAIN_
     PRINT_RESPONSE(response, identifier, "Local Scope Closed");
@@ -134,18 +133,16 @@ void insertSymbol(String identifier, int value)
     return;
   }
   
-  
   if(value < 0)
   {
     response = declareFunction(st, identifier, value);
-    curr_scope = LOCAL;
     #ifdef _EXPLAIN_
-    PRINT_RESPONSE(response, identifier, "Insertion");
+    PRINT_RESPONSE(response, identifier, "Local Scope Opened");
     #endif
   }
   else
   {
-    if(curr_scope == GLOBAL)
+    if(st_getScope(st) == GLOBAL)
     {
       response = declareGlobal(st, identifier, value);
       #ifdef _EXPLAIN_
@@ -160,6 +157,16 @@ void insertSymbol(String identifier, int value)
       #endif
     }
   }
+}
+
+void formatString(String str)
+{
+  const char* format = str;
+  do {
+      while (*format == ' ' || *format == 1) {
+          ++format;
+      }
+  } while (*str++ = *format++);
 }
 
 void copySubstring(String dest, String src, uint32_t from, uint32_t to)

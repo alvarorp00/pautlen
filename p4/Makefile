@@ -3,7 +3,7 @@ BISONFILE = alfa.y
 TOKEN = tokens.h
 
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -g
 BISONFLAGS = -d -y -v
 
 _STD_ = _STD_
