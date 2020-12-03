@@ -54,7 +54,7 @@ union _Element
  * Helper structure to store multiple info values
  */
 struct _Symbol {
-  char key[_KEY_MAX_SIZE_]; /* Key to access this element */
+  char key[MAX_LEN]; /* Key to access this element */
   ElementCategory elemCat; /* Type of element stored in union {Function, Parametre, Variable} */
   Element element; /* Element */
   int value; /* Element's associated value */
@@ -62,6 +62,12 @@ struct _Symbol {
 
 /* Local Functs */
 
+/**
+ * Static local function that sets key to given symbol
+ * @param s symbol
+ * @param key identifier
+ * @return if ok
+ */
 static bool symbol_set_key(Symbol *s, String key);
 
 /* ------------ */
@@ -73,7 +79,7 @@ Symbol *symbol_init(String key, int value)
   if(!key)
     return NULL;
 
-  if(strlen(key) > _KEY_MAX_SIZE_)
+  if(!key || strlen(key) > MAX_LEN)
     return NULL;
 
   s = (Symbol*)calloc(1, sizeof(Symbol));
@@ -175,25 +181,23 @@ String symbol_get_key(Symbol *s)
   return s->key;
 }
 
+/**
+ * Set symbol's key
+ * @param s symbol
+ * @param key key to insert
+ * @return if was posible
+ */
 static bool symbol_set_key(Symbol *s, String key)
 {
   if(!s || !key)
     return false;
 
-  if(strlen(key) > _KEY_MAX_SIZE_)
+  if(strlen(key) > MAX_LEN)
     return false;
 
   strcpy(s->key, key);
 
   return true;
-}
-
-int symbol_get_value(Symbol *s)
-{
-  if(!s)
-    return NONE;
-
-  return s->value;
 }
 
 void symbol_set_category(Symbol *s, ElementCategory elemCat)
@@ -208,6 +212,13 @@ ElementCategory symbol_get_category(Symbol *s)
   if(!s)
     return UNSP_ERR;
   return s->elemCat;
+}
+
+int symbol_get_value(Symbol *s)
+{
+  if(!s)
+    return NONE;
+  return s->value;
 }
 
 bool symbol_equals(Symbol *s1, Symbol *s2)

@@ -24,17 +24,22 @@ void searchSymbol(String identifier);
 void insertSymbol(String identifier, int value);
 void formatString(String str);
 void copySubstring(String dest, String src, uint32_t from, uint32_t to);
+void appendOutToFile(String identifier, Symbol *s, bool status, bool insertion);
 
 static SymbolsTable *st; /* Global */
 bool response;
 
+FILE *f_out;
+
 int main(int argc, char const *argv[])
 {
-  FILE *f_in, *f_out;
+  FILE *f_in;
 
-  
   if(argc != 3)
+  {
     PRINT_HELP(argv[0]);
+    exit(EXIT_FAILURE);
+  }
   f_in = READ(argv[1]);
   if(!f_in)
     TO_STDERR("ERROR OPENING F_IN");
@@ -102,6 +107,8 @@ void processLine(String line)
 
 void searchSymbol(String identifier)
 {
+  Symbol *s;
+  
   if(!identifier)
     return;
   
@@ -112,12 +119,13 @@ void searchSymbol(String identifier)
   }
 
   if(st_getScope(st) == LOCAL)
-      response = localUse(st, identifier);
+    response = ((s = localUse(st, identifier)) != NULL);
   else
-    response = globalUse(st, identifier);
+    response = ((s = globalUse(st, identifier)) != NULL);
   #ifdef _EXPLAIN_
   PRINT_RESPONSE(response, identifier, "Search");
   #endif
+  appendOutToFile(identifier, s, response, false);
 }
 
 void insertSymbol(String identifier, int value)
@@ -132,6 +140,9 @@ void insertSymbol(String identifier, int value)
     #ifdef _EXPLAIN_
     PRINT_RESPONSE(response, identifier, "Local Scope Closed");
     #endif
+
+    appendOutToFile("cierre", NULL, response, false);
+    
     return;
   }
   
@@ -141,6 +152,8 @@ void insertSymbol(String identifier, int value)
     #ifdef _EXPLAIN_
     PRINT_RESPONSE(response, identifier, "Local Scope Opened");
     #endif
+
+    appendOutToFile(identifier, localUse(st, identifier), response, true);
   }
   else
   {
@@ -150,6 +163,7 @@ void insertSymbol(String identifier, int value)
       #ifdef _EXPLAIN_
       PRINT_RESPONSE(response, identifier, "Insertion");
       #endif
+      appendOutToFile(identifier, globalUse(st, identifier), response, true);
     }
     else
     {
@@ -157,6 +171,7 @@ void insertSymbol(String identifier, int value)
       #ifdef _EXPLAIN_
       PRINT_RESPONSE(response, identifier, "Insertion");
       #endif
+      appendOutToFile(identifier, localUse(st, identifier), response, true);
     }
   }
 }
@@ -185,4 +200,39 @@ void copySubstring(String dest, String src, uint32_t from, uint32_t to)
     dest[i++] = src[j++];
   }
   dest[i] = '\0';
+}
+
+void appendOutToFile(String identifier, Symbol *s, bool status, bool insertion)
+{
+  if(!identifier)
+    return;
+
+  if(strcmp(identifier, "cierre") == 0)
+  {
+    TO_FILE(f_out, "cierre");
+
+    return;
+  }
+
+  if(insertion)
+   { 
+    if(response)
+    {
+      TO_FILE(f_out, "%s", symbol_get_key(s));
+    }
+    else
+    {
+      TO_FILE(f_out, "-1\t%s", identifier);
+    }
+   }
+   else
+   {
+     if(response)
+     {
+       TO_FILE(f_out, "%s\t%d", symbol_get_key(s), symbol_get_value(s));
+     }
+     else{
+       TO_FILE(f_out, "%s\t-1", identifier);
+     }
+   }
 }

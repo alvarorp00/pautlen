@@ -19,6 +19,9 @@
 #define TO_STDOUT(format, ...) \
             fprintf(stdout, ">>> " format ".\n", ##__VA_ARGS__)
 
+#define TO_FILE(file, format, ...) \
+            fprintf(file, format "\n", ##__VA_ARGS__)
+
 #define BUFF 128
 #define MAX_LEN 100
 
