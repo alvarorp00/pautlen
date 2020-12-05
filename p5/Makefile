@@ -59,10 +59,17 @@ test: ## Executes test and compares result
 
 syntactic: $(OALFA)
 		@echo "Compiling all..."
+		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
+
+syntactic_manual: $(OALFA)
+		@echo "Compiling all..."
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
 
 manual:
 		./$(COMPILED)
+
+auto:
+		./$(COMPILED) samples/ejemplo17.alf outputsamples/ejemploalfa17.txt
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
