@@ -11,7 +11,8 @@
 #include "symbol.h"
 
 #define _DEF_HASHLEN_ 15
-#define _CRITICAL_FACTOR_ 0.7
+#define _HIGH_CRITICAL_FACTOR_ 0.7
+#define _LOW_CRITICAL_FACTOR_ 0.1
 
 /**
  * Hashcode Funct prototype

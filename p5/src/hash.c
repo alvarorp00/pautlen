@@ -18,8 +18,8 @@ struct _Node {
  * Main hash structure
  */
 struct _Hash {
-  uint_fast32_t max_size;
-  uint_fast32_t curr_size;
+  uint_fast64_t max_size;
+  uint_fast64_t curr_size;
   float factor;
   Node **nodes; /* Hash nodes which store info */
   Hashcode hashcode;
@@ -240,11 +240,13 @@ static void refactor_ifNeeded(Hash *hash)
   
   hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
 
-  if(!(hash->factor > _CRITICAL_FACTOR_))
+  if(hash->factor > _LOW_CRITICAL_FACTOR_ && hash->factor < _HIGH_CRITICAL_FACTOR_)
     return;
-  
-  hash->max_size <<= 1;
 
+  if(hash->factor > _HIGH_CRITICAL_FACTOR_)
+    hash->max_size <<= 1;
+  else if(hash->factor < _LOW_CRITICAL_FACTOR_)
+    hash->max_size >>= 1;
   hash->nodes = (Node**)realloc(hash->nodes, sizeof(Node*)*hash->max_size);
 }
 
