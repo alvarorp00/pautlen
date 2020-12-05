@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include "symbol.h"
 
-#define _DEF_HASHLEN_ 15
+#define _DEF_HASHLEN_ 500
 #define _CRITICAL_FACTOR_ 0.7
 
 /**

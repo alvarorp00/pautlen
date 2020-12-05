@@ -33,7 +33,12 @@ SymbolsTable *symbolsTableInit()
   if(!symbolsTable)
     return NULL;
 
-  symbolsTable->globalScope = hash_init((Hashcode)symbol_hashcode, (Equals)symbol_equals, (Clean)symbol_delete);
+  symbolsTable->globalScope = hash_init(
+    (Hashcode)symbol_hashcode,
+    (Equals)symbol_equals,
+    (Clean)symbol_delete
+  );
+
   if(!symbolsTable->globalScope)
   {
     symbolsTableClean(symbolsTable);
