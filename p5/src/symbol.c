@@ -245,3 +245,10 @@ void symbol_delete(void *s)
     return;
   free(s);
 }
+
+String symbol_toString(Symbol *s)
+{
+  if(!s)
+    return NULL;
+  return s->key;
+}

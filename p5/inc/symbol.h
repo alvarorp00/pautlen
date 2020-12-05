@@ -125,4 +125,6 @@ uint_fast64_t symbol_hashcode(void *s);
  */
 void symbol_delete(void *s);
 
+String symbol_toString(Symbol *s);
+
 #endif

@@ -6,50 +6,71 @@
 
 #define STR(x) #x
 
-#define LIMIT 25000
+#define LIMIT 10
 
 int main(int argc, char const *argv[])
 {
   Hash *hash;
-  Symbol *symbols[LIMIT];
+  Symbol **symbols;
   size_t i;
   char buff[16];
 
+  symbols = (Symbol**)calloc(LIMIT, sizeof(Symbol*));
   hash = hash_init((Hashcode)symbol_hashcode, (Equals)symbol_equals, (Clean)symbol_delete);
 
   for(i = 0; i < LIMIT; i++)
   {
     snprintf(buff, 16, "__name__%ld", i);
     symbols[i] = symbol_init(buff, (int)i);
-    printf("Started: %s\n", symbol_get_key(symbols[i]));
+    printf("Started: %s\r", symbol_get_key(symbols[i]));
   }
 
   printf("\nEncoding...\n\n");
 
   for(i = 0; i < LIMIT; i++)
   {
-    usleep(10);
+    // usleep(10);
     if(!hash_encode(hash, symbols[i]))
     {   
       printf("Fatal error in encode");
       exit(EXIT_FAILURE);
     }
-    printf("hash encode [ %ld ] : OK! --> %s\n", i, symbol_get_key(symbols[i]));
+    printf("hash encode [ %ld ] : OK! --> %s\r", i, symbol_get_key(hash_decode(hash, symbols[i])));
   }
 
-  printf("\n\nDecoding...\n");
+  printf("\n\nDeleting...\n");
 
-  for(i = 0; i < LIMIT; i++)
+  for(i = 0; i < 8; i++)
   {
-    usleep(10);
-    if(hash_decode(hash, symbols[i]) == NULL)
+    if(hash_deleteinfo(hash, symbols[i]) == false)
     {
-      printf("\nfatal error in decode: idx %ld\n", i);
+      printf("\nfatal error in delete: idx %ld\n", i);
       exit(EXIT_FAILURE);
     }
-    printf("hash decode [ %ld ] : OK! --> %s\n", i, symbol_get_key(symbols[i]));
+    if(hash_decode(hash, symbols[i]) != NULL)
+    {
+      printf("\nFatal error in hash_delete, could be retrieved\n");
+      exit(EXIT_FAILURE);
+    }
+    printf("hash delete [ %ld ] : OK! --> @@@\r", i);
   }
 
+  // printf("\n\nDecoding...\n");
+
+  // for(i = (LIMIT / 2) + 1; i < LIMIT; i++)
+  // {
+  //   // usleep(10);
+  //   if(hash_decode(hash, symbols[i]) == NULL)
+  //   {
+  //     printf("\nfatal error in decode: idx %ld\n", i);
+  //     exit(EXIT_FAILURE);
+  //   }
+  //   printf("hash decode [ %ld ] : OK! --> %s\r", i, symbol_get_key(symbols[i]));
+  // }
+
+  printf("\n");
+
+  free(symbols);
   hash_clean(hash);
   
   return 0;

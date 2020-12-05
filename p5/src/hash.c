@@ -6,6 +6,7 @@
  */
 
 #include "hash.h"
+#include "symbol.h"
 
 typedef struct _ProbingResponse ProbingResponse;
 typedef struct _Node Node;
@@ -60,7 +61,7 @@ static bool node_isEmpty(Node *node);
  * @param info to store in node
  * @return same node
  */
-static Node* init_node(Node *node, void* info);
+static Node* init_node(void* info);
 
 /**
  * Deleted a node and it's info
@@ -169,7 +170,7 @@ bool hash_encode(Hash *hash, void* info)
   if(response.present == true)
     return false;
 
-  hash->nodes[response.index] = init_node(hash->nodes[response.index], info);
+  hash->nodes[response.index] = init_node(info);
   hash->curr_size += 1;
 
   refactor_ifNeeded(hash);
@@ -219,6 +220,7 @@ bool hash_deleteinfo(Hash *hash, void* info)
 
   hash->curr_size -= 1;
   refactor_ifNeeded(hash);
+  printf("\rDeleted || Curr size: %ld\n", hash->curr_size);
 
   return true;
 }
@@ -287,21 +289,17 @@ bool hash_contains(Hash *hash, void* info)
 
 static void refactor_ifNeeded(Hash *hash)
 {
-  uint_fast16_t new_size;
+  uint_fast16_t new_size, __size;
   uint_fast64_t i;
   ProbingResponse r_response;
   Node **new_nodes;
   
   if(!hash)
     return;
+  fflush(stdout);
+  printf("\r\nPrev. Size : %ld\n", hash->max_size);
   
   hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
-  if (hash->factor == 0)
-  {
-    hash->nodes = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
-    hash->max_size = _DEF_HASHLEN_;
-    return;
-  }
 
   if(hash->factor > _LOW_CRITICAL_FACTOR_ && hash->factor < _HIGH_CRITICAL_FACTOR_)
     return;
@@ -312,11 +310,19 @@ static void refactor_ifNeeded(Hash *hash)
     new_size = hash->max_size >> 1;
 
   new_nodes = (Node**)calloc(new_size, sizeof(Node*));
+
+  printf("New size -> %ld\n", new_size);
   
   for(i = 0; i < hash->max_size; i++)
   {
     if(node_isEmpty(hash->nodes[i]))
+    {
+      printf("\nIt's empty lol\n");
+      free(hash->nodes[i]);
       continue;
+    }
+    printf("It's not empty... %s\n", hash->nodes[i] == NULL ? "NULL" : "NOT NULL");
+    printf("\ttoString: %s %ld\n", symbol_get_key(hash->nodes[i]->info), i);
     
     r_response = linearProbing(
       new_nodes,
@@ -326,23 +332,32 @@ static void refactor_ifNeeded(Hash *hash)
       new_size
     );
 
-    if(r_response.present)
-      continue;
-
     new_nodes[r_response.index] = hash->nodes[i];
   }
 
+  for(i = 0; i < new_size; i++)
+  {
+    if(new_nodes[i] == NULL)
+      continue;
+    printf("\n\tNode[%ld] --> %s\n", i, symbol_get_key(new_nodes[i]->info));
+  }
+  
   free(hash->nodes);
   hash->nodes = new_nodes;
   hash->max_size = new_size;
-  
   hash->factor = (float)hash->curr_size/(float)hash->max_size;
 }
 
-static Node* init_node(Node *node, void* info)
+static Node* init_node(void* info)
 {
+  Node *node;
+  
+  if(!info)
+    return NULL;
+  
   node = (Node*)calloc(1,sizeof(Node));
   node->info = info; 
+
   return node;
 }
 
@@ -354,7 +369,9 @@ static void delete_node(Node *node, Clean clean)
     clean(node->info);
   node->info = NULL;
   free(node);
+  printf("HERE:::::\n");
   node = NULL;
+  printf("\n\tdelete ok\n");
 }
 
 static void clean_nodes(Node **nodes, Clean clean, size_t max_size)
@@ -363,15 +380,22 @@ static void clean_nodes(Node **nodes, Clean clean, size_t max_size)
   
   for(i = 0; i < max_size; i++)
   {
-    if(nodes[i] != NULL)
-      delete_node(nodes[i], clean);
+    printf("\nState: %s\n", nodes[i] == NULL ? "NULL" : "NOT NULL");
+    printf("Here %ld\n", i);
+    if(node_isEmpty(nodes[i]))
+      continue;
+    if(nodes[i]->info != NULL)
+    {
+      printf("\n\tnode info: %s\n", symbol_get_key(nodes[i]->info));
+      // clean(nodes[i]->info);
+    }
+    printf("\n\tCleaning node....\n");
+    // free(nodes[i]);
+    nodes[i] = NULL;
   }
 }
 
 static bool node_isEmpty(Node *node)
-{
-  if(node == NULL)
-    return true;
-  
-  return node->info == NULL;
+{ 
+  return node == NULL;
 }
