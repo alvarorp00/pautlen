@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "alfa.h"
+#include "symbolsTable.h"
 #include "y.tab.h"
 
 /* Externals values */
@@ -14,7 +15,7 @@ extern FILE *yyin;
 extern FILE *yyout;
 
 /* Bison's parser. Returns 0 on OK, 1 on FAILURE */
-extern int yyparse(void);
+extern int yyparse(SymbolsTable *st);
 
 /* Locals */
 
@@ -39,13 +40,23 @@ int setup(int argc, char **argv);
 int main(int argc, char **argv)
 {
 
+  SymbolsTable *st;
+
   if(setup(argc, argv))
   {
     fprintf(stderr, "Failure on setup(): %s\n", errbuff);
     return 1;
   }
 
-  if (yyparse())
+  st = symbolsTableInit();
+  if(!st)
+  {
+    #line 51 "alfa.c"
+    TO_STDERR("Error at %s: %d. SymbolsTable init FAILED****", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+  }
+
+  if (yyparse(st))
   {
     fprintf(stderr, "%s.\n", errbuff);
   }
@@ -56,6 +67,8 @@ int main(int argc, char **argv)
   fclose(yyout);
 
   #endif
+
+  symbolsTableClean(st);
 
   return 0;
   

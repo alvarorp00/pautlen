@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "alfa.h"
+#include "symbolsTable.h"
 #include "y.tab.h"
 
 /* Maximum length for Identifiers */

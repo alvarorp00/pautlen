@@ -194,7 +194,7 @@ bool hash_deleteValue(Hash *hash, void* value)
 static uint_fast64_t linearProbing(Hash *hash, void* value)
 {
   uint_fast64_t hashed, val;
-  uint_fast64_t i;
+  size_t i;
   
   hashed = hash->hashcode(value) % hash->max_size;
 

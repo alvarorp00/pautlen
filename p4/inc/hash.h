@@ -7,7 +7,6 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include "alfa.h"
 #include "symbol.h"
 
 #define _DEF_HASHLEN_ 15

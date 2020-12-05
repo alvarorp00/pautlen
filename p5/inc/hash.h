@@ -7,8 +7,6 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include "alfa.h"
-#include "symbol.h"
 
 #define _DEF_HASHLEN_ 9
 #define _HIGH_CRITICAL_FACTOR_ 0.7

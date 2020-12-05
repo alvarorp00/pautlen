@@ -129,7 +129,7 @@ remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_para
 
 function_param: type identifier { PRINT_RULE("<parametro_funcion> ::= <tipo> <identificador>", RULE_FUNCTION_PARAM); };
 
-function_declarations: declarations { PRINT_RULE("<declaraciones_funcion> ::= <declaraciones>", RULE_FUNCTION_DECLARE) }
+function_declarations: declarations { PRINT_RULE("<declaraciones_funcion> ::= <declaraciones>", RULE_FUNCTION_DECLARE); }
                     | { PRINT_RULE("<declaraciones_funcion> ::= ", RULE_FUNCTION_DECLARE + 1); }
                     ;
 

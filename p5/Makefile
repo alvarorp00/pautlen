@@ -32,10 +32,11 @@ OYYLEX = $(OBJ)lex.yy.o
 CYYPARSE = $(SRC)y.tab.c
 OYYPARSE = $(OBJ)y.tab.o
 
-PHASH = $(SRC)pruebaTS.c
 HASH = $(SRC)hash.c
 TSYMBOLS = $(SRC)symbolsTable.c
 SYMBOL = $(SRC)symbol.c
+
+SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH)
 
 TESTFILEIN = $(TESTFILES)pruebaTS.txt
 TESTFILEOUT = $(TESTFILES)expectedResTS.txt
@@ -62,11 +63,11 @@ test: ## Executes test and compares result
 
 syntactic: $(OALFA)
 		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
+		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(SOURCEFILES)
 
 syntactic_manual: $(OALFA)
 		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
+		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(SOURCEFILES)
 
 manual:
 		@clear
