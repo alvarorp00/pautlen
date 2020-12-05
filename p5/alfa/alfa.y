@@ -30,9 +30,10 @@
 
 %}
 
+
 %union
     {
-      char* str;
+      char *str;
       int num;
     }
 
@@ -79,6 +80,8 @@
 %token TOK_TRUE
 %token TOK_FALSE
 %token TOK_ERROR
+
+%token MENOSU
 
 %left TOK_MAS TOK_MENOS TOK_OR
 %left TOK_ASTERISCO TOK_DIVISION TOK_AND
@@ -173,7 +176,7 @@ exp: exp TOK_MAS exp { PRINT_RULE("<exp> ::= <exp> + <exp>", RULE_EXP); }
     | exp TOK_MENOS exp { PRINT_RULE("<exp> ::= <exp> - <exp>", RULE_EXP + 1); }
     | exp TOK_DIVISION exp { PRINT_RULE("<exp> ::= <exp> / <exp>", RULE_EXP + 2); }
     | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 3); }
-    | TOK_MENOS exp { PRINT_RULE("<exp> ::= - <exp>", RULE_EXP + 4); }
+    | TOK_MENOS exp %prec MENOSU { PRINT_RULE("<exp> ::= - <exp>", RULE_EXP + 4); }
     | exp TOK_AND exp { PRINT_RULE("<exp> ::= <exp> && <exp>", RULE_EXP + 5); }
     | exp TOK_OR exp { PRINT_RULE("<exp> ::= <exp> || <exp>", RULE_EXP + 6); }
     | TOK_NOT exp { PRINT_RULE("<exp> ::= ! <exp>", RULE_EXP + 7); }

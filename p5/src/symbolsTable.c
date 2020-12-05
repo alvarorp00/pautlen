@@ -179,6 +179,10 @@ bool stopLocalScope(SymbolsTable *st)
 
 /* -------------------------------------------- */
 
+
+
+/* -------------------------------------------- */
+
 bool st_set_scalar_variable(
   SymbolsTable *st,
   String identifier,
