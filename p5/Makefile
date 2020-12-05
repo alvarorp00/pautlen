@@ -43,34 +43,28 @@ TESTFILEOUT = $(TESTFILES)expectedResTS.txt
 
 TESTRESULT = $(RESULTS)testresult.txt
 
-default: clean syntactic_manual ## Equivalent to 'make all'
+default: clean semantic_manual ## Equivalent to 'make all'
 		clear
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-hash: ## Compile hash. 
-		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
-
-explain: ## Prints exec process in stdout
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_EXPLAIN_) -o $(COMPILED) $(HASH) $(PHASH) $(TSYMBOLS) $(SYMBOL)
-
-test: ## Executes test and compares result
+test: default ## Executes test and compares result
 		@echo "Executing test..."
 		./$(COMPILED) $(TESTFILEIN) $(TESTRESULT)
 		@./testverify.sh $(TESTFILEOUT) $(TESTRESULT)
 
-syntactic: $(OALFA)
+semantic: $(OALFA)
 		@echo "Compiling all..."
 		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(SOURCEFILES)
 
-syntactic_manual: $(OALFA)
+semantic_manual: $(OALFA)
 		@echo "Compiling all..."
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(SOURCEFILES)
 
 manual:
 		@clear
+		@echo "Parsing from terminal..."
 		./$(COMPILED)
 
 auto:

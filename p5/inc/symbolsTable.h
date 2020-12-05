@@ -67,7 +67,7 @@ bool declareFunction(SymbolsTable *st, String identifier, int value);
 
 /* ------------------------------------------------ */
 
-
+Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier);
 
 /* ------------------------------------------------ */
 

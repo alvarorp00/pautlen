@@ -164,23 +164,23 @@ identifiers: identifier {  }
           ;
 
 functions: function functions {  }
-        | {  }
+        | /* empty */ {  }
         ;
 
 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA {  };
 
 function_params: function_param remaining_function_params {  }
-              | {  }
+              | /* empty */ {  }
               ;
 
 remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params {  }
-                        | {  }
+                        | /* empty */ {  }
                         ;
 
 function_param: type identifier {  };
 
 function_declarations: declarations {  }
-                    | {  }
+                    | /* empty */ {  }
                     ;
 
 statements: statement {  }
@@ -236,11 +236,11 @@ exp: exp TOK_MAS exp {  }
     ;
 
 exp_list: exp exp_remaining_list {  }
-        | {  }
+        | /* empty */ {  }
         ;
 
 exp_remaining_list: TOK_COMA exp exp_remaining_list {  }
-                  | {  }
+                  | /* empty */ {  }
                   ;
 
 comparison: exp TOK_IGUAL exp {  }

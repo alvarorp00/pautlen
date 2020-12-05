@@ -179,7 +179,15 @@ bool stopLocalScope(SymbolsTable *st)
 
 /* -------------------------------------------- */
 
-
+Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier)
+{
+  if(!st || !identifier)
+    return NULL;
+  return searchSymbol(
+    st->currentScope == GLOBAL ? st->globalScope : st->localScope,
+    identifier
+  );
+}
 
 /* -------------------------------------------- */
 
@@ -196,13 +204,20 @@ bool st_set_scalar_variable(
   
   if(!st || !identifier)
     return false;
+
+  if(scope == LOCAL && st->currentScope != LOCAL)
+    return false;
+  else if(scope == GLOBAL && st->currentScope != GLOBAL)
+    return false;
   
   dst = (scope == GLOBAL) ? st->globalScope : st->localScope;
 
-  if((s = searchSymbol(dst, identifier)) == NULL)
+  if((s = searchSymbol(dst, identifier)) != NULL)
     return false;
 
+  s = symbol_init(identifier, NONE);
   symbol_configure_scalar_variable(s, dt, scope, scope == LOCAL ? pos : NONE);
+  hash_encode(dst, s);
 
   return true;
 }
@@ -221,15 +236,21 @@ bool st_set_vector_variable(
   
   if(!st || !identifier || pos == 0)
     return false;
+
+  if(scope == LOCAL && st->currentScope != LOCAL)
+    return false;
+  else if(scope == GLOBAL && st->currentScope != GLOBAL)
+    return false;
   
   dst = (scope == GLOBAL) ? st->globalScope : st->localScope;
 
-  if((s = searchSymbol(dst, identifier)) == NULL)
+  if((s = searchSymbol(dst, identifier)) != NULL)
     return false;
 
+  s = symbol_init(identifier, NONE);
   symbol_configure_vector_variable(s, dt, scope, scope == LOCAL ? pos : NONE, size);
-
-  return true;
+  
+  return hash_encode(dst, s);;
 }
 
 bool st_set_scalar_parametre(
@@ -247,12 +268,13 @@ bool st_set_scalar_parametre(
   if(st->currentScope != LOCAL)
     return false;
 
-  if((s = searchSymbol(st->localScope, identifier)) == NULL)
+  if((s = searchSymbol(st->localScope, identifier)) != NULL)
     return false;
+
 
   symbol_configure_scalar_parametre(s, dt, pos);
 
-  return true;
+  return hash_encode(st->localScope, s);;
 }
 
 bool st_set_vector_parametre(
@@ -271,12 +293,13 @@ bool st_set_vector_parametre(
   if(st->currentScope != LOCAL)
     return false;
   
-  if((s = searchSymbol(st->localScope, identifier)) == NULL)
+  if((s = searchSymbol(st->localScope, identifier)) != NULL)
     return false;
 
+  s = symbol_init(identifier, NONE);
   symbol_configure_vector_parametre(s, dt, pos, size);
 
-  return true;
+  return hash_encode(st->localScope, s);
 }
 
 bool st_set_function(
@@ -294,12 +317,13 @@ bool st_set_function(
   if(st->currentScope != GLOBAL)
     return false;
 
-  if((s = searchSymbol(st->globalScope, identifier)) == NULL)
+  if((s = searchSymbol(st->globalScope, identifier)) != NULL)
     return false;
 
+  s = symbol_init(identifier, NONE);
   symbol_configure_function(s, params, localvars);
 
-  return true;
+  return hash_encode(st->localScope, s);
 }
 
 /* ------------------------------------------- */
