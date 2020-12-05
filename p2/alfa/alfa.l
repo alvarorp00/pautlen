@@ -91,12 +91,10 @@ false { return TOK_FALSE; }
 
   /* Default option if above don't match -> Error */
 
-. { COPYERR("Unknown symbol %s. ", yytext) return TOK_ERROR; }
+. { COPYERR("Unknown symbol %s. ", yytext); return TOK_ERROR; }
 
 %%
 
-
-/* { return __TOKEN__; } */
 
 int checkIdentifier()
 {

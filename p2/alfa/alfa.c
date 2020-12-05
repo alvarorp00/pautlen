@@ -196,6 +196,10 @@ void selectToken(int tok, char *tok_exp)
     COPY(tok_exp, STR(TOK_ASIGNACION));
     break;
   
+  case TOK_MAS:
+    COPY(tok_exp, STR(TOK_MAS));
+    break;
+  
   case TOK_MENOS:
     COPY(tok_exp, STR(TOK_MENOS));
     break;
