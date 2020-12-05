@@ -176,6 +176,9 @@ bool hash_deleteValue(Hash *hash, void* value)
   if(!hash || !value)
     return false;
 
+  if(hash->factor == 0)
+    return false;
+
   if(!hash_contains(hash, value))
     return false;
   
@@ -220,6 +223,9 @@ bool hash_contains(Hash *hash, void* value)
   uint_fast64_t hashed;
 
   if(!hash || !value)
+    return false;
+
+  if(hash->factor == 0)
     return false;
 
   hashed = linearProbing(hash, value);
