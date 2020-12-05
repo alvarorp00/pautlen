@@ -240,6 +240,13 @@ static void refactor_ifNeeded(Hash *hash)
   
   hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
 
+  if (hash->factor == 0)
+  {
+    hash->nodes = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
+    hash->max_size = _DEF_HASHLEN_;
+    return;
+  }
+
   if(hash->factor > _LOW_CRITICAL_FACTOR_ && hash->factor < _HIGH_CRITICAL_FACTOR_)
     return;
 
