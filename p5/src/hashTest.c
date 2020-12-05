@@ -6,7 +6,7 @@
 
 #define STR(x) #x
 
-#define LIMIT 10
+#define LIMIT 5000
 
 int main(int argc, char const *argv[])
 {
@@ -38,37 +38,20 @@ int main(int argc, char const *argv[])
     printf("hash encode [ %ld ] : OK! --> %s\r", i, symbol_get_key(hash_decode(hash, symbols[i])));
   }
 
-  printf("\n\nDeleting...\n");
+  printf("\n\nDecoding...\n");
 
-  for(i = 0; i < 8; i++)
+  for(i = 0; i < LIMIT; i++)
   {
-    if(hash_deleteinfo(hash, symbols[i]) == false)
+    usleep(10);
+    if(hash_decode(hash, symbols[i]) == NULL)
     {
-      printf("\nfatal error in delete: idx %ld\n", i);
+      printf("\nfatal error in decode: idx %ld\n", i);
       exit(EXIT_FAILURE);
     }
-    if(hash_decode(hash, symbols[i]) != NULL)
-    {
-      printf("\nFatal error in hash_delete, could be retrieved\n");
-      exit(EXIT_FAILURE);
-    }
-    printf("hash delete [ %ld ] : OK! --> @@@\r", i);
+    printf("hash decode [ %ld ] : OK! --> %s\r", i, symbol_get_key(symbols[i]));
   }
 
-  // printf("\n\nDecoding...\n");
-
-  // for(i = (LIMIT / 2) + 1; i < LIMIT; i++)
-  // {
-  //   // usleep(10);
-  //   if(hash_decode(hash, symbols[i]) == NULL)
-  //   {
-  //     printf("\nfatal error in decode: idx %ld\n", i);
-  //     exit(EXIT_FAILURE);
-  //   }
-  //   printf("hash decode [ %ld ] : OK! --> %s\r", i, symbol_get_key(symbols[i]));
-  // }
-
-  printf("\n");
+  printf("\n\nEND\n\n");
 
   free(symbols);
   hash_clean(hash);

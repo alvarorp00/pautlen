@@ -9,8 +9,7 @@
 #include <stdint.h>
 
 #define _DEF_HASHLEN_ 9
-#define _HIGH_CRITICAL_FACTOR_ 0.7
-#define _LOW_CRITICAL_FACTOR_ 0.1
+#define _HIGH_CRITICAL_FACTOR_ 0.6
 
 /**
  * Hashcode Funct prototype
@@ -62,14 +61,6 @@ bool hash_encode(Hash *hash, void *info);
  * @return info retrieved
  */
 void *hash_decode(Hash *hash, void *info);
-
-/**
- * Deletes an existant info in hash
- * @param hash where element is stored
- * @param info info to be deleted
- * @return if was posible
- */
-bool hash_deleteinfo(Hash *hash, void* info);
 
 /**
  * Cleans memory
