@@ -10,7 +10,7 @@
 #include "alfa.h"
 #include "symbol.h"
 
-#define _DEF_HASHLEN_ 15
+#define _DEF_HASHLEN_ 9
 #define _HIGH_CRITICAL_FACTOR_ 0.7
 #define _LOW_CRITICAL_FACTOR_ 0.1
 
