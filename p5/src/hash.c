@@ -6,7 +6,6 @@
  */
 
 #include "hash.h"
-#include "symbol.h"
 
 typedef struct _ProbingResponse ProbingResponse;
 typedef struct _Node Node;
@@ -166,15 +165,12 @@ bool hash_encode(Hash *hash, void* info)
     hash->equals,
     hash->max_size
   );
-  // printf("Reponse index: %ld\n", response.index);
-  // printf("Response.present: %s\n", response.present ? "True": "False");
+
   if(response.present == true)
     return false;
 
   hash->nodes[response.index] = init_node(hash->nodes[response.index], info);
   hash->curr_size += 1;
-
-  printf("\tInserted in %ld\n", response.index);
 
   refactor_ifNeeded(hash);
   
@@ -192,9 +188,6 @@ void* hash_decode(Hash *hash, void* info)
     hash->equals,
     hash->max_size
   );
-
-  printf("\tTrying to acces %ld\n",response.index);
-  printf("\t\tPresent: %s n", response.present ? "True" : "False");
   
   if(response.present == false)
     return NULL;
@@ -254,7 +247,6 @@ static ProbingResponse linearProbing(
         {
           response.index = val;
           response.present = true;
-          printf("\n\n\tFound ! at %ld\n\n", val);
           return response;
         }
     }
@@ -304,8 +296,6 @@ static void refactor_ifNeeded(Hash *hash)
     return;
   
   hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
-  printf("Current factoor: %f\n", hash->factor);
-
   if (hash->factor == 0)
   {
     hash->nodes = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
@@ -320,8 +310,6 @@ static void refactor_ifNeeded(Hash *hash)
     new_size = hash->max_size << 1;
   else if(hash->factor < _LOW_CRITICAL_FACTOR_)
     new_size = hash->max_size >> 1;
-
-  printf("New size: %ld\n", new_size);
 
   new_nodes = (Node**)calloc(new_size, sizeof(Node*));
   
@@ -349,7 +337,6 @@ static void refactor_ifNeeded(Hash *hash)
   hash->max_size = new_size;
   
   hash->factor = (float)hash->curr_size/(float)hash->max_size;
-  printf("Realloc'd -> new factor: %f\n", hash->factor);
 }
 
 static Node* init_node(Node *node, void* info)
@@ -387,22 +374,4 @@ static bool node_isEmpty(Node *node)
     return true;
   
   return node->info == NULL;
-}
-
-void print_hash(Hash *hash)
-{
-  size_t i;
-  
-  if(!hash)
-    return;
-  
-  printf("\nMax size: %ld\n", hash->max_size);
-  printf("Current size: %ld\n", hash->curr_size);
-  printf("Load factor: %f\n",hash->factor);
-  for(i = 0; i < hash->max_size; i++)
-  {
-    if(node_isEmpty(hash->nodes[i]))
-      continue;
-    printf("Value at [ %ld ] --> %s\n", i, symbol_get_key(hash->nodes[i]->info));
-  }
 }

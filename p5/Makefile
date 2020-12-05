@@ -70,6 +70,10 @@ manual:
 auto:
 		./$(COMPILED) samples/ejemplo17.alf outputsamples/ejemploalfa17.txt
 
+hash_test:
+	 	@$(CC) -I $(INC) -o run_hash_test hashTest.c symbol.c hash.c
+		./run_hash_test
+
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
@@ -108,4 +112,5 @@ clean: ## Cleans output files
 		rm -f $(CYYLEX)
 		rm -f $(CYYPARSE)
 		rm -f $(INC)/y.tab.h 
+		rm -f run_hash_test
 		@echo "Data cleaned."

@@ -85,6 +85,4 @@ void hash_clean(Hash *hash);
  */
 bool hash_contains(Hash *hash, void *info);
 
-void print_hash(Hash *hash);
-
 #endif
