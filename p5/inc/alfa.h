@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <limits.h>
+#include "generator.h"
 
 /**
  * Converts literal to string
@@ -137,6 +138,7 @@ enum _Scope
   LOCAL
 };
 
+
 /**
  * Type definition for ElementCategory
  */
@@ -163,6 +165,11 @@ typedef enum _Scope Scope;
 typedef struct _Symbol Symbol;
 
 /**
+ * Type definition for attributes info
+ */
+typedef struct _attrs_type attrs_type;
+
+/**
  * Type definition for String
  */
 typedef char* String;
@@ -186,5 +193,15 @@ extern int line;
  * To control current parse column
  */
 extern int col;
+
+/**
+ * Structure with semantic info
+ */
+struct _attrs_type
+{
+  char lexeme[MAX_LEN + 1];
+  int int_value;
+  DataType type;
+};
 
 #endif

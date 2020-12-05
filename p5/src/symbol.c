@@ -17,7 +17,7 @@ struct _Variable
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   Scope scope; /* Scope {LOCAL, GLOBAL} */
   uint_fast16_t pos; /* Position in function in case it's in LOCAL Scope */
-  uint_fast16_t size; /* Size in case it's a vector */
+  uint_fast32_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -28,7 +28,7 @@ struct _Parametre
   DataType basicType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   uint_fast16_t pos; /* Position of the parametre in function call */
-  uint_fast16_t size; /* Size in case it's a vector */
+  uint_fast32_t size; /* Size in case it's a vector */
 };
 
 /**

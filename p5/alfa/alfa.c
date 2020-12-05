@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "y.tab.h"
 #include "alfa.h"
+#include "y.tab.h"
 
 /* Externals values */
 

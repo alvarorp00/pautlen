@@ -66,6 +66,10 @@ bool declareFunction(SymbolsTable *st, String identifier, int value);
 
 /* ------------------------------------------------ */
 
+
+
+/* ------------------------------------------------ */
+
 /**
  * Set symbol as escalar variable
  * @param st table where symbol is stored

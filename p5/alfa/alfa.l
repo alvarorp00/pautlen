@@ -219,6 +219,7 @@ return {
 
 {CONSTANT} {
   processToken();
+  yylval.attrs.int_value = atoi(yytext);
   return TOK_CONSTANTE_ENTERA;
 }
 
@@ -246,7 +247,10 @@ false {
 
   /* Default option if above don't match -> Error */
 
-. { unknownSymbol(); return TOK_ERROR; }
+. {
+  unknownSymbol();
+  return TOK_ERROR;
+}
 
 %%
 
@@ -257,6 +261,7 @@ int checkIdentifier()
   if(yyleng < MAX_LEN)
   {
     processToken();
+    strcpy(yylval.attrs.lexeme, yytext);
     return TOK_IDENTIFICADOR;
   }
 

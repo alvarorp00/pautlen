@@ -4,7 +4,8 @@ TOKEN = tokens.h
 
 CC = gcc
 CFLAGS = -g
-BISONFLAGS = -d -y -v
+BISONFLAGS = -y -d -v -Wyacc
+YACCFLAGS = 
 
 _STD_ = _STD_
 
@@ -15,6 +16,7 @@ DIR = alfa/
 OUT = out/
 OBJ = obj/
 SRC = src/
+INFO = info/
 
 RESULTS = testresults/
 TESTFILES = testfiles/
@@ -40,7 +42,8 @@ TESTFILEOUT = $(TESTFILES)expectedResTS.txt
 
 TESTRESULT = $(RESULTS)testresult.txt
 
-default: syntactic ## Equivalent to 'make all'
+default: clean syntactic_manual ## Equivalent to 'make all'
+		clear
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -66,6 +69,7 @@ syntactic_manual: $(OALFA)
 		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
 
 manual:
+		@clear
 		./$(COMPILED)
 
 auto:
@@ -89,6 +93,7 @@ $(OYYLEX): $(CYYLEX)
 $(CYYPARSE):
 		@echo "Generating y.tab.c"
 		@bison $(BISONFLAGS) $(DIR)$(BISONFILE)
+		@mv y.output $(INFO)
 		@mv y.tab.h $(INC).
 		@mv y.tab.c $(SRC).
 
@@ -101,10 +106,11 @@ $(OYYPARSE): $(CYYPARSE)
 
 clean: ## Cleans output files
 		rm -rf $(RESULTS)*
-		rm -rf $(COMPILED)
-		rm $(OYYLEX)
-		rm $(OYYPARSE)
-		rm $(CYYLEX)
-		rm $(CYYPARSE)
-		rm $(INC)/y.tab.h 
+		rm -rf $(INFO)/y.output
+		rm -f $(COMPILED)
+		rm -f $(OYYLEX)
+		rm -f $(OYYPARSE)
+		rm -f $(CYYLEX)
+		rm -f $(CYYPARSE)
+		rm -f $(INC)/y.tab.h 
 		@echo "Data cleaned."

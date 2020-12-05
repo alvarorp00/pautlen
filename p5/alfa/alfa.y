@@ -28,7 +28,20 @@
   /* Function launched in case of failure */
   int yyerror(char *s);
 
+  /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
+  /* - - - - - - GLOBAL VARS - - - - - - - */
+  /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
+
+  DataType current_type;
+  IdentifierCategory current_class;
+
+
 %}
+
+%union
+{
+  attrs_type attrs;
+}
 
 %token TOK_MAIN
 %token TOK_INT
@@ -66,15 +79,24 @@
 %token TOK_MENORIGUAL
 %token TOK_MAYORIGUAL
 
-%token TOK_CTE_ENTERA 
-%token TOK_IDENTIFICADOR
-
 %token TOK_CONSTANTE_ENTERA
 %token TOK_TRUE
 %token TOK_FALSE
 %token TOK_ERROR
 
 %token MENOSU
+
+%token <attrs> TOK_CTE_ENTERA 
+%token <attrs> TOK_IDENTIFICADOR
+
+%type <attrs> conditional
+%type <attrs> comparison
+%type <attrs> vector_element
+%type <attrs> exp
+%type <attrs> constant
+%type <attrs> constant_int
+%type <attrs> constant_logic
+%type <attrs> identifier
 
 %left TOK_MAS TOK_MENOS TOK_OR
 %left TOK_ASTERISCO TOK_DIVISION TOK_AND

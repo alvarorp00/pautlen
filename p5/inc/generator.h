@@ -6,8 +6,8 @@
 #define FPASM                 FILE *FPASM_NAME
 
 typedef enum {
-  INTEGER=0,
-  BOOLEAN=1
+  _INTEGER=0,
+  _BOOLEAN=1
 } _var_types;
 
 #define DB  "db"
@@ -86,8 +86,8 @@ typedef enum {
 #define while_exp_pila write_while_exp
 #define while_fin write_while_end
 
-#define ENTERO INTEGER
-#define BOOLEANO BOOLEAN
+#define ENTERO _INTEGER
+#define BOOLEANO _BOOLEAN
 
 void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, int is_var2 );
 
