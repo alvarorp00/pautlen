@@ -40,7 +40,7 @@ TESTFILEOUT = $(TESTFILES)expectedResTS.txt
 
 TESTRESULT = $(RESULTS)testresult.txt
 
-default: all ## Equivalent to 'make all'
+default: syntactic ## Equivalent to 'make all'
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -59,7 +59,10 @@ test: ## Executes test and compares result
 
 syntactic: $(OALFA)
 		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(OALFA)
+		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(OYYLEX) $(OYYPARSE) $(DIR)alfa.c
+
+manual:
+		./$(COMPILED)
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
@@ -90,10 +93,11 @@ $(OYYPARSE): $(CYYPARSE)
 .PHONY: clean
 
 clean: ## Cleans output files
-		@rm -rf $(RESULTS)*
-		@rm -rf $(COMPILED)
-		@rm $(OYYLEX)
-		@rm $(OYYPARSE)
-		@rm $(CYYLEX)
-		@rm $(CYYPARSE)
+		rm -rf $(RESULTS)*
+		rm -rf $(COMPILED)
+		rm $(OYYLEX)
+		rm $(OYYPARSE)
+		rm $(CYYLEX)
+		rm $(CYYPARSE)
+		rm $(INC)/y.tab.h 
 		@echo "Data cleaned."

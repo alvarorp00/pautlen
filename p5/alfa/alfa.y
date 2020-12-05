@@ -30,13 +30,6 @@
 
 %}
 
-
-%union
-    {
-      char *str;
-      int num;
-    }
-
 %token TOK_MAIN
 %token TOK_INT
 %token TOK_BOOLEAN
@@ -73,8 +66,8 @@
 %token TOK_MENORIGUAL
 %token TOK_MAYORIGUAL
 
-%token <num> TOK_CTE_ENTERA 
-%token <str> TOK_IDENTIFICADOR
+%token TOK_CTE_ENTERA 
+%token TOK_IDENTIFICADOR
 
 %token TOK_CONSTANTE_ENTERA
 %token TOK_TRUE
