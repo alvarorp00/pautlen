@@ -70,8 +70,8 @@ manual:
 auto:
 		./$(COMPILED) samples/ejemplo17.alf outputsamples/ejemploalfa17.txt
 
-hash_test:
-	 	@$(CC) -I $(INC) -o run_hash_test hashTest.c symbol.c hash.c
+hash_test: ## Test hash
+	 	@$(CC) -I $(INC) -o run_hash_test $(SRC)hashTest.c $(SYMBOL) $(HASH)
 		./run_hash_test
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
