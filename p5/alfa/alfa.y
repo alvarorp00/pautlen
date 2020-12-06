@@ -110,18 +110,45 @@
 
 %%
 
-program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations functions statements TOK_LLAVEDERECHA {  };
+/*------------------------------------------------------*/
+/*                      PROD: 1                         */
+/*------------------------------------------------------*/
+program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations functions statements TOK_LLAVEDERECHA
+      {
 
-declarations: declaration {  }
-            | declaration declarations {  }
+      }
+      ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 2                         */
+/*------------------------------------------------------*/
+declarations: declaration
+            {
+
+            }
             ;
 
-declaration: class identifiers TOK_PUNTOYCOMA {  };
+/*------------------------------------------------------*/
+/*                      PROD: 3                         */
+/*------------------------------------------------------*/
+declarations: declaration declarations
+            {
+
+            }
+            ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 4                         */
+/*------------------------------------------------------*/
+declaration: class identifiers TOK_PUNTOYCOMA 
+          {
+
+          }
+          ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 5                         */
 /*------------------------------------------------------*/
-
 class: class_scalar
       {
         current_class = SCALAR;
@@ -157,112 +184,416 @@ type: TOK_BOOLEAN
       }
       ;
 
-class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO {  };
+/*------------------------------------------------------*/
+/*                      PROD: 15                        */
+/*------------------------------------------------------*/
+class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO 
+            {
 
-identifiers: identifier {  }
-          | identifier TOK_COMA identifiers {  }
+            }
+            ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 18                        */
+/*------------------------------------------------------*/
+identifiers: identifier
+          {
+
+          }
           ;
 
-functions: function functions {  }
-        | /* empty */ {  }
+/*------------------------------------------------------*/
+/*                      PROD: 19                        */
+/*------------------------------------------------------*/
+identifiers: identifier TOK_COMA identifiers
+          {
+
+          }
+          ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 20                        */
+/*------------------------------------------------------*/
+functions: function functions
+        {
+
+        }
         ;
 
-function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA {  };
+/*------------------------------------------------------*/
+/*                      PROD: 21                        */
+/*------------------------------------------------------*/
+functions: /* empty */
+        {
+          
+        }
+        ;
 
-function_params: function_param remaining_function_params {  }
-              | /* empty */ {  }
+/*------------------------------------------------------*/
+/*                      PROD: 22                        */
+/*------------------------------------------------------*/
+function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+        {
+
+        }
+        ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 23                        */
+/*------------------------------------------------------*/
+function_params: function_param remaining_function_params
+              {
+
+              }
               ;
 
-remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params {  }
-                        | /* empty */ {  }
+/*------------------------------------------------------*/
+/*                      PROD: 24                        */
+/*------------------------------------------------------*/
+function_params: /* empty */
+              {
+
+              }
+              ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 25                        */
+/*------------------------------------------------------*/
+remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params
+                        {
+
+                        }
                         ;
 
-function_param: type identifier {  };
+/*------------------------------------------------------*/
+/*                      PROD: 26                        */
+/*------------------------------------------------------*/
+remaining_function_params: /* empty */
+                        {
 
-function_declarations: declarations {  }
-                    | /* empty */ {  }
+                        }
+                        ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 27                        */
+/*------------------------------------------------------*/
+function_param: type identifier
+              {
+
+              }
+              ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 28                        */
+/*------------------------------------------------------*/
+function_declarations: declarations
+                    {
+
+                    }
                     ;
 
-statements: statement {  }
-          | statement statements {  }
+/*------------------------------------------------------*/
+/*                      PROD: 29                        */
+/*------------------------------------------------------*/
+function_declarations: /* empty */
+                    {
+
+                    }
+                    ;
+
+statements: statement
+          {
+
+          }
           ;
 
-statement: simple_statement TOK_PUNTOYCOMA {  }
-        | block {  }
+statements: statement statements
+          {
+
+          }
+          ;
+
+statement: simple_statement TOK_PUNTOYCOMA
+        {
+
+        }
         ;
 
-simple_statement: assignment {  }
-              | reading {  }
-              | writing {  }
-              | function_return {  }
+statement: block
+        {
+
+        }
+        ;
+
+simple_statement: assignment
+              {
+
+              }
               ;
 
-block: conditional {  }
-    | loop {  }
+simple_statement: reading
+              {
+
+              }
+              ;
+
+simple_statement: writing
+              {
+
+              }
+              ;
+
+simple_statement: function_return
+              {
+
+              }
+              ;
+
+block: conditional
+    {
+
+    }
     ;
 
-assignment: identifier TOK_ASIGNACION exp  {  }
-          | vector_element TOK_ASIGNACION exp {  }
-          ;
+block: loop
+    {
 
-vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO {  };
-
-conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA { PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> }", RULE_CONDITIONAL); }
-          | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA { PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", RULE_CONDITIONAL + 1); }
-          ;
-
-loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA { PRINT_RULE("<bucle> ::= whie ( <exp> ) { <sentencias> }", RULE_LOOP); };
-
-reading: TOK_SCANF identifier { PRINT_RULE("<lectura> ::= scanf <identificador>", RULE_READING); };
-
-writing: TOK_PRINTF exp { PRINT_RULE("<escritura> ::= printf <exp>", RULE_WRITING); };
-
-function_return: TOK_RETURN exp { PRINT_RULE("<retorno_funcion> ::= return <exp>", RULE_FUNCTION_RETURN); };
-
-exp: exp TOK_MAS exp {  }
-    | exp TOK_MENOS exp {  }
-    | exp TOK_DIVISION exp {  }
-    | exp TOK_ASTERISCO exp {  }
-    | TOK_MENOS exp %prec MENOSU {  }
-    | exp TOK_AND exp {  }
-    | exp TOK_OR exp {  }
-    | TOK_NOT exp {  }
-    | identifier {  }
-    | constant {  }
-    | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO {  } 
-    | TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO {  }
-    | vector_element {  }
-    | identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO {  }
+    }
     ;
 
-exp_list: exp exp_remaining_list {  }
-        | /* empty */ {  }
+assignment: identifier TOK_ASIGNACION exp
+    {
+
+    }
+    ;
+
+assignment: vector_element TOK_ASIGNACION exp
+    {
+
+    }
+    ;
+
+vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
+              {
+
+              }
+              ;
+
+conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+          {
+
+          }
+          ;
+
+conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+          {
+
+          }
+          ;
+
+loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+    {
+
+    }
+    ;
+
+reading: TOK_SCANF identifier
+      {
+
+      }
+      ;
+
+writing: TOK_PRINTF exp
+      {
+
+      }
+      ;
+
+function_return: TOK_RETURN exp
+      {
+
+      }
+      ;
+
+exp: exp TOK_MAS exp
+    {
+
+    }
+    ;
+
+exp: exp TOK_MENOS exp
+    {
+
+    }
+    ;
+
+exp: exp TOK_DIVISION exp
+    {
+
+    }
+    ;
+
+exp: exp TOK_ASTERISCO exp
+    {
+
+    }
+    ;
+
+exp: TOK_MENOS exp %prec MENOSU
+    {
+
+    }
+    ;
+
+exp: exp TOK_AND exp
+    {
+
+    }
+    ;
+
+exp: exp TOK_OR exp
+    {
+
+    }
+    ;
+
+exp: TOK_NOT exp
+    {
+
+    }
+    ;
+
+exp: identifier
+    {
+
+    }
+    ;
+
+exp: constant
+    {
+
+    }
+    ;
+
+exp: TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
+    {
+
+    }
+    ;
+
+exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
+    {
+
+    }
+    ;
+
+exp: vector_element
+    {
+
+    }
+    ;
+
+exp: identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
+    {
+
+    }
+    ;
+
+exp_list: exp exp_remaining_list
+        {
+
+        }
         ;
 
-exp_remaining_list: TOK_COMA exp exp_remaining_list {  }
-                  | /* empty */ {  }
+exp_list: /* empty */
+        {
+
+        }
+        ;
+
+exp_remaining_list: TOK_COMA exp exp_remaining_list
+                  {
+
+                  }
                   ;
 
-comparison: exp TOK_IGUAL exp {  }
-          | exp TOK_DISTINTO exp {  }
-          | exp TOK_MENORIGUAL exp {  }
-          | exp TOK_MAYORIGUAL exp {  }
-          | exp TOK_MENOR exp {  }
-          | exp TOK_MAYOR exp {  }
+exp_remaining_list: /* empty */
+                  {
+
+                  }
+                  ;
+
+comparison: exp TOK_IGUAL exp
+          {
+
+          }
           ;
-          
 
-constant: constant_logic {  }
-        | constant_int {  }
-        ;
+comparison: exp TOK_DISTINTO exp
+          {
 
-constant_logic: TOK_TRUE {  }
-              | TOK_FALSE {  }
-              ;
+          }
+          ;
 
-constant_int: TOK_CONSTANTE_ENTERA {  };
+comparison: exp TOK_MENORIGUAL exp
+          {
 
-identifier: TOK_IDENTIFICADOR {  }
+          }
+          ;
+
+comparison: exp TOK_MAYORIGUAL exp
+          {
+
+          }
+          ;
+
+comparison: exp TOK_MENOR exp
+          {
+
+          }
+          ;
+
+comparison: exp TOK_MAYOR exp
+          {
+
+          }
+          ;
+
+constant: constant_logic
+          {
+
+          }
+          ;
+
+constant: constant_int
+          {
+
+          }
+          ;
+
+constant: TOK_TRUE
+          {
+
+          }
+          ;
+
+constant: TOK_FALSE
+          {
+
+          }
+          ;
+
+constant_int: TOK_CONSTANTE_ENTERA
+            {
+
+            }
+            ;
+
+identifier: TOK_IDENTIFICADOR
+          {
+
+          }
+          ;
 
 %%
 
