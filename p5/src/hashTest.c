@@ -6,7 +6,7 @@
 
 #define STR(x) #x
 
-#define LIMIT 5000
+#define LIMIT 500000
 
 int main(int argc, char const *argv[])
 {
@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
   {
     // usleep(10);
     if(!hash_encode(hash, symbols[i]))
-    {   
+    {
       printf("Fatal error in encode");
       exit(EXIT_FAILURE);
     }
@@ -42,7 +42,6 @@ int main(int argc, char const *argv[])
 
   for(i = 0; i < LIMIT; i++)
   {
-    usleep(10);
     if(hash_decode(hash, symbols[i]) == NULL)
     {
       printf("\nfatal error in decode: idx %ld\n", i);
