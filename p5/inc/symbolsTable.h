@@ -170,4 +170,17 @@ Scope st_getScope(SymbolsTable *st);
 
 /* ------------------------------------------------ */
 
+bool st_insertBlindCurrentScope(
+  SymbolsTable *st,
+  String identifier,
+  ElementCategory elemCat,
+  DataType dataType,
+  IdentifierCategory identifierCategory,
+  Scope scope,
+  uint_fast16_t pos,
+  uint_fast32_t size,
+  uint_fast16_t params,
+  uint_fast16_t localvars
+);
+
 #endif

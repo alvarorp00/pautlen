@@ -6,7 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
-#include <stdint.h>
+#include <stdint.h> /* for fast integers */
 
 #define _DEF_HASHLEN_ 9
 #define _HIGH_CRITICAL_FACTOR_ 0.6

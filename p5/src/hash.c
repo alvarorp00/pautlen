@@ -6,7 +6,6 @@
  */
 
 #include "hash.h"
-#include "symbol.h"
 
 typedef struct _ProbingResponse ProbingResponse;
 typedef struct _Node Node;
@@ -63,7 +62,7 @@ static bool node_isEmpty(Node *node);
  */
 static Node* init_node(void* info);
 
-static void clean_nodes(Node **nodes,Clean clean, size_t max_size);
+static void clean_nodes(Node **nodes,Clean clean, uint_fast64_t max_size);
 
 /**
  * Linear probing for hash structure
@@ -131,9 +130,7 @@ static bool init_nodes(Hash *hash)
 }
 
 void hash_clean(Hash *hash)
-{
-  size_t i;
-  
+{  
   if(!hash)
     return;
 
@@ -199,7 +196,7 @@ static ProbingResponse linearProbing(
 {
   ProbingResponse response;
   uint_fast64_t hashed, val;
-  size_t i;
+  uint_fast64_t i;
   
   hashed = hashcode(info) % max_size;
 
@@ -253,10 +250,10 @@ bool hash_contains(Hash *hash, void* info)
 
 static void refactor_ifNeeded(Hash *hash)
 {
-  uint_fast16_t new_size, __size;
+  uint_fast16_t __size;
   uint_fast64_t i;
   ProbingResponse r_response;
-  Node **new_nodes;
+  Node **__nodes;
   
   if(!hash)
     return;
@@ -266,8 +263,8 @@ static void refactor_ifNeeded(Hash *hash)
   if(hash->factor < _HIGH_CRITICAL_FACTOR_)
     return;
 
-  new_size = hash->max_size << 1;
-  new_nodes = (Node**)calloc(new_size, sizeof(Node*));
+  __size = hash->max_size << 1;
+  __nodes = (Node**)calloc(__size, sizeof(Node*));
   
   for(i = 0; i < hash->max_size; i++)
   {
@@ -278,21 +275,23 @@ static void refactor_ifNeeded(Hash *hash)
     }
     
     r_response = linearProbing(
-      new_nodes,
+      __nodes,
       hash->nodes[i]->info,
       hash->hashcode,
       hash->equals,
-      new_size
+      __size
     );
 
-    new_nodes[r_response.index] = hash->nodes[i];
+    __nodes[r_response.index] = hash->nodes[i];
   }
 
-  printf("Resizing from @ %ld --> %ld @ \n", hash->max_size, new_size);
+  #ifdef _EXPLAIN_
+  printf("Resizing from @ %ld --> %ld @ \n", hash->max_size, __size);
+  #endif
   
   free(hash->nodes);
-  hash->nodes = new_nodes;
-  hash->max_size = new_size;
+  hash->nodes = __nodes;
+  hash->max_size = __size;
   hash->factor = (float)hash->curr_size/(float)hash->max_size;
 
 }
@@ -310,9 +309,9 @@ static Node* init_node(void* info)
   return node;
 }
 
-static void clean_nodes(Node **nodes, Clean clean, size_t max_size)
+static void clean_nodes(Node **nodes, Clean clean, uint_fast64_t max_size)
 {
-  size_t i;
+  uint_fast64_t i;
   
   for(i = 0; i < max_size; i++)
   {

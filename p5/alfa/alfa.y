@@ -11,6 +11,7 @@
   #include "rules.h"
 
   #define PRINT_RULE(str, val) fprintf(yyout, ";R%d:\t%s\n", val, str);
+  #define PARSEFAIL 0
 
   extern char errbuff[BUFF];
 
@@ -33,8 +34,14 @@
   /* - - - - - - GLOBAL VARS - - - - - - - */
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
 
+  ElementCategory current_category;
   DataType current_type;
   IdentifierCategory current_class;
+  Scope current_scope;
+  uint_fast16_t current_pos;
+  uint_fast32_t current_size;
+  uint_fast16_t current_params;
+  uint_fast16_t current_localvars;
 
 %}
 
@@ -738,7 +745,27 @@ constant_int: TOK_CONSTANTE_ENTERA
 /*------------------------------------------------------*/
 identifier: TOK_IDENTIFICADOR
           {
-
+            if(st_searchCurrentScope(st, $1.lexeme) != NULL)
+            {
+              #line 743 "alfa.y"
+              COPYERR(__FILE__, "Identifier %s already at current scope", $1.lexeme);
+              return PARSEFAIL;
+            }
+            else
+            {
+              st_insertBlindCurrentScope(
+                st,
+                $1.lexeme,
+                current_category,
+                current_type,
+                current_class,
+                current_scope,
+                current_pos,
+                current_size,
+                current_params,
+                current_localvars
+              );
+            }
           }
           ;
 

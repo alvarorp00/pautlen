@@ -3,9 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include <math.h>
-#include <stdbool.h>
 #include <limits.h>
 #include "generator.h"
 
@@ -55,7 +56,7 @@
 /**
  * Buff size
  */
-#define BUFF 128
+#define BUFF 256
 
 /**
  * Max identifiers length

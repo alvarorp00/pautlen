@@ -357,3 +357,102 @@ static Symbol* searchSymbol(Hash *hash, String identifier)
 
   return _tmp;
 }
+
+/* -------------------------------------------- */
+/* -------------------------------------------- */
+/* -------------------------------------------- */
+
+bool st_insertBlindCurrentScope(
+  SymbolsTable *st,
+  String identifier,
+  ElementCategory elemCat,
+  DataType dataType,
+  IdentifierCategory identifierCategory,
+  Scope scope,
+  uint_fast16_t pos,
+  uint_fast32_t size,
+  uint_fast16_t params,
+  uint_fast16_t localvars
+)
+{
+  Hash *dst;
+  
+  if(!st || !identifier)
+    return false;
+
+  if(scope != st->currentScope)
+    return false;
+  
+  dst = st->currentScope == GLOBAL ? st->globalScope : st->localScope;
+    
+  if(searchSymbol(dst, identifier) != NULL)
+    return false;
+  
+  switch (elemCat)
+  {
+  case VAR:
+
+    switch (identifierCategory)
+    {
+    case SCALAR:
+      return st_set_scalar_variable(
+        st,
+        identifier,
+        dataType,
+        scope,
+        pos
+      );
+
+    case VECTOR:
+      return st_set_vector_variable(
+        st,
+        identifier,
+        dataType,
+        scope,
+        pos,
+        size
+      );
+    
+    default:
+      return false;
+    }
+    
+    break;
+  
+  case PARAM:
+    switch (identifierCategory)
+    {
+    case SCALAR:
+      return st_set_scalar_parametre(
+        st,
+        identifier,
+        dataType,
+        pos
+      );
+
+    case VECTOR:
+      return st_set_vector_parametre(
+        st,
+        identifier,
+        dataType,
+        pos,
+        size
+      );
+    
+    default:
+      return false;
+    }
+    break;
+
+  case FUNCT:
+    return st_set_function(
+      st,
+      identifier,
+      params,
+      localvars
+    );
+
+  default:
+    return false;
+  }
+}

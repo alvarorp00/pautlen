@@ -3,7 +3,7 @@ BISONFILE = alfa.y
 TOKEN = tokens.h
 
 CC = gcc
-CFLAGS = -g
+CFLAGS = -g -Wall
 BISONFLAGS = -y -d -v -Wyacc
 YACCFLAGS = 
 
@@ -44,7 +44,7 @@ TESTFILEOUT = $(TESTFILES)expectedResTS.txt
 TESTRESULT = $(RESULTS)testresult.txt
 
 default: clean semantic_manual ## Equivalent to 'make all'
-		clear
+		@# clear
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
