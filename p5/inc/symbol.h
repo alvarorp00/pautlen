@@ -87,7 +87,7 @@ void symbol_configure_vector_variable(
   DataType basictype,
   Scope scope,
   int pos,
-  uint_fast8_t size
+  int8_t size
 );
 
 /**
@@ -113,7 +113,7 @@ void symbol_configure_vector_parametre(
   Symbol *s,
   DataType basicType,
   int pos,
-  uint_fast8_t size
+  int8_t size
 );
 
 /**
@@ -124,8 +124,8 @@ void symbol_configure_vector_parametre(
  */
 void symbol_configure_function(
   Symbol *s,
-  uint_fast32_t params,
-  uint_fast32_t localvars
+  int32_t params,
+  int32_t localvars
 );
 
 /**

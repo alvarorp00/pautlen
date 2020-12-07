@@ -131,7 +131,7 @@ program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements T
 /*------------------------------------------------------*/
 er1: /* empty --> write data section */
     {
-
+      
     }
     ;
 
