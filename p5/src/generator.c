@@ -184,9 +184,9 @@ void write_reading(FPASM, char* name, int type) {
   // push into the stack the offset of the variable
   _ASM( "push dword _%s", name );
 
-  if ( type == _BOOLEAN ) {
+  if ( type == BOOLEAN ) {
     _ASM( "call scan_boolean" );
-  } else if ( type == _INTEGER ) {
+  } else if ( type == INT ) {
     _ASM( "call scan_int" );
   }
 
@@ -204,9 +204,9 @@ void write_writing(FPASM, int is_var, int type) {
 
   _ASM( "push dword eax" );
 
-  if ( type == _BOOLEAN ) {
+  if ( type == BOOLEAN ) {
     _ASM( "call print_boolean" );
-  } else if ( type == _INTEGER ) {
+  } else if ( type == INT ) {
     _ASM( "call print_int" );
   }
 

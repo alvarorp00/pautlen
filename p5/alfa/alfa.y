@@ -16,7 +16,7 @@
   extern char errbuff[BUFF];
 
   /* Function to extract tokens from morfologic */
-  extern int yylex();
+  extern int yylex(SymbolsTable *st);
 
   /* Default input file */
   extern FILE* yyin;
@@ -45,6 +45,8 @@
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
+
+  bool in_declare; /* true if we're in declarations part, false if not */
   
 %}
 
@@ -429,7 +431,8 @@ block: loop
 /*------------------------------------------------------*/
 /*                      PROD: 43                        */
 /*------------------------------------------------------*/
-assignment: identifier TOK_ASIGNACION exp
+/* should be "assignment: identifier TOK_ASIGNACION etc.." */
+assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
 
     }
@@ -582,7 +585,8 @@ exp: TOK_NOT exp
 /*------------------------------------------------------*/
 /*                      PROD: 80                        */
 /*------------------------------------------------------*/
-exp: identifier
+/* should be "exp: identifier" */
+exp: TOK_IDENTIFICADOR
     {
 
     }
@@ -764,7 +768,7 @@ constant_logic: TOK_FALSE
 /*------------------------------------------------------*/
 constant_int: TOK_CONSTANTE_ENTERA
             {
-
+              write_operand(FPASM_NAME, $1.int_value, false);
             }
             ;
 

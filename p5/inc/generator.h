@@ -1,14 +1,15 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 #include <stdio.h>
+#include "alfa.h"
 
 #define FPASM_NAME            fpasm
 #define FPASM                 FILE *FPASM_NAME
 
-typedef enum {
-  _INTEGER=0,
-  _BOOLEAN=1
-} _var_types;
+// typedef enum {
+//   _INTEGER=0,
+//   _BOOLEAN=1
+// } _var_types;
 
 #define DB  "db"
 #define DW  "dw"
