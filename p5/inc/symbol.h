@@ -67,7 +67,12 @@ int symbol_get_value(Symbol *s);
  * @param scope scope {LOCAL, GLOBAL}
  * @param pos position in case it's in a function
  */
-void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope, uint_fast16_t pos);
+void symbol_configure_scalar_variable(
+  Symbol *s,
+  DataType basicType,
+  Scope scope,
+  int pos
+);
 
 /**
  * Configures symbol as an vector variable
@@ -77,7 +82,13 @@ void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope
  * @param pos position in case it's in a function
  * @param size size of the vector
  */
-void symbol_configure_vector_variable(Symbol *s, DataType basictype, Scope scope, uint_fast16_t pos, uint_fast16_t size);
+void symbol_configure_vector_variable(
+  Symbol *s,
+  DataType basictype,
+  Scope scope,
+  int pos,
+  uint_fast8_t size
+);
 
 /**
  * Configures symbol as an scalar parametre
@@ -85,7 +96,11 @@ void symbol_configure_vector_variable(Symbol *s, DataType basictype, Scope scope
  * @param basicType type {BOOLEAN, INT}
  * @param pos position in function arguments, start in 0
  */
-void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, uint_fast16_t pos);
+void symbol_configure_scalar_parametre(
+  Symbol *s,
+  DataType basicType,
+  int pos
+);
 
 /**
  * Configures symbol as an vector parametre
@@ -94,7 +109,12 @@ void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, uint_fast1
  * @param pos position in case it's in a function
  * @param size size of the vector
  */
-void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast16_t pos, uint_fast16_t size);
+void symbol_configure_vector_parametre(
+  Symbol *s,
+  DataType basicType,
+  int pos,
+  uint_fast8_t size
+);
 
 /**
  * Configures symbol as a function
@@ -102,7 +122,11 @@ void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast1
  * @param params number of params, starting in 0
  * @param localvars number of localvars, starting in 1
  */
-void symbol_configure_function(Symbol *s, uint_fast16_t params, uint_fast16_t localvars);
+void symbol_configure_function(
+  Symbol *s,
+  uint_fast32_t params,
+  uint_fast32_t localvars
+);
 
 /**
  * Compares two symbol's

@@ -201,7 +201,7 @@ bool st_set_scalar_variable(
   String identifier,
   DataType dt,
   Scope scope,
-  uint_fast16_t pos
+  int_fast32_t pos
 )
 {
   Symbol *s;
@@ -232,7 +232,7 @@ bool st_set_vector_variable(
   String identifier,
   DataType dt,
   Scope scope,
-  uint_fast16_t pos,
+  int_fast32_t pos,
   uint_fast32_t size
 )
 {
@@ -262,7 +262,7 @@ bool st_set_scalar_parametre(
   SymbolsTable *st,
   String identifier,
   DataType dt,
-  uint_fast16_t pos
+  int_fast32_t pos
 )
 {
   Symbol *s;
@@ -286,7 +286,7 @@ bool st_set_vector_parametre(
   SymbolsTable *st,
   String identifier,
   DataType dt,
-  uint_fast16_t pos,
+  int_fast32_t pos,
   uint_fast32_t size
 )
 {
@@ -310,8 +310,8 @@ bool st_set_vector_parametre(
 bool st_set_function(
   SymbolsTable *st,
   String identifier,
-  uint_fast16_t params,
-  uint_fast16_t localvars
+  int_fast32_t params,
+  int_fast32_t localvars
 )
 {
   Symbol *s;
@@ -359,8 +359,6 @@ static Symbol* searchSymbol(Hash *hash, String identifier)
 }
 
 /* -------------------------------------------- */
-/* -------------------------------------------- */
-/* -------------------------------------------- */
 
 bool st_insertBlindCurrentScope(
   SymbolsTable *st,
@@ -369,10 +367,10 @@ bool st_insertBlindCurrentScope(
   DataType dataType,
   IdentifierCategory identifierCategory,
   Scope scope,
-  uint_fast16_t pos,
+  int_fast32_t pos,
   uint_fast32_t size,
-  uint_fast16_t params,
-  uint_fast16_t localvars
+  int_fast32_t params,
+  int_fast32_t localvars
 )
 {
   Hash *dst;

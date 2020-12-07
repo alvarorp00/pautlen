@@ -16,8 +16,8 @@ struct _Variable
   DataType basicType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   Scope scope; /* Scope {LOCAL, GLOBAL} */
-  uint_fast16_t pos; /* Position in function in case it's in LOCAL Scope */
-  uint_fast32_t size; /* Size in case it's a vector */
+  int pos; /* Position in function in case it's in LOCAL Scope */
+  uint_fast8_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -27,8 +27,8 @@ struct _Parametre
 {
   DataType basicType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
-  uint_fast16_t pos; /* Position of the parametre in function call */
-  uint_fast32_t size; /* Size in case it's a vector */
+  int pos; /* Position of the parametre in function call */
+  uint_fast8_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -99,7 +99,7 @@ void symbol_configure_scalar_variable(
   Symbol *s,
   DataType basicType,
   Scope scope,
-  uint_fast16_t pos
+  int pos
 )
 {
   if(!s)
@@ -116,8 +116,8 @@ void symbol_configure_vector_variable(
   Symbol *s,
   DataType basicType,
   Scope scope,
-  uint_fast16_t pos,
-  uint_fast32_t size
+  int pos,
+  uint_fast8_t size
 )
 {
   if(!s)
@@ -134,7 +134,7 @@ void symbol_configure_vector_variable(
 void symbol_configure_scalar_parametre(
   Symbol *s,
   DataType basicType,
-  uint_fast16_t pos
+  int pos
 )
 {
   if(!s)
@@ -148,8 +148,8 @@ void symbol_configure_scalar_parametre(
 void symbol_configure_vector_parametre(
   Symbol *s,
   DataType basicType,
-  uint_fast16_t pos,
-  uint_fast32_t size
+  int pos,
+  uint_fast8_t size
 )
 {
   if(!s)
@@ -163,8 +163,8 @@ void symbol_configure_vector_parametre(
 
 void symbol_configure_function(
   Symbol *s,
-  uint_fast16_t params,
-  uint_fast16_t localvars
+  uint_fast32_t params,
+  uint_fast32_t localvars
 )
 {
   if(!s)

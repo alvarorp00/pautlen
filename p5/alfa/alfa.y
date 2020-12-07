@@ -34,14 +34,14 @@
   /* - - - - - - GLOBAL VARS - - - - - - - */
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
 
-  ElementCategory current_category;
-  DataType current_type;
-  IdentifierCategory current_class;
-  Scope current_scope;
-  uint_fast16_t current_pos;
-  uint_fast32_t current_size;
-  uint_fast16_t current_params;
-  uint_fast16_t current_localvars;
+  ElementCategory current_category; /* VAR, PARAM, FUNCT */
+  DataType current_type; /* INT, BOOLEAN */
+  IdentifierCategory current_class; /* SCALAR, VECTOR */
+  Scope current_scope; /* GLOBAL, LOCAL */
+  uint_fast16_t current_pos; /* Position inside funct either params or localvars */
+  uint_fast32_t current_size; /* Vector's size */
+  uint_fast16_t current_params; /* Function params amount */
+  uint_fast16_t current_localvars; /* Function localvars amount */
 
 %}
 
@@ -171,7 +171,14 @@ class: class_vector
       }
       ;
 
-class_scalar: type {  };
+/*------------------------------------------------------*/
+/*                      PROD: 9                         */
+/*------------------------------------------------------*/
+class_scalar: type
+            {
+
+            }
+            ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 10                        */
