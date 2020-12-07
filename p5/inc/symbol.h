@@ -63,13 +63,13 @@ int symbol_get_value(Symbol *s);
 /**
  * Configures symbol as an scalar variable
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param scope scope {LOCAL, GLOBAL}
  * @param pos position in case it's in a function
  */
 void symbol_configure_scalar_variable(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   Scope scope,
   int pos
 );
@@ -77,14 +77,14 @@ void symbol_configure_scalar_variable(
 /**
  * Configures symbol as an vector variable
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param scope scope {LOCAL, GLOBAL}
  * @param pos position in case it's in a function
  * @param size size of the vector
  */
 void symbol_configure_vector_variable(
   Symbol *s,
-  DataType basictype,
+  DataType dataType,
   Scope scope,
   int pos,
   int8_t size
@@ -93,25 +93,25 @@ void symbol_configure_vector_variable(
 /**
  * Configures symbol as an scalar parametre
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param pos position in function arguments, start in 0
  */
 void symbol_configure_scalar_parametre(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   int pos
 );
 
 /**
  * Configures symbol as an vector parametre
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param pos position in case it's in a function
  * @param size size of the vector
  */
 void symbol_configure_vector_parametre(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   int pos,
   int8_t size
 );
