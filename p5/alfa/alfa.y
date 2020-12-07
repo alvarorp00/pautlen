@@ -38,10 +38,10 @@
   DataType current_type; /* INT, BOOLEAN */
   IdentifierCategory current_class; /* SCALAR, VECTOR */
   Scope current_scope; /* GLOBAL, LOCAL */
-  uint_fast16_t current_pos; /* Position inside funct either params or localvars */
-  uint_fast32_t current_size; /* Vector's size */
-  uint_fast16_t current_params; /* Function params amount */
-  uint_fast16_t current_localvars; /* Function localvars amount */
+  int current_pos; /* Position inside funct either params or localvars */
+  uint_fast8_t current_size; /* Vector's size */
+  int_fast32_t current_params; /* Function params amount */
+  int_fast32_t current_localvars; /* Function localvars amount */
 
 %}
 
@@ -120,11 +120,29 @@
 /*------------------------------------------------------*/
 /*                      PROD: 1                         */
 /*------------------------------------------------------*/
-program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations functions statements TOK_LLAVEDERECHA
+program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
       {
 
       }
       ;
+
+/*------------------------------------------------------*/
+/*                      PROD: LAMBDA1                   */
+/*------------------------------------------------------*/
+er1: /* empty --> write data section */
+    {
+
+    }
+    ;
+
+/*------------------------------------------------------*/
+/*                      PROD: LAMBDA2                   */
+/*------------------------------------------------------*/
+er2: /* empty --> write "main:" */
+    {
+
+    }
+    ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 2                         */

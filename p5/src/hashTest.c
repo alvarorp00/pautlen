@@ -29,7 +29,6 @@ int main(int argc, char const *argv[])
 
   for(i = 0; i < LIMIT; i++)
   {
-    // usleep(10);
     if(!hash_encode(hash, symbols[i]))
     {
       printf("Fatal error in encode");
