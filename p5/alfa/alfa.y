@@ -45,7 +45,7 @@
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
-
+  
 %}
 
 %union
@@ -429,8 +429,7 @@ block: loop
 /*------------------------------------------------------*/
 /*                      PROD: 43                        */
 /*------------------------------------------------------*/
-/* TOK_IDENTIFICADOR is identifier */
-assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
+assignment: identifier TOK_ASIGNACION exp
     {
 
     }
@@ -583,8 +582,7 @@ exp: TOK_NOT exp
 /*------------------------------------------------------*/
 /*                      PROD: 80                        */
 /*------------------------------------------------------*/
-/* TOK_IDENTIFICADOR is identifier */
-exp: TOK_IDENTIFICADOR
+exp: identifier
     {
 
     }

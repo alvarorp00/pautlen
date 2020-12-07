@@ -233,7 +233,7 @@ bool st_set_vector_variable(
   DataType dt,
   Scope scope,
   int pos,
-  uint_fast8_t size
+  int8_t size
 )
 {
   Symbol *s;
@@ -287,7 +287,7 @@ bool st_set_vector_parametre(
   String identifier,
   DataType dt,
   int pos,
-  uint_fast8_t size
+  int8_t size
 )
 {
   Symbol *s;
@@ -368,7 +368,7 @@ bool st_insertBlindCurrentScope(
   IdentifierCategory identifierCategory,
   Scope scope,
   int pos,
-  uint_fast8_t size,
+  int8_t size,
   int32_t params,
   int32_t localvars
 )

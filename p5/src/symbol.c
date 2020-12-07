@@ -290,7 +290,7 @@ int symbol_get_var_pos(Symbol *s)
 int8_t symbol_get_var_size(Symbol *s)
 {
   if(!s)
-    return UNSP_ERR;
+    return CHAR_MIN;
   return s->element.var.size;
 }
 
@@ -323,7 +323,7 @@ int symbol_get_param_pos(Symbol *s)
 int8_t symbol_get_param_size(Symbol *s)
 {
   if(!s)
-    return UNSP_ERR;
+    return CHAR_MIN;
 
   return s->element.param.size;
 }
