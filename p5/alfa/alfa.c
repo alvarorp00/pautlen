@@ -19,6 +19,9 @@ extern int yyparse(SymbolsTable *st);
 
 /* Locals */
 
+/* Where assembly is written */
+extern FILE *fpasm;
+
 /* Common errbuff defined in "alfa.h" */
 char errbuff[BUFF];
 

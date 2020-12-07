@@ -13,7 +13,7 @@
  */
 struct _Variable
 {
-  DataType basicType; /* Identifier data type {BOOLEAN, INT} */
+  DataType dataType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   Scope scope; /* Scope {LOCAL, GLOBAL} */
   int pos; /* Position in function in case it's in LOCAL Scope */
@@ -25,7 +25,7 @@ struct _Variable
  */
 struct _Parametre
 {
-  DataType basicType; /* Identifier data type {BOOLEAN, INT} */
+  DataType dataType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   int pos; /* Position of the parametre in function call */
   int8_t size; /* Size in case it's a vector */
@@ -97,7 +97,7 @@ Symbol *symbol_init(String key, int value)
 
 void symbol_configure_scalar_variable(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   Scope scope,
   int pos
 )
@@ -107,14 +107,14 @@ void symbol_configure_scalar_variable(
 
   s->elemCat = VAR;
   s->element.var.classCat = SCALAR;
-  s->element.var.basicType = basicType;
+  s->element.var.dataType = dataType;
   s->element.var.scope = scope;
   s->element.var.pos = pos;
 }
 
 void symbol_configure_vector_variable(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   Scope scope,
   int pos,
   int8_t size
@@ -125,7 +125,7 @@ void symbol_configure_vector_variable(
 
   s->elemCat = VAR;
   s->element.var.classCat = VECTOR;
-  s->element.var.basicType = basicType;
+  s->element.var.dataType = dataType;
   s->element.var.scope = scope;
   s->element.var.pos = pos;
   s->element.var.size = size;
@@ -133,7 +133,7 @@ void symbol_configure_vector_variable(
 
 void symbol_configure_scalar_parametre(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   int pos
 )
 {
@@ -141,13 +141,13 @@ void symbol_configure_scalar_parametre(
     return;
   s->elemCat = PARAM;
   s->element.param.classCat = SCALAR;
-  s->element.param.basicType = basicType;
+  s->element.param.dataType = dataType;
   s->element.param.pos = pos;
 }
 
 void symbol_configure_vector_parametre(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   int pos,
   int8_t size
 )
@@ -156,7 +156,7 @@ void symbol_configure_vector_parametre(
     return;
   s->elemCat = PARAM;
   s->element.param.classCat = VECTOR;
-  s->element.param.basicType = basicType;
+  s->element.param.dataType = dataType;
   s->element.param.pos = pos;
   s->element.param.size = size;
 }
@@ -252,3 +252,99 @@ String symbol_toString(Symbol *s)
     return NULL;
   return s->key;
 }
+
+/* ------------------------------ */
+/* -- -- -- - GETTERS -- -- -- -- */
+/* ------------------------------ */
+
+/*- - - VARS - - - */
+
+DataType symbol_get_var_dataType(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.dataType;
+}
+
+IdentifierCategory symbol_get_var_identifierCategory(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.classCat;
+}
+
+Scope symbol_get_var_scope(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.scope;
+}
+
+int symbol_get_var_pos(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.pos;
+}
+
+int8_t symbol_get_var_size(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.size;
+}
+
+/* - - - PARAMS - - -  */
+
+DataType symbol_get_param_dataType(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.dataType;
+}
+
+IdentifierCategory symbol_get_param_identifierCategory(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.classCat;
+}
+
+int symbol_get_param_pos(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.pos;
+}
+
+int8_t symbol_get_param_size(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.size;
+}
+
+/* - - - FUNCTS - - - */
+
+int32_t symbol_get_funct_params(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.func.params;
+}
+
+int32_t symbol_get_funct_localvars(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.func.localvars;
+}
+
+/*  - * - * - * - * - * - * - * - */
+

@@ -32,11 +32,12 @@ OYYLEX = $(OBJ)lex.yy.o
 CYYPARSE = $(SRC)y.tab.c
 OYYPARSE = $(OBJ)y.tab.o
 
+GENERATOR = $(SRC)generator.c
 HASH = $(SRC)hash.c
 TSYMBOLS = $(SRC)symbolsTable.c
 SYMBOL = $(SRC)symbol.c
 
-SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH)
+SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH) $(GENERATOR)
 
 TESTFILEIN = $(TESTFILES)pruebaTS.txt
 TESTFILEOUT = $(TESTFILES)expectedResTS.txt

@@ -79,10 +79,25 @@
 #define _KEY_MAX_SIZE_ MAX_LEN
 
 /**
+ * fprintf to stderr stream
+ */
+#define eprintf(str, ...) \
+            fprintf(stderr, ">> " str "\n", ##__VA_ARGS__)
+
+/**
  * Copies from tf to te a maximum of BUFF chars
  */
 #define COPY(te, tf) \
             strncpy(te, tf, BUFF)
+
+/**
+ * Prints failure trace
+ */
+#ifdef _DEBUG_
+#define TRACE() eprintf("Trace coming from:\t @ file: %s @ funct: %s @ line: %d", __FILE__, __func__, __LINE__);
+#else
+#define TRACE() eprintf("Debug option is not specified. Skipping trace...");
+#endif
 
 /**
  * Updates errbuff info
@@ -90,7 +105,8 @@
  * @param str string to print
  */
 #define COPYERR(file, str, ...) \
-            snprintf(errbuff, BUFF, "*** at %s: [at line: %d; col: %d]: " str, file, line, col, ##__VA_ARGS__);
+            TRACE(); \
+            snprintf(errbuff, BUFF, "*** at %s: [at line: %d; col: %d]: " str, file, line, col, ##__VA_ARGS__)
 
 /**
  * Vector's maximum length
@@ -117,8 +133,8 @@ enum _ElementCategory
  */
 enum _DataType
 {
-  BOOLEAN,
-  INT
+  INT=0,
+  BOOLEAN=1
 };
 
 /**
@@ -174,6 +190,11 @@ typedef struct _attrs_type attrs_type;
  * Type definition for String
  */
 typedef char* String;
+
+/**
+ * Out file
+ */
+extern FILE *fpasm;
 
 /**
  * Common error buffer

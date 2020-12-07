@@ -149,6 +149,38 @@ uint_fast64_t symbol_hashcode(void *s);
  */
 void symbol_delete(void *s);
 
-String symbol_toString(Symbol *s);
+/* ------------------------------ */
+/* -- -- -- - GETTERS -- -- -- -- */
+/* ------------------------------ */
+
+/*- - - VARS - - - */
+
+DataType symbol_get_var_dataType(Symbol *s);
+
+IdentifierCategory symbol_get_var_identifierCategory(Symbol *s);
+
+Scope symbol_get_var_scope(Symbol *s);
+
+int symbol_get_var_pos(Symbol *s);
+
+int8_t symbol_get_var_size(Symbol *s);
+
+/* - - - PARAMS - - -  */
+
+DataType symbol_get_param_dataType(Symbol *s);
+
+IdentifierCategory symbol_get_param_identifierCategory(Symbol *s);
+
+int symbol_get_param_pos(Symbol *s);
+
+int8_t symbol_get_param_size(Symbol *s);
+
+/* - - - FUNCTS - - - */
+
+int32_t symbol_get_funct_params(Symbol *s);
+
+int32_t symbol_get_funct_localvars(Symbol *s);
+
+/*  - * - * - * - * - * - * - * - */
 
 #endif

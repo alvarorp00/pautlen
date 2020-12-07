@@ -8,7 +8,7 @@
   #include <stdbool.h>
   #include "alfa.h"
   #include "symbolsTable.h"
-  #include "rules.h"
+  #include "generator.h"
 
   #define PRINT_RULE(str, val) fprintf(yyout, ";R%d:\t%s\n", val, str);
   #define PARSEFAIL 0
@@ -21,8 +21,11 @@
   /* Default input file */
   extern FILE* yyin;
 
-  /* Default output file */
+  /* Default yyoutput file */
   extern FILE* yyout;
+
+  /* Default assembly file */
+  FPASM;
 
   /* Common morfoligic error flag defined in "alfa.h" */
   bool morfofailure;
@@ -122,7 +125,7 @@
 /*------------------------------------------------------*/
 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
       {
-
+        write_end(FPASM_NAME);
       }
       ;
 
@@ -426,7 +429,8 @@ block: loop
 /*------------------------------------------------------*/
 /*                      PROD: 43                        */
 /*------------------------------------------------------*/
-assignment: identifier TOK_ASIGNACION exp
+/* TOK_IDENTIFICADOR is identifier */
+assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
 
     }
@@ -579,7 +583,8 @@ exp: TOK_NOT exp
 /*------------------------------------------------------*/
 /*                      PROD: 80                        */
 /*------------------------------------------------------*/
-exp: identifier
+/* TOK_IDENTIFICADOR is identifier */
+exp: TOK_IDENTIFICADOR
     {
 
     }
