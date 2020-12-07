@@ -39,9 +39,9 @@
   IdentifierCategory current_class; /* SCALAR, VECTOR */
   Scope current_scope; /* GLOBAL, LOCAL */
   int current_pos; /* Position inside funct either params or localvars */
-  uint_fast8_t current_size; /* Vector's size */
-  int_fast32_t current_params; /* Function params amount */
-  int_fast32_t current_localvars; /* Function localvars amount */
+  int8_t current_size; /* Vector's size */
+  int32_t current_params; /* Function params amount */
+  int32_t current_localvars; /* Function localvars amount */
 
 %}
 
@@ -131,7 +131,7 @@ program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements T
 /*------------------------------------------------------*/
 er1: /* empty --> write data section */
     {
-      
+
     }
     ;
 
