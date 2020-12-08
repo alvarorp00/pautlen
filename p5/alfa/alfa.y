@@ -147,7 +147,7 @@ program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements T
 er1: /* empty --> write data section */
     {
       write_data_header(FPASM_NAME);
-      /* write_symbols_table(FPASM_NAME, st) */
+      write_symbols_table(FPASM_NAME, st);
       write_code_segment(FPASM_NAME);
       in_declare = false;
     }
