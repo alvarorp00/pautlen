@@ -75,6 +75,11 @@ hash_test: ## Test hash
 	 	@$(CC) -I $(INC) -o run_hash_test $(SRC)hashTest.c $(SYMBOL) $(HASH)
 		./run_hash_test
 
+syntactic_test: all
+		@ echo "\nExecuting first test"
+		@ ./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
+		@ $(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
+
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)

@@ -63,38 +63,58 @@ int symbol_get_value(Symbol *s);
 /**
  * Configures symbol as an scalar variable
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param scope scope {LOCAL, GLOBAL}
  * @param pos position in case it's in a function
  */
-void symbol_configure_scalar_variable(Symbol *s, DataType basicType, Scope scope, uint_fast16_t pos);
+void symbol_configure_scalar_variable(
+  Symbol *s,
+  DataType dataType,
+  Scope scope,
+  int pos
+);
 
 /**
  * Configures symbol as an vector variable
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param scope scope {LOCAL, GLOBAL}
  * @param pos position in case it's in a function
  * @param size size of the vector
  */
-void symbol_configure_vector_variable(Symbol *s, DataType basictype, Scope scope, uint_fast16_t pos, uint_fast16_t size);
+void symbol_configure_vector_variable(
+  Symbol *s,
+  DataType dataType,
+  Scope scope,
+  int pos,
+  int8_t size
+);
 
 /**
  * Configures symbol as an scalar parametre
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param pos position in function arguments, start in 0
  */
-void symbol_configure_scalar_parametre(Symbol *s, DataType basicType, uint_fast16_t pos);
+void symbol_configure_scalar_parametre(
+  Symbol *s,
+  DataType dataType,
+  int pos
+);
 
 /**
  * Configures symbol as an vector parametre
  * @param s symbol
- * @param basicType type {BOOLEAN, INT}
+ * @param dataType type {BOOLEAN, INT}
  * @param pos position in case it's in a function
  * @param size size of the vector
  */
-void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast16_t pos, uint_fast16_t size);
+void symbol_configure_vector_parametre(
+  Symbol *s,
+  DataType dataType,
+  int pos,
+  int8_t size
+);
 
 /**
  * Configures symbol as a function
@@ -102,7 +122,11 @@ void symbol_configure_vector_parametre(Symbol *s, DataType basicType, uint_fast1
  * @param params number of params, starting in 0
  * @param localvars number of localvars, starting in 1
  */
-void symbol_configure_function(Symbol *s, uint_fast16_t params, uint_fast16_t localvars);
+void symbol_configure_function(
+  Symbol *s,
+  int32_t params,
+  int32_t localvars
+);
 
 /**
  * Compares two symbol's
@@ -124,5 +148,39 @@ uint_fast64_t symbol_hashcode(void *s);
  * @param s symbol to delete
  */
 void symbol_delete(void *s);
+
+/* ------------------------------ */
+/* -- -- -- - GETTERS -- -- -- -- */
+/* ------------------------------ */
+
+/*- - - VARS - - - */
+
+DataType symbol_get_var_dataType(Symbol *s);
+
+IdentifierCategory symbol_get_var_identifierCategory(Symbol *s);
+
+Scope symbol_get_var_scope(Symbol *s);
+
+int symbol_get_var_pos(Symbol *s);
+
+int8_t symbol_get_var_size(Symbol *s);
+
+/* - - - PARAMS - - -  */
+
+DataType symbol_get_param_dataType(Symbol *s);
+
+IdentifierCategory symbol_get_param_identifierCategory(Symbol *s);
+
+int symbol_get_param_pos(Symbol *s);
+
+int8_t symbol_get_param_size(Symbol *s);
+
+/* - - - FUNCTS - - - */
+
+int32_t symbol_get_funct_params(Symbol *s);
+
+int32_t symbol_get_funct_localvars(Symbol *s);
+
+/*  - * - * - * - * - * - * - * - */
 
 #endif

@@ -10,7 +10,15 @@
   #include "symbolsTable.h"
   #include "generator.h"
 
-  #define PRINT_RULE(str, val) fprintf(yyout, ";R%d:\t%s\n", val, str);
+  #define _DEBUG_
+
+  #ifdef _DEBUG_
+  #define PRINT_RULE(str, val) \
+              fprintf(yyout, ";R%d:\t%s\n", val, str);
+  #else
+  #define PRINT_RULE(str, val)
+  #endif
+  
   #define PARSEFAIL 0
 
   extern char errbuff[BUFF];
@@ -127,6 +135,7 @@
 /*------------------------------------------------------*/
 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
       {
+        PRINT_RULE("<programa> ::= main { <declaraciones> <funciones> <sentencias> }", 1);
         write_end(FPASM_NAME);
       }
       ;
@@ -154,7 +163,7 @@ er2: /* empty --> write "main:" */
 /*------------------------------------------------------*/
 declarations: declaration
             {
-
+              PRINT_RULE("<declaraciones> ::= <declaracion>", 2);
             }
             ;
 
@@ -163,7 +172,7 @@ declarations: declaration
 /*------------------------------------------------------*/
 declarations: declaration declarations
             {
-
+              PRINT_RULE("<declaraciones> ::= <declaracion> <declaraciones>", 2);
             }
             ;
 
@@ -172,7 +181,7 @@ declarations: declaration declarations
 /*------------------------------------------------------*/
 declaration: class identifiers TOK_PUNTOYCOMA 
           {
-
+            PRINT_RULE("<declaracion> ::= <clase> <identificadores> ;", 4);
           }
           ;
 
@@ -182,6 +191,7 @@ declaration: class identifiers TOK_PUNTOYCOMA
 class: class_scalar
       {
         current_class = SCALAR;
+        PRINT_RULE("<clase> ::= <clase_escalar>", 5);
       }
       ;
 
@@ -191,6 +201,7 @@ class: class_scalar
 class: class_vector
       {
         current_class = VECTOR;
+        PRINT_RULE("<clase> ::= <clase_vector>", 7);
       }
       ;
 
@@ -199,7 +210,7 @@ class: class_vector
 /*------------------------------------------------------*/
 class_scalar: type
             {
-
+              PRINT_RULE("<clase_escalar> ::= <tipo> ", 9);
             }
             ;
 
@@ -209,15 +220,17 @@ class_scalar: type
 type: TOK_INT
       {
         current_type = INT;
+        PRINT_RULE("<tipo> ::= int", 10);
       }
       ;
 
 /*------------------------------------------------------*/
-/*                      PROD: 10                        */
+/*                      PROD: 11                        */
 /*------------------------------------------------------*/
 type: TOK_BOOLEAN
       {
         current_type = BOOLEAN;
+        PRINT_RULE("<tipo> ::= boolean", 11);
       }
       ;
 
@@ -226,7 +239,7 @@ type: TOK_BOOLEAN
 /*------------------------------------------------------*/
 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO 
             {
-
+              PRINT_RULE("<clase_vector> ::= array <tipo> [ <constante_entera> ]", 15);
             }
             ;
 
@@ -235,16 +248,16 @@ class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERE
 /*------------------------------------------------------*/
 identifiers: identifier
           {
-
+            PRINT_RULE("<identificadores> ::= <identificador>", 18);
           }
           ;
-
+ 
 /*------------------------------------------------------*/
 /*                      PROD: 19                        */
 /*------------------------------------------------------*/
 identifiers: identifier TOK_COMA identifiers
           {
-
+            PRINT_RULE("<identificadores> ::= <identificador> , <identificadores>", 19);
           }
           ;
 
@@ -253,7 +266,7 @@ identifiers: identifier TOK_COMA identifiers
 /*------------------------------------------------------*/
 functions: function functions
         {
-
+          PRINT_RULE("<funciones> :: <funcion> <funciones>", 20);
         }
         ;
 
@@ -262,7 +275,7 @@ functions: function functions
 /*------------------------------------------------------*/
 functions: /* empty */
         {
-          
+          PRINT_RULE("<funciones> ::= ", 21);
         }
         ;
 
@@ -271,7 +284,7 @@ functions: /* empty */
 /*------------------------------------------------------*/
 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
         {
-
+          PRINT_RULE("<funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }", 22);
         }
         ;
 
@@ -280,7 +293,7 @@ function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params T
 /*------------------------------------------------------*/
 function_params: function_param remaining_function_params
               {
-
+                PRINT_RULE("<parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>", 23);
               }
               ;
 
@@ -289,7 +302,7 @@ function_params: function_param remaining_function_params
 /*------------------------------------------------------*/
 function_params: /* empty */
               {
-
+                PRINT_RULE("<parametros_funcion> ::= ", 24);
               }
               ;
 
@@ -298,7 +311,7 @@ function_params: /* empty */
 /*------------------------------------------------------*/
 remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params
                         {
-
+                          PRINT_RULE("<resto_parametros_funcion> ::= ; <parametro_funcion> <resto_parametros_funcion>", 24);
                         }
                         ;
 
@@ -307,7 +320,7 @@ remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_para
 /*------------------------------------------------------*/
 remaining_function_params: /* empty */
                         {
-
+                          
                         }
                         ;
 
@@ -316,7 +329,7 @@ remaining_function_params: /* empty */
 /*------------------------------------------------------*/
 function_param: type identifier
               {
-
+                PRINT_RULE("<parametro_funcion> ::= <tipo> <identificador>", 27);
               }
               ;
 
@@ -325,7 +338,7 @@ function_param: type identifier
 /*------------------------------------------------------*/
 function_declarations: declarations
                     {
-
+                      PRINT_RULE("<declaraciones_funcion> ::= <declaraciones>", 28);
                     }
                     ;
 
@@ -334,7 +347,7 @@ function_declarations: declarations
 /*------------------------------------------------------*/
 function_declarations: /* empty */
                     {
-
+                      PRINT_RULE("<declaraciones_funcion> ::= ", 29);
                     }
                     ;
 
@@ -343,7 +356,7 @@ function_declarations: /* empty */
 /*------------------------------------------------------*/
 statements: statement
           {
-
+            PRINT_RULE("<sentencias> ::= <sentencia>", 30);
           }
           ;
 
@@ -352,7 +365,7 @@ statements: statement
 /*------------------------------------------------------*/
 statements: statement statements
           {
-
+            PRINT_RULE("<sentencias> ::= <sentencia> <sentencias>", 31);
           }
           ;
 
@@ -361,7 +374,7 @@ statements: statement statements
 /*------------------------------------------------------*/
 statement: simple_statement TOK_PUNTOYCOMA
         {
-
+          PRINT_RULE("<sentencia> ::= <sentencia_simple> ;", 32);
         }
         ;
 
@@ -370,7 +383,7 @@ statement: simple_statement TOK_PUNTOYCOMA
 /*------------------------------------------------------*/
 statement: block
         {
-
+          PRINT_RULE("<sentencia> ::= <bloque>", 33);
         }
         ;
 
@@ -379,7 +392,7 @@ statement: block
 /*------------------------------------------------------*/
 simple_statement: assignment
               {
-
+                PRINT_RULE("<sentencia_simple> ::= <asignacion>", 34);
               }
               ;
 
@@ -388,7 +401,7 @@ simple_statement: assignment
 /*------------------------------------------------------*/
 simple_statement: reading
               {
-
+                PRINT_RULE("<sentencia_simple> ::= <lectura>", 35);
               }
               ;
 
@@ -397,7 +410,7 @@ simple_statement: reading
 /*------------------------------------------------------*/
 simple_statement: writing
               {
-
+                PRINT_RULE("<sentencia_simple> ::= <escritura>", 36);
               }
               ;
 
@@ -406,7 +419,7 @@ simple_statement: writing
 /*------------------------------------------------------*/
 simple_statement: function_return
               {
-
+                PRINT_RULE("<sentencia_simple> ::= <retorno_funcion>", 38);
               }
               ;
 
@@ -415,7 +428,7 @@ simple_statement: function_return
 /*------------------------------------------------------*/
 block: conditional
     {
-
+      PRINT_RULE("<bloque> ::= <condicional>", 40);
     }
     ;
 
@@ -424,7 +437,7 @@ block: conditional
 /*------------------------------------------------------*/
 block: loop
     {
-
+      PRINT_RULE("<bloque> ::= <bubcle>", 41);
     }
     ;
 
@@ -434,7 +447,7 @@ block: loop
 /* should be "assignment: identifier TOK_ASIGNACION etc.." */
 assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
-
+      PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
     }
     ;
 
@@ -443,7 +456,7 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
 /*------------------------------------------------------*/
 assignment: vector_element TOK_ASIGNACION exp
     {
-
+      PRINT_RULE("<asignacion> ::= <elemento_vector> = <exp>", 44);
     }
     ;
 
@@ -452,7 +465,7 @@ assignment: vector_element TOK_ASIGNACION exp
 /*------------------------------------------------------*/
 vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
               {
-
+                PRINT_RULE("<elemento_vector> ::= <identificador> [ <exp> ]", 48);
               }
               ;
 
@@ -461,7 +474,7 @@ vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 /*------------------------------------------------------*/
 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
           {
-
+            PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> }", 50);
           }
           ;
 
@@ -470,7 +483,7 @@ conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEI
 /*------------------------------------------------------*/
 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
           {
-
+            PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", 51);
           }
           ;
 
@@ -479,7 +492,7 @@ conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEI
 /*------------------------------------------------------*/
 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
     {
-
+      PRINT_RULE("<bucle> ::= whie ( <exp> ) { <sentencias> }", 52);
     }
     ;
 
@@ -488,7 +501,7 @@ loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUI
 /*------------------------------------------------------*/
 reading: TOK_SCANF identifier
       {
-
+        PRINT_RULE("<lectura> ::= scanf <identificador>", 54);
       }
       ;
 
@@ -497,7 +510,7 @@ reading: TOK_SCANF identifier
 /*------------------------------------------------------*/
 writing: TOK_PRINTF exp
       {
-
+        PRINT_RULE("<escritura> ::= printf <exp>", 55);
       }
       ;
 
@@ -506,7 +519,7 @@ writing: TOK_PRINTF exp
 /*------------------------------------------------------*/
 function_return: TOK_RETURN exp
       {
-
+        PRINT_RULE("<retorno_funcion> ::= return <exp>", 61);
       }
       ;
 
@@ -515,7 +528,7 @@ function_return: TOK_RETURN exp
 /*------------------------------------------------------*/
 exp: exp TOK_MAS exp
     {
-
+      PRINT_RULE("<exp> ::= <exp> + <exp>", 72);
     }
     ;
 
@@ -524,7 +537,7 @@ exp: exp TOK_MAS exp
 /*------------------------------------------------------*/
 exp: exp TOK_MENOS exp
     {
-
+      PRINT_RULE("<exp> ::= <exp> - <exp>", 73);
     }
     ;
 
@@ -533,7 +546,7 @@ exp: exp TOK_MENOS exp
 /*------------------------------------------------------*/
 exp: exp TOK_DIVISION exp
     {
-
+      PRINT_RULE("<exp> ::= <exp> / <exp>", 74);
     }
     ;
 
@@ -542,7 +555,7 @@ exp: exp TOK_DIVISION exp
 /*------------------------------------------------------*/
 exp: exp TOK_ASTERISCO exp
     {
-
+      PRINT_RULE("<exp> ::= <exp> * <exp>", 75);
     }
     ;
 
@@ -551,7 +564,7 @@ exp: exp TOK_ASTERISCO exp
 /*------------------------------------------------------*/
 exp: TOK_MENOS exp %prec MENOSU
     {
-
+      PRINT_RULE("<exp> ::= - <exp>", 76);
     }
     ;
 
@@ -560,7 +573,7 @@ exp: TOK_MENOS exp %prec MENOSU
 /*------------------------------------------------------*/
 exp: exp TOK_AND exp
     {
-
+      PRINT_RULE("<exp> ::= <exp> && <exp>", 77);
     }
     ;
 
@@ -569,7 +582,7 @@ exp: exp TOK_AND exp
 /*------------------------------------------------------*/
 exp: exp TOK_OR exp
     {
-
+      PRINT_RULE("<exp> ::= <exp> || <exp>", 78);
     }
     ;
 
@@ -578,7 +591,7 @@ exp: exp TOK_OR exp
 /*------------------------------------------------------*/
 exp: TOK_NOT exp
     {
-
+      PRINT_RULE("<exp> ::= ! <exp>", 79);
     }
     ;
 
@@ -588,7 +601,7 @@ exp: TOK_NOT exp
 /* should be "exp: identifier" */
 exp: TOK_IDENTIFICADOR
     {
-
+      PRINT_RULE("<exp> ::= <identificador>", 80);
     }
     ;
 
@@ -597,7 +610,7 @@ exp: TOK_IDENTIFICADOR
 /*------------------------------------------------------*/
 exp: constant
     {
-
+      PRINT_RULE("<exp> ::= <constante>", 81);
     }
     ;
 
@@ -606,7 +619,7 @@ exp: constant
 /*------------------------------------------------------*/
 exp: TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
     {
-
+      PRINT_RULE("<exp> ::= ( <exp> )", 82);
     }
     ;
 
@@ -615,7 +628,7 @@ exp: TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
 /*------------------------------------------------------*/
 exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
     {
-
+      PRINT_RULE("<exp> ::= ( <comparacion> )", 83);
     }
     ;
 
@@ -624,7 +637,7 @@ exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
 /*------------------------------------------------------*/
 exp: vector_element
     {
-
+      PRINT_RULE("<exp> ::= <elemento_vector>", 85);
     }
     ;
 
@@ -633,7 +646,7 @@ exp: vector_element
 /*------------------------------------------------------*/
 exp: identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
     {
-
+      PRINT_RULE("<exp> ::= <identificador> ( <lista_expresiones> )", 88);
     }
     ;
 
@@ -642,7 +655,7 @@ exp: identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
 /*------------------------------------------------------*/
 exp_list: exp exp_remaining_list
         {
-
+          PRINT_RULE("<lista_expresiones> ::= <exp> <resto_lista_expresiones>", 89);
         }
         ;
 
@@ -651,7 +664,7 @@ exp_list: exp exp_remaining_list
 /*------------------------------------------------------*/
 exp_list: /* empty */
         {
-
+          PRINT_RULE("<lista_expresiones> ::= ", 90);
         }
         ;
 
@@ -660,7 +673,7 @@ exp_list: /* empty */
 /*------------------------------------------------------*/
 exp_remaining_list: TOK_COMA exp exp_remaining_list
                   {
-
+                    PRINT_RULE("<resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>", 91);
                   }
                   ;
 
@@ -669,7 +682,7 @@ exp_remaining_list: TOK_COMA exp exp_remaining_list
 /*------------------------------------------------------*/
 exp_remaining_list: /* empty */
                   {
-
+                    PRINT_RULE("<resto_lista_expresiones> ::= ", 92);
                   }
                   ;
 
@@ -678,7 +691,7 @@ exp_remaining_list: /* empty */
 /*------------------------------------------------------*/
 comparison: exp TOK_IGUAL exp
           {
-
+            PRINT_RULE("<comparacion> ::= <exp> == <exp>", 93);
           }
           ;
 
@@ -687,7 +700,7 @@ comparison: exp TOK_IGUAL exp
 /*------------------------------------------------------*/
 comparison: exp TOK_DISTINTO exp
           {
-
+            PRINT_RULE("<comparacion> ::= <exp> != <exp>", 94);
           }
           ;
 
@@ -696,7 +709,7 @@ comparison: exp TOK_DISTINTO exp
 /*------------------------------------------------------*/
 comparison: exp TOK_MENORIGUAL exp
           {
-
+            PRINT_RULE("<comparacion> ::= <exp> <= <exp>", 95);
           }
           ;
 
@@ -705,7 +718,7 @@ comparison: exp TOK_MENORIGUAL exp
 /*------------------------------------------------------*/
 comparison: exp TOK_MAYORIGUAL exp
           {
-
+            PRINT_RULE("<comparacion> ::= <exp> >= <exp>", 96);
           }
           ;
 
@@ -714,7 +727,7 @@ comparison: exp TOK_MAYORIGUAL exp
 /*------------------------------------------------------*/
 comparison: exp TOK_MENOR exp
           {
-
+            PRINT_RULE("<comparacion> ::= <exp> < <exp>", 97);
           }
           ;
 
@@ -723,7 +736,7 @@ comparison: exp TOK_MENOR exp
 /*------------------------------------------------------*/
 comparison: exp TOK_MAYOR exp
           {
-
+            PRINT_RULE("<comparacion> ::= <exp> > <exp>", 98);
           }
           ;
 
@@ -732,7 +745,7 @@ comparison: exp TOK_MAYOR exp
 /*------------------------------------------------------*/
 constant: constant_logic
           {
-
+            PRINT_RULE("<constante> ::= <constante_logica>", 99);
           }
           ;
 
@@ -741,7 +754,7 @@ constant: constant_logic
 /*------------------------------------------------------*/
 constant: constant_int
           {
-
+            PRINT_RULE("<constante> ::= <constante_entera>", 100);
           }
           ;
 
@@ -750,7 +763,7 @@ constant: constant_int
 /*------------------------------------------------------*/
 constant_logic: TOK_TRUE
           {
-
+            PRINT_RULE("<constante_logica> ::= true", 102);
           }
           ;
 
@@ -759,7 +772,7 @@ constant_logic: TOK_TRUE
 /*------------------------------------------------------*/
 constant_logic: TOK_FALSE
           {
-
+            PRINT_RULE("<constante_logica> ::= false", 103);
           }
           ;
 
@@ -768,7 +781,8 @@ constant_logic: TOK_FALSE
 /*------------------------------------------------------*/
 constant_int: TOK_CONSTANTE_ENTERA
             {
-              write_operand(FPASM_NAME, $1.int_value, false);
+              PRINT_RULE("<constante_entera> ::= TOK_CONSTANTE_ENTERA", 104);
+              /* write_operand(FPASM_NAME, $1.int_value, false); */
             }
             ;
 
@@ -777,6 +791,7 @@ constant_int: TOK_CONSTANTE_ENTERA
 /*------------------------------------------------------*/
 identifier: TOK_IDENTIFICADOR
           {
+            PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
             if(st_searchCurrentScope(st, $1.lexeme) != NULL)
             {
               #line 743 "alfa.y"

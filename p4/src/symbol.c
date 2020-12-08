@@ -13,11 +13,11 @@
  */
 struct _Variable
 {
-  DataType basicType; /* Identifier data type {BOOLEAN, INT} */
+  DataType dataType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
   Scope scope; /* Scope {LOCAL, GLOBAL} */
-  uint_fast16_t pos; /* Position in function in case it's in LOCAL Scope */
-  uint_fast16_t size; /* Size in case it's a vector */
+  int pos; /* Position in function in case it's in LOCAL Scope */
+  int8_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -25,10 +25,10 @@ struct _Variable
  */
 struct _Parametre
 {
-  DataType basicType; /* Identifier data type {BOOLEAN, INT} */
+  DataType dataType; /* Identifier data type {BOOLEAN, INT} */
   IdentifierCategory classCat; /* Structure category identifier {SCALAR, VECTOR} */
-  uint_fast16_t pos; /* Position of the parametre in function call */
-  uint_fast16_t size; /* Size in case it's a vector */
+  int pos; /* Position of the parametre in function call */
+  int8_t size; /* Size in case it's a vector */
 };
 
 /**
@@ -36,8 +36,8 @@ struct _Parametre
  */
 struct _Function
 {
-  uint_fast16_t params; /* Number of function parametres */
-  uint_fast16_t localvars; /* Number of function local variables */
+  int32_t params; /* Number of function parametres */
+  int32_t localvars; /* Number of function local variables */
 };
 
 /**
@@ -97,9 +97,9 @@ Symbol *symbol_init(String key, int value)
 
 void symbol_configure_scalar_variable(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   Scope scope,
-  uint_fast16_t pos
+  int pos
 )
 {
   if(!s)
@@ -107,17 +107,17 @@ void symbol_configure_scalar_variable(
 
   s->elemCat = VAR;
   s->element.var.classCat = SCALAR;
-  s->element.var.basicType = basicType;
+  s->element.var.dataType = dataType;
   s->element.var.scope = scope;
   s->element.var.pos = pos;
 }
 
 void symbol_configure_vector_variable(
   Symbol *s,
-  DataType basicType,
+  DataType dataType,
   Scope scope,
-  uint_fast16_t pos,
-  uint_fast32_t size
+  int pos,
+  int8_t size
 )
 {
   if(!s)
@@ -125,7 +125,7 @@ void symbol_configure_vector_variable(
 
   s->elemCat = VAR;
   s->element.var.classCat = VECTOR;
-  s->element.var.basicType = basicType;
+  s->element.var.dataType = dataType;
   s->element.var.scope = scope;
   s->element.var.pos = pos;
   s->element.var.size = size;
@@ -133,38 +133,38 @@ void symbol_configure_vector_variable(
 
 void symbol_configure_scalar_parametre(
   Symbol *s,
-  DataType basicType,
-  uint_fast16_t pos
+  DataType dataType,
+  int pos
 )
 {
   if(!s)
     return;
   s->elemCat = PARAM;
   s->element.param.classCat = SCALAR;
-  s->element.param.basicType = basicType;
+  s->element.param.dataType = dataType;
   s->element.param.pos = pos;
 }
 
 void symbol_configure_vector_parametre(
   Symbol *s,
-  DataType basicType,
-  uint_fast16_t pos,
-  uint_fast32_t size
+  DataType dataType,
+  int pos,
+  int8_t size
 )
 {
   if(!s)
     return;
   s->elemCat = PARAM;
   s->element.param.classCat = VECTOR;
-  s->element.param.basicType = basicType;
+  s->element.param.dataType = dataType;
   s->element.param.pos = pos;
   s->element.param.size = size;
 }
 
 void symbol_configure_function(
   Symbol *s,
-  uint_fast16_t params,
-  uint_fast16_t localvars
+  int32_t params,
+  int32_t localvars
 )
 {
   if(!s)
@@ -245,3 +245,106 @@ void symbol_delete(void *s)
     return;
   free(s);
 }
+
+String symbol_toString(Symbol *s)
+{
+  if(!s)
+    return NULL;
+  return s->key;
+}
+
+/* ------------------------------ */
+/* -- -- -- - GETTERS -- -- -- -- */
+/* ------------------------------ */
+
+/*- - - VARS - - - */
+
+DataType symbol_get_var_dataType(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.dataType;
+}
+
+IdentifierCategory symbol_get_var_identifierCategory(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.classCat;
+}
+
+Scope symbol_get_var_scope(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.scope;
+}
+
+int symbol_get_var_pos(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+  return s->element.var.pos;
+}
+
+int8_t symbol_get_var_size(Symbol *s)
+{
+  if(!s)
+    return CHAR_MIN;
+  return s->element.var.size;
+}
+
+/* - - - PARAMS - - -  */
+
+DataType symbol_get_param_dataType(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.dataType;
+}
+
+IdentifierCategory symbol_get_param_identifierCategory(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.classCat;
+}
+
+int symbol_get_param_pos(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.param.pos;
+}
+
+int8_t symbol_get_param_size(Symbol *s)
+{
+  if(!s)
+    return CHAR_MIN;
+
+  return s->element.param.size;
+}
+
+/* - - - FUNCTS - - - */
+
+int32_t symbol_get_funct_params(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.func.params;
+}
+
+int32_t symbol_get_funct_localvars(Symbol *s)
+{
+  if(!s)
+    return UNSP_ERR;
+
+  return s->element.func.localvars;
+}
+
+/*  - * - * - * - * - * - * - * - */
+

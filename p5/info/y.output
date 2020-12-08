@@ -1,0 +1,2107 @@
+Terminals unused in grammar
+
+    TOK_ERROR
+    TOK_CTE_ENTERA
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
+
+    2 er1: %empty
+
+    3 er2: %empty
+
+    4 declarations: declaration
+    5             | declaration declarations
+
+    6 declaration: class identifiers TOK_PUNTOYCOMA
+
+    7 class: class_scalar
+    8      | class_vector
+
+    9 class_scalar: type
+
+   10 type: TOK_INT
+   11     | TOK_BOOLEAN
+
+   12 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO
+
+   13 identifiers: identifier
+   14            | identifier TOK_COMA identifiers
+
+   15 functions: function functions
+   16          | %empty
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+   18 function_params: function_param remaining_function_params
+   19                | %empty
+
+   20 remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params
+   21                          | %empty
+
+   22 function_param: type identifier
+
+   23 function_declarations: declarations
+   24                      | %empty
+
+   25 statements: statement
+   26           | statement statements
+
+   27 statement: simple_statement TOK_PUNTOYCOMA
+   28          | block
+
+   29 simple_statement: assignment
+   30                 | reading
+   31                 | writing
+   32                 | function_return
+
+   33 block: conditional
+   34      | loop
+
+   35 assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
+   36           | vector_element TOK_ASIGNACION exp
+
+   37 vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+   41 reading: TOK_SCANF identifier
+
+   42 writing: TOK_PRINTF exp
+
+   43 function_return: TOK_RETURN exp
+
+   44 exp: exp TOK_MAS exp
+   45    | exp TOK_MENOS exp
+   46    | exp TOK_DIVISION exp
+   47    | exp TOK_ASTERISCO exp
+   48    | TOK_MENOS exp
+   49    | exp TOK_AND exp
+   50    | exp TOK_OR exp
+   51    | TOK_NOT exp
+   52    | TOK_IDENTIFICADOR
+   53    | constant
+   54    | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
+   55    | TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
+   56    | vector_element
+   57    | identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
+
+   58 exp_list: exp exp_remaining_list
+   59         | %empty
+
+   60 exp_remaining_list: TOK_COMA exp exp_remaining_list
+   61                   | %empty
+
+   62 comparison: exp TOK_IGUAL exp
+   63           | exp TOK_DISTINTO exp
+   64           | exp TOK_MENORIGUAL exp
+   65           | exp TOK_MAYORIGUAL exp
+   66           | exp TOK_MENOR exp
+   67           | exp TOK_MAYOR exp
+
+   68 constant: constant_logic
+   69         | constant_int
+
+   70 constant_logic: TOK_TRUE
+   71               | TOK_FALSE
+
+   72 constant_int: TOK_CONSTANTE_ENTERA
+
+   73 identifier: TOK_IDENTIFICADOR
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    TOK_MAIN (258) 1
+    TOK_INT (259) 10
+    TOK_BOOLEAN (260) 11
+    TOK_ARRAY (261) 12
+    TOK_FUNCTION (262) 17
+    TOK_IF (263) 38 39
+    TOK_ELSE (264) 39
+    TOK_WHILE (265) 40
+    TOK_SCANF (266) 41
+    TOK_PRINTF (267) 42
+    TOK_RETURN (268) 43
+    TOK_PUNTOYCOMA (269) 6 20 27
+    TOK_COMA (270) 14 60
+    TOK_PARENTESISIZQUIERDO (271) 17 38 39 40 54 55 57
+    TOK_PARENTESISDERECHO (272) 17 38 39 40 54 55 57
+    TOK_CORCHETEIZQUIERDO (273) 12 37
+    TOK_CORCHETEDERECHO (274) 12 37
+    TOK_LLAVEIZQUIERDA (275) 1 17 38 39 40
+    TOK_LLAVEDERECHA (276) 1 17 38 39 40
+    TOK_ASIGNACION (277) 35 36
+    TOK_MAS (278) 44
+    TOK_MENOS (279) 45 48
+    TOK_ASTERISCO (280) 47
+    TOK_DIVISION (281) 46
+    TOK_MENOR (282) 66
+    TOK_MAYOR (283) 67
+    TOK_AND (284) 49
+    TOK_OR (285) 50
+    TOK_NOT (286) 51
+    TOK_IGUAL (287) 62
+    TOK_DISTINTO (288) 63
+    TOK_MENORIGUAL (289) 64
+    TOK_MAYORIGUAL (290) 65
+    TOK_CONSTANTE_ENTERA (291) 72
+    TOK_TRUE (292) 70
+    TOK_FALSE (293) 71
+    TOK_ERROR (294)
+    MENOSU (295)
+    TOK_CTE_ENTERA <attrs> (296)
+    TOK_IDENTIFICADOR <attrs> (297) 35 52 73
+
+
+Nonterminals, with rules where they appear
+
+    $accept (43)
+        on left: 0
+    program (44)
+        on left: 1
+        on right: 0
+    er1 (45)
+        on left: 2
+        on right: 1
+    er2 (46)
+        on left: 3
+        on right: 1
+    declarations (47)
+        on left: 4 5
+        on right: 1 5 23
+    declaration (48)
+        on left: 6
+        on right: 4 5
+    class (49)
+        on left: 7 8
+        on right: 6
+    class_scalar (50)
+        on left: 9
+        on right: 7
+    type (51)
+        on left: 10 11
+        on right: 9 12 17 22
+    class_vector (52)
+        on left: 12
+        on right: 8
+    identifiers (53)
+        on left: 13 14
+        on right: 6 14
+    functions (54)
+        on left: 15 16
+        on right: 1 15
+    function (55)
+        on left: 17
+        on right: 15
+    function_params (56)
+        on left: 18 19
+        on right: 17
+    remaining_function_params (57)
+        on left: 20 21
+        on right: 18 20
+    function_param (58)
+        on left: 22
+        on right: 18 20
+    function_declarations (59)
+        on left: 23 24
+        on right: 17
+    statements (60)
+        on left: 25 26
+        on right: 1 17 26 38 39 40
+    statement (61)
+        on left: 27 28
+        on right: 25 26
+    simple_statement (62)
+        on left: 29 30 31 32
+        on right: 27
+    block (63)
+        on left: 33 34
+        on right: 28
+    assignment (64)
+        on left: 35 36
+        on right: 29
+    vector_element <attrs> (65)
+        on left: 37
+        on right: 36 56
+    conditional <attrs> (66)
+        on left: 38 39
+        on right: 33
+    loop (67)
+        on left: 40
+        on right: 34
+    reading (68)
+        on left: 41
+        on right: 30
+    writing (69)
+        on left: 42
+        on right: 31
+    function_return (70)
+        on left: 43
+        on right: 32
+    exp <attrs> (71)
+        on left: 44 45 46 47 48 49 50 51 52 53 54 55 56 57
+        on right: 35 36 37 38 39 40 42 43 44 45 46 47 48 49 50 51 54 58 60 62 63 64 65 66 67
+    exp_list (72)
+        on left: 58 59
+        on right: 57
+    exp_remaining_list (73)
+        on left: 60 61
+        on right: 58 60
+    comparison <attrs> (74)
+        on left: 62 63 64 65 66 67
+        on right: 55
+    constant <attrs> (75)
+        on left: 68 69
+        on right: 53
+    constant_logic <attrs> (76)
+        on left: 70 71
+        on right: 68
+    constant_int <attrs> (77)
+        on left: 72
+        on right: 12 69
+    identifier <attrs> (78)
+        on left: 73
+        on right: 13 14 17 22 37 41 57
+
+
+State 0
+
+    0 $accept: . program $end
+
+    TOK_MAIN  shift, and go to state 1
+
+    program  go to state 2
+
+
+State 1
+
+    1 program: TOK_MAIN . TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
+
+    TOK_LLAVEIZQUIERDA  shift, and go to state 3
+
+
+State 2
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA . declarations er1 functions er2 statements TOK_LLAVEDERECHA
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+    TOK_ARRAY    shift, and go to state 7
+
+    declarations  go to state 8
+    declaration   go to state 9
+    class         go to state 10
+    class_scalar  go to state 11
+    type          go to state 12
+    class_vector  go to state 13
+
+
+State 4
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 5
+
+   10 type: TOK_INT .
+
+    $default  reduce using rule 10 (type)
+
+
+State 6
+
+   11 type: TOK_BOOLEAN .
+
+    $default  reduce using rule 11 (type)
+
+
+State 7
+
+   12 class_vector: TOK_ARRAY . type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+
+    type  go to state 14
+
+
+State 8
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations . er1 functions er2 statements TOK_LLAVEDERECHA
+
+    $default  reduce using rule 2 (er1)
+
+    er1  go to state 15
+
+
+State 9
+
+    4 declarations: declaration .
+    5             | declaration . declarations
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+    TOK_ARRAY    shift, and go to state 7
+
+    $default  reduce using rule 4 (declarations)
+
+    declarations  go to state 16
+    declaration   go to state 9
+    class         go to state 10
+    class_scalar  go to state 11
+    type          go to state 12
+    class_vector  go to state 13
+
+
+State 10
+
+    6 declaration: class . identifiers TOK_PUNTOYCOMA
+
+    TOK_IDENTIFICADOR  shift, and go to state 17
+
+    identifiers  go to state 18
+    identifier   go to state 19
+
+
+State 11
+
+    7 class: class_scalar .
+
+    $default  reduce using rule 7 (class)
+
+
+State 12
+
+    9 class_scalar: type .
+
+    $default  reduce using rule 9 (class_scalar)
+
+
+State 13
+
+    8 class: class_vector .
+
+    $default  reduce using rule 8 (class)
+
+
+State 14
+
+   12 class_vector: TOK_ARRAY type . TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO
+
+    TOK_CORCHETEIZQUIERDO  shift, and go to state 20
+
+
+State 15
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 . functions er2 statements TOK_LLAVEDERECHA
+
+    TOK_FUNCTION  shift, and go to state 21
+
+    $default  reduce using rule 16 (functions)
+
+    functions  go to state 22
+    function   go to state 23
+
+
+State 16
+
+    5 declarations: declaration declarations .
+
+    $default  reduce using rule 5 (declarations)
+
+
+State 17
+
+   73 identifier: TOK_IDENTIFICADOR .
+
+    $default  reduce using rule 73 (identifier)
+
+
+State 18
+
+    6 declaration: class identifiers . TOK_PUNTOYCOMA
+
+    TOK_PUNTOYCOMA  shift, and go to state 24
+
+
+State 19
+
+   13 identifiers: identifier .
+   14            | identifier . TOK_COMA identifiers
+
+    TOK_COMA  shift, and go to state 25
+
+    $default  reduce using rule 13 (identifiers)
+
+
+State 20
+
+   12 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO . constant_int TOK_CORCHETEDERECHO
+
+    TOK_CONSTANTE_ENTERA  shift, and go to state 26
+
+    constant_int  go to state 27
+
+
+State 21
+
+   17 function: TOK_FUNCTION . type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+
+    type  go to state 28
+
+
+State 22
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions . er2 statements TOK_LLAVEDERECHA
+
+    $default  reduce using rule 3 (er2)
+
+    er2  go to state 29
+
+
+State 23
+
+   15 functions: function . functions
+
+    TOK_FUNCTION  shift, and go to state 21
+
+    $default  reduce using rule 16 (functions)
+
+    functions  go to state 30
+    function   go to state 23
+
+
+State 24
+
+    6 declaration: class identifiers TOK_PUNTOYCOMA .
+
+    $default  reduce using rule 6 (declaration)
+
+
+State 25
+
+   14 identifiers: identifier TOK_COMA . identifiers
+
+    TOK_IDENTIFICADOR  shift, and go to state 17
+
+    identifiers  go to state 31
+    identifier   go to state 19
+
+
+State 26
+
+   72 constant_int: TOK_CONSTANTE_ENTERA .
+
+    $default  reduce using rule 72 (constant_int)
+
+
+State 27
+
+   12 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int . TOK_CORCHETEDERECHO
+
+    TOK_CORCHETEDERECHO  shift, and go to state 32
+
+
+State 28
+
+   17 function: TOK_FUNCTION type . identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_IDENTIFICADOR  shift, and go to state 17
+
+    identifier  go to state 33
+
+
+State 29
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 . statements TOK_LLAVEDERECHA
+
+    TOK_IF             shift, and go to state 34
+    TOK_WHILE          shift, and go to state 35
+    TOK_SCANF          shift, and go to state 36
+    TOK_PRINTF         shift, and go to state 37
+    TOK_RETURN         shift, and go to state 38
+    TOK_IDENTIFICADOR  shift, and go to state 39
+
+    statements        go to state 40
+    statement         go to state 41
+    simple_statement  go to state 42
+    block             go to state 43
+    assignment        go to state 44
+    vector_element    go to state 45
+    conditional       go to state 46
+    loop              go to state 47
+    reading           go to state 48
+    writing           go to state 49
+    function_return   go to state 50
+    identifier        go to state 51
+
+
+State 30
+
+   15 functions: function functions .
+
+    $default  reduce using rule 15 (functions)
+
+
+State 31
+
+   14 identifiers: identifier TOK_COMA identifiers .
+
+    $default  reduce using rule 14 (identifiers)
+
+
+State 32
+
+   12 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO .
+
+    $default  reduce using rule 12 (class_vector)
+
+
+State 33
+
+   17 function: TOK_FUNCTION type identifier . TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 52
+
+
+State 34
+
+   38 conditional: TOK_IF . TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   39            | TOK_IF . TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 53
+
+
+State 35
+
+   40 loop: TOK_WHILE . TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 54
+
+
+State 36
+
+   41 reading: TOK_SCANF . identifier
+
+    TOK_IDENTIFICADOR  shift, and go to state 17
+
+    identifier  go to state 55
+
+
+State 37
+
+   42 writing: TOK_PRINTF . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 63
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 38
+
+   43 function_return: TOK_RETURN . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 68
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 39
+
+   35 assignment: TOK_IDENTIFICADOR . TOK_ASIGNACION exp
+   73 identifier: TOK_IDENTIFICADOR .
+
+    TOK_ASIGNACION  shift, and go to state 69
+
+    $default  reduce using rule 73 (identifier)
+
+
+State 40
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements . TOK_LLAVEDERECHA
+
+    TOK_LLAVEDERECHA  shift, and go to state 70
+
+
+State 41
+
+   25 statements: statement .
+   26           | statement . statements
+
+    TOK_IF             shift, and go to state 34
+    TOK_WHILE          shift, and go to state 35
+    TOK_SCANF          shift, and go to state 36
+    TOK_PRINTF         shift, and go to state 37
+    TOK_RETURN         shift, and go to state 38
+    TOK_IDENTIFICADOR  shift, and go to state 39
+
+    $default  reduce using rule 25 (statements)
+
+    statements        go to state 71
+    statement         go to state 41
+    simple_statement  go to state 42
+    block             go to state 43
+    assignment        go to state 44
+    vector_element    go to state 45
+    conditional       go to state 46
+    loop              go to state 47
+    reading           go to state 48
+    writing           go to state 49
+    function_return   go to state 50
+    identifier        go to state 51
+
+
+State 42
+
+   27 statement: simple_statement . TOK_PUNTOYCOMA
+
+    TOK_PUNTOYCOMA  shift, and go to state 72
+
+
+State 43
+
+   28 statement: block .
+
+    $default  reduce using rule 28 (statement)
+
+
+State 44
+
+   29 simple_statement: assignment .
+
+    $default  reduce using rule 29 (simple_statement)
+
+
+State 45
+
+   36 assignment: vector_element . TOK_ASIGNACION exp
+
+    TOK_ASIGNACION  shift, and go to state 73
+
+
+State 46
+
+   33 block: conditional .
+
+    $default  reduce using rule 33 (block)
+
+
+State 47
+
+   34 block: loop .
+
+    $default  reduce using rule 34 (block)
+
+
+State 48
+
+   30 simple_statement: reading .
+
+    $default  reduce using rule 30 (simple_statement)
+
+
+State 49
+
+   31 simple_statement: writing .
+
+    $default  reduce using rule 31 (simple_statement)
+
+
+State 50
+
+   32 simple_statement: function_return .
+
+    $default  reduce using rule 32 (simple_statement)
+
+
+State 51
+
+   37 vector_element: identifier . TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
+
+    TOK_CORCHETEIZQUIERDO  shift, and go to state 74
+
+
+State 52
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO . function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+
+    $default  reduce using rule 19 (function_params)
+
+    type             go to state 75
+    function_params  go to state 76
+    function_param   go to state 77
+
+
+State 53
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO . exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO . exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 78
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 54
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO . exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 79
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 55
+
+   41 reading: TOK_SCANF identifier .
+
+    $default  reduce using rule 41 (reading)
+
+
+State 56
+
+   54 exp: TOK_PARENTESISIZQUIERDO . exp TOK_PARENTESISDERECHO
+   55    | TOK_PARENTESISIZQUIERDO . comparison TOK_PARENTESISDERECHO
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 80
+    comparison      go to state 81
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 57
+
+   48 exp: TOK_MENOS . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 82
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 58
+
+   51 exp: TOK_NOT . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 83
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 59
+
+   70 constant_logic: TOK_TRUE .
+
+    $default  reduce using rule 70 (constant_logic)
+
+
+State 60
+
+   71 constant_logic: TOK_FALSE .
+
+    $default  reduce using rule 71 (constant_logic)
+
+
+State 61
+
+   52 exp: TOK_IDENTIFICADOR .
+   73 identifier: TOK_IDENTIFICADOR .
+
+    TOK_PARENTESISIZQUIERDO  reduce using rule 73 (identifier)
+    TOK_CORCHETEIZQUIERDO    reduce using rule 73 (identifier)
+    $default                 reduce using rule 52 (exp)
+
+
+State 62
+
+   56 exp: vector_element .
+
+    $default  reduce using rule 56 (exp)
+
+
+State 63
+
+   42 writing: TOK_PRINTF exp .
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 42 (writing)
+
+
+State 64
+
+   53 exp: constant .
+
+    $default  reduce using rule 53 (exp)
+
+
+State 65
+
+   68 constant: constant_logic .
+
+    $default  reduce using rule 68 (constant)
+
+
+State 66
+
+   69 constant: constant_int .
+
+    $default  reduce using rule 69 (constant)
+
+
+State 67
+
+   37 vector_element: identifier . TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
+   57 exp: identifier . TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 90
+    TOK_CORCHETEIZQUIERDO    shift, and go to state 74
+
+
+State 68
+
+   43 function_return: TOK_RETURN exp .
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 43 (function_return)
+
+
+State 69
+
+   35 assignment: TOK_IDENTIFICADOR TOK_ASIGNACION . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 91
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 70
+
+    1 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA .
+
+    $default  reduce using rule 1 (program)
+
+
+State 71
+
+   26 statements: statement statements .
+
+    $default  reduce using rule 26 (statements)
+
+
+State 72
+
+   27 statement: simple_statement TOK_PUNTOYCOMA .
+
+    $default  reduce using rule 27 (statement)
+
+
+State 73
+
+   36 assignment: vector_element TOK_ASIGNACION . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 92
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 74
+
+   37 vector_element: identifier TOK_CORCHETEIZQUIERDO . exp TOK_CORCHETEDERECHO
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 93
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 75
+
+   22 function_param: type . identifier
+
+    TOK_IDENTIFICADOR  shift, and go to state 17
+
+    identifier  go to state 94
+
+
+State 76
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params . TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_PARENTESISDERECHO  shift, and go to state 95
+
+
+State 77
+
+   18 function_params: function_param . remaining_function_params
+
+    TOK_PUNTOYCOMA  shift, and go to state 96
+
+    $default  reduce using rule 21 (remaining_function_params)
+
+    remaining_function_params  go to state 97
+
+
+State 78
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp . TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO exp . TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_PARENTESISDERECHO  shift, and go to state 98
+    TOK_MAS                shift, and go to state 84
+    TOK_MENOS              shift, and go to state 85
+    TOK_ASTERISCO          shift, and go to state 86
+    TOK_DIVISION           shift, and go to state 87
+    TOK_AND                shift, and go to state 88
+    TOK_OR                 shift, and go to state 89
+
+
+State 79
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp . TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_PARENTESISDERECHO  shift, and go to state 99
+    TOK_MAS                shift, and go to state 84
+    TOK_MENOS              shift, and go to state 85
+    TOK_ASTERISCO          shift, and go to state 86
+    TOK_DIVISION           shift, and go to state 87
+    TOK_AND                shift, and go to state 88
+    TOK_OR                 shift, and go to state 89
+
+
+State 80
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   54    | TOK_PARENTESISIZQUIERDO exp . TOK_PARENTESISDERECHO
+   62 comparison: exp . TOK_IGUAL exp
+   63           | exp . TOK_DISTINTO exp
+   64           | exp . TOK_MENORIGUAL exp
+   65           | exp . TOK_MAYORIGUAL exp
+   66           | exp . TOK_MENOR exp
+   67           | exp . TOK_MAYOR exp
+
+    TOK_PARENTESISDERECHO  shift, and go to state 100
+    TOK_MAS                shift, and go to state 84
+    TOK_MENOS              shift, and go to state 85
+    TOK_ASTERISCO          shift, and go to state 86
+    TOK_DIVISION           shift, and go to state 87
+    TOK_MENOR              shift, and go to state 101
+    TOK_MAYOR              shift, and go to state 102
+    TOK_AND                shift, and go to state 88
+    TOK_OR                 shift, and go to state 89
+    TOK_IGUAL              shift, and go to state 103
+    TOK_DISTINTO           shift, and go to state 104
+    TOK_MENORIGUAL         shift, and go to state 105
+    TOK_MAYORIGUAL         shift, and go to state 106
+
+
+State 81
+
+   55 exp: TOK_PARENTESISIZQUIERDO comparison . TOK_PARENTESISDERECHO
+
+    TOK_PARENTESISDERECHO  shift, and go to state 107
+
+
+State 82
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   48    | TOK_MENOS exp .
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    $default  reduce using rule 48 (exp)
+
+
+State 83
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   51    | TOK_NOT exp .
+
+    $default  reduce using rule 51 (exp)
+
+
+State 84
+
+   44 exp: exp TOK_MAS . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 108
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 85
+
+   45 exp: exp TOK_MENOS . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 109
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 86
+
+   47 exp: exp TOK_ASTERISCO . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 110
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 87
+
+   46 exp: exp TOK_DIVISION . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 111
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 88
+
+   49 exp: exp TOK_AND . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 112
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 89
+
+   50 exp: exp TOK_OR . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 113
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 90
+
+   57 exp: identifier TOK_PARENTESISIZQUIERDO . exp_list TOK_PARENTESISDERECHO
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    $default  reduce using rule 59 (exp_list)
+
+    vector_element  go to state 62
+    exp             go to state 114
+    exp_list        go to state 115
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 91
+
+   35 assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp .
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 35 (assignment)
+
+
+State 92
+
+   36 assignment: vector_element TOK_ASIGNACION exp .
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 36 (assignment)
+
+
+State 93
+
+   37 vector_element: identifier TOK_CORCHETEIZQUIERDO exp . TOK_CORCHETEDERECHO
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_CORCHETEDERECHO  shift, and go to state 116
+    TOK_MAS              shift, and go to state 84
+    TOK_MENOS            shift, and go to state 85
+    TOK_ASTERISCO        shift, and go to state 86
+    TOK_DIVISION         shift, and go to state 87
+    TOK_AND              shift, and go to state 88
+    TOK_OR               shift, and go to state 89
+
+
+State 94
+
+   22 function_param: type identifier .
+
+    $default  reduce using rule 22 (function_param)
+
+
+State 95
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO . TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_LLAVEIZQUIERDA  shift, and go to state 117
+
+
+State 96
+
+   20 remaining_function_params: TOK_PUNTOYCOMA . function_param remaining_function_params
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+
+    type            go to state 75
+    function_param  go to state 118
+
+
+State 97
+
+   18 function_params: function_param remaining_function_params .
+
+    $default  reduce using rule 18 (function_params)
+
+
+State 98
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO . TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO . TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_LLAVEIZQUIERDA  shift, and go to state 119
+
+
+State 99
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO . TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_LLAVEIZQUIERDA  shift, and go to state 120
+
+
+State 100
+
+   54 exp: TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO .
+
+    $default  reduce using rule 54 (exp)
+
+
+State 101
+
+   66 comparison: exp TOK_MENOR . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 121
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 102
+
+   67 comparison: exp TOK_MAYOR . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 122
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 103
+
+   62 comparison: exp TOK_IGUAL . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 123
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 104
+
+   63 comparison: exp TOK_DISTINTO . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 124
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 105
+
+   64 comparison: exp TOK_MENORIGUAL . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 125
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 106
+
+   65 comparison: exp TOK_MAYORIGUAL . exp
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 126
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 107
+
+   55 exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO .
+
+    $default  reduce using rule 55 (exp)
+
+
+State 108
+
+   44 exp: exp . TOK_MAS exp
+   44    | exp TOK_MAS exp .
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+
+    $default  reduce using rule 44 (exp)
+
+
+State 109
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   45    | exp TOK_MENOS exp .
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+
+    $default  reduce using rule 45 (exp)
+
+
+State 110
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   47    | exp TOK_ASTERISCO exp .
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    $default  reduce using rule 47 (exp)
+
+
+State 111
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   46    | exp TOK_DIVISION exp .
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+
+    $default  reduce using rule 46 (exp)
+
+
+State 112
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   49    | exp TOK_AND exp .
+   50    | exp . TOK_OR exp
+
+    $default  reduce using rule 49 (exp)
+
+
+State 113
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   50    | exp TOK_OR exp .
+
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+
+    $default  reduce using rule 50 (exp)
+
+
+State 114
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   58 exp_list: exp . exp_remaining_list
+
+    TOK_COMA       shift, and go to state 127
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 61 (exp_remaining_list)
+
+    exp_remaining_list  go to state 128
+
+
+State 115
+
+   57 exp: identifier TOK_PARENTESISIZQUIERDO exp_list . TOK_PARENTESISDERECHO
+
+    TOK_PARENTESISDERECHO  shift, and go to state 129
+
+
+State 116
+
+   37 vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO .
+
+    $default  reduce using rule 37 (vector_element)
+
+
+State 117
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA . function_declarations statements TOK_LLAVEDERECHA
+
+    TOK_INT      shift, and go to state 5
+    TOK_BOOLEAN  shift, and go to state 6
+    TOK_ARRAY    shift, and go to state 7
+
+    $default  reduce using rule 24 (function_declarations)
+
+    declarations           go to state 130
+    declaration            go to state 9
+    class                  go to state 10
+    class_scalar           go to state 11
+    type                   go to state 12
+    class_vector           go to state 13
+    function_declarations  go to state 131
+
+
+State 118
+
+   20 remaining_function_params: TOK_PUNTOYCOMA function_param . remaining_function_params
+
+    TOK_PUNTOYCOMA  shift, and go to state 96
+
+    $default  reduce using rule 21 (remaining_function_params)
+
+    remaining_function_params  go to state 132
+
+
+State 119
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA . statements TOK_LLAVEDERECHA
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA . statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_IF             shift, and go to state 34
+    TOK_WHILE          shift, and go to state 35
+    TOK_SCANF          shift, and go to state 36
+    TOK_PRINTF         shift, and go to state 37
+    TOK_RETURN         shift, and go to state 38
+    TOK_IDENTIFICADOR  shift, and go to state 39
+
+    statements        go to state 133
+    statement         go to state 41
+    simple_statement  go to state 42
+    block             go to state 43
+    assignment        go to state 44
+    vector_element    go to state 45
+    conditional       go to state 46
+    loop              go to state 47
+    reading           go to state 48
+    writing           go to state 49
+    function_return   go to state 50
+    identifier        go to state 51
+
+
+State 120
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA . statements TOK_LLAVEDERECHA
+
+    TOK_IF             shift, and go to state 34
+    TOK_WHILE          shift, and go to state 35
+    TOK_SCANF          shift, and go to state 36
+    TOK_PRINTF         shift, and go to state 37
+    TOK_RETURN         shift, and go to state 38
+    TOK_IDENTIFICADOR  shift, and go to state 39
+
+    statements        go to state 134
+    statement         go to state 41
+    simple_statement  go to state 42
+    block             go to state 43
+    assignment        go to state 44
+    vector_element    go to state 45
+    conditional       go to state 46
+    loop              go to state 47
+    reading           go to state 48
+    writing           go to state 49
+    function_return   go to state 50
+    identifier        go to state 51
+
+
+State 121
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   66 comparison: exp TOK_MENOR exp .
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 66 (comparison)
+
+
+State 122
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   67 comparison: exp TOK_MAYOR exp .
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 67 (comparison)
+
+
+State 123
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   62 comparison: exp TOK_IGUAL exp .
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 62 (comparison)
+
+
+State 124
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   63 comparison: exp TOK_DISTINTO exp .
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 63 (comparison)
+
+
+State 125
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   64 comparison: exp TOK_MENORIGUAL exp .
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 64 (comparison)
+
+
+State 126
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   65 comparison: exp TOK_MAYORIGUAL exp .
+
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 65 (comparison)
+
+
+State 127
+
+   60 exp_remaining_list: TOK_COMA . exp exp_remaining_list
+
+    TOK_PARENTESISIZQUIERDO  shift, and go to state 56
+    TOK_MENOS                shift, and go to state 57
+    TOK_NOT                  shift, and go to state 58
+    TOK_CONSTANTE_ENTERA     shift, and go to state 26
+    TOK_TRUE                 shift, and go to state 59
+    TOK_FALSE                shift, and go to state 60
+    TOK_IDENTIFICADOR        shift, and go to state 61
+
+    vector_element  go to state 62
+    exp             go to state 135
+    constant        go to state 64
+    constant_logic  go to state 65
+    constant_int    go to state 66
+    identifier      go to state 67
+
+
+State 128
+
+   58 exp_list: exp exp_remaining_list .
+
+    $default  reduce using rule 58 (exp_list)
+
+
+State 129
+
+   57 exp: identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO .
+
+    $default  reduce using rule 57 (exp)
+
+
+State 130
+
+   23 function_declarations: declarations .
+
+    $default  reduce using rule 23 (function_declarations)
+
+
+State 131
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations . statements TOK_LLAVEDERECHA
+
+    TOK_IF             shift, and go to state 34
+    TOK_WHILE          shift, and go to state 35
+    TOK_SCANF          shift, and go to state 36
+    TOK_PRINTF         shift, and go to state 37
+    TOK_RETURN         shift, and go to state 38
+    TOK_IDENTIFICADOR  shift, and go to state 39
+
+    statements        go to state 136
+    statement         go to state 41
+    simple_statement  go to state 42
+    block             go to state 43
+    assignment        go to state 44
+    vector_element    go to state 45
+    conditional       go to state 46
+    loop              go to state 47
+    reading           go to state 48
+    writing           go to state 49
+    function_return   go to state 50
+    identifier        go to state 51
+
+
+State 132
+
+   20 remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params .
+
+    $default  reduce using rule 20 (remaining_function_params)
+
+
+State 133
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements . TOK_LLAVEDERECHA
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements . TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_LLAVEDERECHA  shift, and go to state 137
+
+
+State 134
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements . TOK_LLAVEDERECHA
+
+    TOK_LLAVEDERECHA  shift, and go to state 138
+
+
+State 135
+
+   44 exp: exp . TOK_MAS exp
+   45    | exp . TOK_MENOS exp
+   46    | exp . TOK_DIVISION exp
+   47    | exp . TOK_ASTERISCO exp
+   49    | exp . TOK_AND exp
+   50    | exp . TOK_OR exp
+   60 exp_remaining_list: TOK_COMA exp . exp_remaining_list
+
+    TOK_COMA       shift, and go to state 127
+    TOK_MAS        shift, and go to state 84
+    TOK_MENOS      shift, and go to state 85
+    TOK_ASTERISCO  shift, and go to state 86
+    TOK_DIVISION   shift, and go to state 87
+    TOK_AND        shift, and go to state 88
+    TOK_OR         shift, and go to state 89
+
+    $default  reduce using rule 61 (exp_remaining_list)
+
+    exp_remaining_list  go to state 139
+
+
+State 136
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements . TOK_LLAVEDERECHA
+
+    TOK_LLAVEDERECHA  shift, and go to state 140
+
+
+State 137
+
+   38 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA .
+   39            | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA . TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_ELSE  shift, and go to state 141
+
+    $default  reduce using rule 38 (conditional)
+
+
+State 138
+
+   40 loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA .
+
+    $default  reduce using rule 40 (loop)
+
+
+State 139
+
+   60 exp_remaining_list: TOK_COMA exp exp_remaining_list .
+
+    $default  reduce using rule 60 (exp_remaining_list)
+
+
+State 140
+
+   17 function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA .
+
+    $default  reduce using rule 17 (function)
+
+
+State 141
+
+   39 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE . TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+
+    TOK_LLAVEIZQUIERDA  shift, and go to state 142
+
+
+State 142
+
+   39 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA . statements TOK_LLAVEDERECHA
+
+    TOK_IF             shift, and go to state 34
+    TOK_WHILE          shift, and go to state 35
+    TOK_SCANF          shift, and go to state 36
+    TOK_PRINTF         shift, and go to state 37
+    TOK_RETURN         shift, and go to state 38
+    TOK_IDENTIFICADOR  shift, and go to state 39
+
+    statements        go to state 143
+    statement         go to state 41
+    simple_statement  go to state 42
+    block             go to state 43
+    assignment        go to state 44
+    vector_element    go to state 45
+    conditional       go to state 46
+    loop              go to state 47
+    reading           go to state 48
+    writing           go to state 49
+    function_return   go to state 50
+    identifier        go to state 51
+
+
+State 143
+
+   39 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements . TOK_LLAVEDERECHA
+
+    TOK_LLAVEDERECHA  shift, and go to state 144
+
+
+State 144
+
+   39 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA .
+
+    $default  reduce using rule 39 (conditional)

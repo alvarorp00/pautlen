@@ -6,11 +6,10 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
-#include <stdint.h>
-#include "symbol.h"
+#include <stdint.h> /* for fast integers */
 
-#define _DEF_HASHLEN_ 500
-#define _CRITICAL_FACTOR_ 0.7
+#define _DEF_HASHLEN_ 9
+#define _HIGH_CRITICAL_FACTOR_ 0.6
 
 /**
  * Hashcode Funct prototype
@@ -50,26 +49,18 @@ Hash *hash_init(Hashcode hashcode, Equals equals, Clean clean);
 /**
  * Stores an element in hash
  * @param hash where element will be stored
- * @param value stored value
+ * @param info stored info
  * @return if it was posible
  */
-bool hash_encode(Hash *hash, void *value);
+bool hash_encode(Hash *hash, void *info);
 
 /**
  * Retrieves an element prev. stored in hash
  * @param hash where element is stored
- * @param value stored value
- * @return value retrieved
+ * @param info stored info
+ * @return info retrieved
  */
-void *hash_decode(Hash *hash, void *value);
-
-/**
- * Deletes an existant value in hash
- * @param hash where element is stored
- * @param value value to be deleted
- * @return if was posible
- */
-bool hash_deleteValue(Hash *hash, void* value);
+void *hash_decode(Hash *hash, void *info);
 
 /**
  * Cleans memory
@@ -78,11 +69,11 @@ bool hash_deleteValue(Hash *hash, void* value);
 void hash_clean(Hash *hash);
 
 /**
- * If value is stored
- * @param hash where value is stored
- * @param value value to check
+ * If info is stored
+ * @param hash where info is stored
+ * @param info info to check
  * @return if it's stored
  */
-bool hash_contains(Hash *hash, void *value);
+bool hash_contains(Hash *hash, void *info);
 
 #endif

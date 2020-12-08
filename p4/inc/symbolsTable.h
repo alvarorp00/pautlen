@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "symbol.h"
 #include "hash.h"
 
 typedef struct _SymbolsTable SymbolsTable;
@@ -66,6 +67,10 @@ bool declareFunction(SymbolsTable *st, String identifier, int value);
 
 /* ------------------------------------------------ */
 
+Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier);
+
+/* ------------------------------------------------ */
+
 /**
  * Set symbol as escalar variable
  * @param st table where symbol is stored
@@ -80,7 +85,7 @@ bool st_set_scalar_variable(
   String identifier,
   DataType dt,
   Scope scope,
-  uint_fast16_t pos
+  int pos
 );
 
 /**
@@ -98,8 +103,8 @@ bool st_set_vector_variable(
   String identifier,
   DataType dt,
   Scope scope,
-  uint_fast16_t pos,
-  uint_fast32_t size
+  int pos,
+  int8_t size
 );
 
 /**
@@ -114,7 +119,7 @@ bool st_set_scalar_parametre(
   SymbolsTable *st,
   String identifier,
   DataType dt,
-  uint_fast16_t pos
+  int pos
 );
 
 /**
@@ -130,8 +135,8 @@ bool st_set_vector_parametre(
   SymbolsTable *st,
   String identifier,
   DataType dt,
-  uint_fast16_t pos,
-  uint_fast32_t size
+  int pos,
+  int8_t size
 );
 
 /**
@@ -145,8 +150,8 @@ bool st_set_vector_parametre(
 bool st_set_function(
   SymbolsTable *st,
   String identifier,
-  uint_fast16_t params,
-  uint_fast16_t localvars
+  int32_t params,
+  int32_t localvars
 );
 
 /**
@@ -164,5 +169,18 @@ bool stopLocalScope(SymbolsTable *st);
 Scope st_getScope(SymbolsTable *st);
 
 /* ------------------------------------------------ */
+
+bool st_insertBlindCurrentScope(
+  SymbolsTable *st,
+  String identifier,
+  ElementCategory elemCat,
+  DataType dataType,
+  IdentifierCategory identifierCategory,
+  Scope scope,
+  int pos,
+  int8_t size,
+  int32_t params,
+  int32_t localvars
+);
 
 #endif

@@ -6,20 +6,29 @@
  */
 
 #include "hash.h"
-#include "symbol.h"
 
+typedef struct _ProbingResponse ProbingResponse;
 typedef struct _Node Node;
 
+struct _ProbingResponse
+{
+  bool present;
+  uint_fast64_t index;
+};
+
+/**
+ * Node in hash
+ */
 struct _Node {
-  void *value;
+  void *info; /* Node info */
 };
 
 /**
  * Main hash structure
  */
 struct _Hash {
-  uint_fast32_t max_size;
-  uint_fast32_t curr_size;
+  uint_fast64_t max_size;
+  uint_fast64_t curr_size;
   float factor;
   Node **nodes; /* Hash nodes which store info */
   Hashcode hashcode;
@@ -48,25 +57,26 @@ static bool node_isEmpty(Node *node);
 /**
  * Initializes a new node
  * @param node to initialize
- * @param value to store in node
+ * @param info to store in node
  * @return same node
  */
-static Node* init_node(Node *node, void* value);
+static Node* init_node(void* info);
 
-/**
- * Deleted a node and it's value
- * @param node to clean
- * @param clean value's clean function
- */
-static void delete_node(Node *node, Clean clean);
+static void clean_nodes(Node **nodes,Clean clean, uint_fast64_t max_size);
 
 /**
  * Linear probing for hash structure
  * @param hash to check
- * @param value value to check
- * @return index in hash
+ * @param info info to check
+ * @return ProbingResponse object
  */
-static uint_fast64_t linearProbing(Hash *hash, void *value);
+static ProbingResponse linearProbing(
+  Node **nodes,
+  void *info,
+  Hashcode hashcode,
+  Equals equals,
+  uint_fast64_t max_size
+);
 
 /**
  * Refactors hash size if it's needed
@@ -120,17 +130,11 @@ static bool init_nodes(Hash *hash)
 }
 
 void hash_clean(Hash *hash)
-{
-  uint_fast64_t i;
-  
+{  
   if(!hash)
     return;
 
-  for(i = 0; i < hash->max_size; i++)
-  {
-    if(hash->nodes[i] != NULL)
-      delete_node(hash->nodes[i], hash->clean);
-  }
+  clean_nodes(hash->nodes, hash->clean, hash->max_size);
 
   free(hash->nodes);
 
@@ -138,18 +142,25 @@ void hash_clean(Hash *hash)
   
 }
 
-bool hash_encode(Hash *hash, void* value)
+bool hash_encode(Hash *hash, void* info)
 {
-  uint_fast64_t hashed;
+  ProbingResponse response;
   
-  if(!value)
-    return false;
-  if(hash_contains(hash, value))
+  if(!info)
     return false;
 
-  hashed = linearProbing(hash, value);
+  response = linearProbing(
+    hash->nodes,
+    info,
+    hash->hashcode,
+    hash->equals,
+    hash->max_size
+  );
 
-  hash->nodes[hashed] = init_node(hash->nodes[hashed], value);
+  if(response.present == true)
+    return false;
+
+  hash->nodes[response.index] = init_node(info);
   hash->curr_size += 1;
 
   refactor_ifNeeded(hash);
@@ -157,119 +168,165 @@ bool hash_encode(Hash *hash, void* value)
   return true;
 }
 
-void* hash_decode(Hash *hash, void* value)
+void* hash_decode(Hash *hash, void* info)
 {
-  uint_fast64_t hashed;
+  ProbingResponse response;
 
-  hashed = linearProbing(hash, value);
+  response = linearProbing(
+    hash->nodes,
+    info,
+    hash->hashcode,
+    hash->equals,
+    hash->max_size
+  );
   
-  if(!hash_contains(hash, value))
+  if(response.present == false)
     return NULL;
 
-  return hash->nodes[hashed]->value;
+  return hash->nodes[response.index]->info;
 }
 
-bool hash_deleteValue(Hash *hash, void* value)
+static ProbingResponse linearProbing(
+  Node **nodes,
+  void* info,
+  Hashcode hashcode,
+  Equals equals,
+  uint_fast64_t max_size
+)
 {
-  uint_fast64_t hashed;
- 
-  if(!hash || !value)
-    return false;
-
-  if(!hash_contains(hash, value))
-    return false;
-  
-  hashed = linearProbing(hash, value);
-  delete_node(hash->nodes[hashed], hash->clean);
-
-  hash->curr_size -= 1;
-  refactor_ifNeeded(hash);
-
-  return true;
-}
-
-static uint_fast64_t linearProbing(Hash *hash, void* value)
-{
+  ProbingResponse response;
   uint_fast64_t hashed, val;
   uint_fast64_t i;
   
-  hashed = hash->hashcode(value) % hash->max_size;
+  hashed = hashcode(info) % max_size;
 
-  for (i = 0; i < hash->max_size; i++)
+  for (i = 0; i < max_size; i++)
   {
-    val = (hashed + i)%hash->max_size;
+    val = (hashed + i)%max_size;
 
-    if(!node_isEmpty(hash->nodes[val]))
+    if(!node_isEmpty(nodes[val]))
     {
-      if(hash->equals(hash->nodes[val]->value, value))
+      if(equals(nodes[val]->info, info))
         {
-          return val;
+          response.index = val;
+          response.present = true;
+          return response;
         }
     }
     else
     {
-      return val;
+      response.index = val;
+      response.present = false;
+      return response;
     }
   }
+
+  response.present = false;
+  response.index = max_size;
   
-  return i;
+  return response;
 }
 
-bool hash_contains(Hash *hash, void* value)
+bool hash_contains(Hash *hash, void* info)
 {
-  uint_fast64_t hashed;
+  ProbingResponse response;
 
-  if(!hash || !value)
+  if(!hash || !info)
     return false;
 
-  hashed = linearProbing(hash, value);
-
-  if(hashed == hash->max_size)
+  if(hash->factor == 0)
     return false;
 
-  if(node_isEmpty(hash->nodes[hashed]))
-    return false;
-  
-  return hash->equals(hash->nodes[hashed]->value, value);
+  response = linearProbing(
+    hash->nodes,
+    info,
+    hash->hashcode,
+    hash->equals,
+    hash->max_size
+  );
+
+  return response.present;
 }
 
 static void refactor_ifNeeded(Hash *hash)
 {
+  uint_fast16_t __size;
+  uint_fast64_t i;
+  ProbingResponse r_response;
+  Node **__nodes;
+  
   if(!hash)
     return;
   
   hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
 
-  if(!(hash->factor > _CRITICAL_FACTOR_))
+  if(hash->factor < _HIGH_CRITICAL_FACTOR_)
     return;
-  
-  hash->max_size <<= 1;
 
-  hash->nodes = (Node**)realloc(hash->nodes, sizeof(Node*)*hash->max_size);
+  __size = hash->max_size << 1;
+  __nodes = (Node**)calloc(__size, sizeof(Node*));
+  
+  for(i = 0; i < hash->max_size; i++)
+  {
+    if(node_isEmpty(hash->nodes[i]))
+    {
+      free(hash->nodes[i]);
+      continue;
+    }
+    
+    r_response = linearProbing(
+      __nodes,
+      hash->nodes[i]->info,
+      hash->hashcode,
+      hash->equals,
+      __size
+    );
+
+    __nodes[r_response.index] = hash->nodes[i];
+  }
+
+  #ifdef _EXPLAIN_
+  printf("Resizing from @ %ld --> %ld @ \n", hash->max_size, __size);
+  #endif
+  
+  free(hash->nodes);
+  hash->nodes = __nodes;
+  hash->max_size = __size;
+  hash->factor = (float)hash->curr_size/(float)hash->max_size;
+
 }
 
-static Node* init_node(Node *node, void* value)
+static Node* init_node(void* info)
 {
+  Node *node;
+  
+  if(!info)
+    return NULL;
+  
   node = (Node*)calloc(1,sizeof(Node));
-  node->value = value;
+  node->info = info; 
+
   return node;
 }
 
-static void delete_node(Node *node, Clean clean)
+static void clean_nodes(Node **nodes, Clean clean, uint_fast64_t max_size)
 {
-  if(!node)
-    return;
-  if(node->value)
-    clean(node->value);
-  node->value = NULL;
-  free(node);
-  node = NULL;
+  uint_fast64_t i;
+  
+  for(i = 0; i < max_size; i++)
+  {
+    if(node_isEmpty(nodes[i]))
+      continue;
+    if(nodes[i]->info != NULL)
+    {
+      clean(nodes[i]->info);
+    }
+    free(nodes[i]);
+    nodes[i] = NULL;
+  }
 }
 
 static bool node_isEmpty(Node *node)
-{
-  if(node == NULL)
-    return true;
-  
-  return node->value == NULL;
+{ 
+  return node == NULL;
 }
