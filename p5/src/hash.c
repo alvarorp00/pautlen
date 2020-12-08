@@ -412,6 +412,7 @@ void hash_iterate_clean(hash_iterator *iterator)
     free(__inode);
     __inode = __next_inode;
   }
+  free(__inode);
 
   free(iterator);
 }
