@@ -11,6 +11,21 @@
 #define _DEF_HASHLEN_ 9
 #define _HIGH_CRITICAL_FACTOR_ 0.6
 
+typedef struct _iterator_node iterator_node;
+typedef struct _hash_iterator hash_iterator;
+
+struct _iterator_node
+{
+  const void *info;
+  iterator_node *__next;
+};
+
+struct _hash_iterator
+{
+  uint_fast64_t size;
+  iterator_node *first;
+};
+
 /**
  * Hashcode Funct prototype
  * @param void elem to be compared
@@ -75,5 +90,10 @@ void hash_clean(Hash *hash);
  * @return if it's stored
  */
 bool hash_contains(Hash *hash, void *info);
+
+hash_iterator *hash_iterate(Hash *hash);
+iterator_node *first(hash_iterator *iterator);
+iterator_node *next(iterator_node *_inode);
+void hash_iterate_clean(hash_iterator *iterator);
 
 #endif

@@ -6,12 +6,16 @@
 
 #define STR(x) #x
 
-#define LIMIT 500000
+#define LIMIT 10
 
 int main(int argc, char const *argv[])
 {
   Hash *hash;
   Symbol **symbols;
+  Symbol *__s;
+  hash_iterator *iterator;
+  iterator_node *__inode;
+
   size_t i;
   char buff[16];
 
@@ -48,6 +52,20 @@ int main(int argc, char const *argv[])
     }
     printf("hash decode [ %ld ] : OK! --> %s\r", i, symbol_get_key(symbols[i]));
   }
+
+  printf("\n\nIterating...\n");
+
+  iterator = hash_iterate(hash);
+  if(!iterator)
+    exit(EXIT_FAILURE);
+  __inode = first(iterator);
+  for(__inode = first(iterator); next(__inode) != NULL; __inode = next(__inode))
+  {
+    __s = (Symbol*)__inode->info;
+    printf("Retrieved key: %s\n", symbol_get_key(__s));
+  }
+
+  hash_iterate_clean(iterator);
 
   printf("\n\nEND\n\n");
 

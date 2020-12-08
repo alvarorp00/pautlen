@@ -40,6 +40,9 @@
   /* Function launched in case of failure */
   int yyerror(SymbolsTable *st, char *s);
 
+  /* Dump from Symbols Table */
+  void write_symbols_table(FPASM, SymbolsTable *st)
+
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
   /* - - - - - - GLOBAL VARS - - - - - - - */
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
@@ -48,7 +51,7 @@
   DataType current_type; /* INT, BOOLEAN */
   IdentifierCategory current_class; /* SCALAR, VECTOR */
   Scope current_scope; /* GLOBAL, LOCAL */
-  int current_pos; /* Position inside funct either params or localvars */
+  int32_t current_pos; /* Position inside funct either params or localvars */
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
@@ -135,7 +138,7 @@
 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
       {
         PRINT_RULE("<programa> ::= main { <declaraciones> <funciones> <sentencias> }", 1);
-        // write_end(FPASM_NAME);
+        write_end(FPASM_NAME);
       }
       ;
 
@@ -144,7 +147,10 @@ program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements T
 /*------------------------------------------------------*/
 er1: /* empty --> write data section */
     {
-
+      write_data_header(FPASM_NAME);
+      /* write_symbols_table(FPASM_NAME, st) */
+      write_code_segment(FPASM_NAME);
+      in_declare = false;
     }
     ;
 
@@ -828,4 +834,18 @@ int yyerror(SymbolsTable *st, char *s)
   COPYERR("alfa.y", "Syntactic error: %s", s);
   
   return -1;
+}
+
+void write_symbols_table(FPASM, SymbolsTable *st)
+{
+  dyn_set_t *symbols_set;
+  size_t i;
+  
+  if(!FPASM_NAME || !st)
+    return;
+
+  symbols_set = st_currScope_toSet(st);
+
+  
+  
 }

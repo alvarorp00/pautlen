@@ -120,6 +120,8 @@ static bool init_nodes(Hash *hash)
   hash->curr_size = 0;
   hash->factor = 0;
 
+  memset(hash->nodes, 0, sizeof(Node*)*_DEF_HASHLEN_);
+
   if(!hash->nodes)
   {
     hash_clean(hash);
@@ -250,10 +252,10 @@ bool hash_contains(Hash *hash, void* info)
 
 static void refactor_ifNeeded(Hash *hash)
 {
-  uint_fast16_t __size;
-  uint_fast64_t i;
-  ProbingResponse r_response;
   Node **__nodes;
+  ProbingResponse r_response;
+  uint_fast64_t __size;
+  uint_fast64_t i;
   
   if(!hash)
     return;
@@ -265,6 +267,7 @@ static void refactor_ifNeeded(Hash *hash)
 
   __size = hash->max_size << 1;
   __nodes = (Node**)calloc(__size, sizeof(Node*));
+  memset(__nodes, 0, sizeof(Node*)*_DEF_HASHLEN_);
   
   for(i = 0; i < hash->max_size; i++)
   {
@@ -284,10 +287,6 @@ static void refactor_ifNeeded(Hash *hash)
 
     __nodes[r_response.index] = hash->nodes[i];
   }
-
-  #ifdef _EXPLAIN_
-  printf("Resizing from @ %ld --> %ld @ \n", hash->max_size, __size);
-  #endif
   
   free(hash->nodes);
   hash->nodes = __nodes;
@@ -329,4 +328,90 @@ static void clean_nodes(Node **nodes, Clean clean, uint_fast64_t max_size)
 static bool node_isEmpty(Node *node)
 { 
   return node == NULL;
+}
+
+/* ------------------------------- */
+
+hash_iterator *hash_iterate(Hash *hash)
+{
+  uint_fast64_t i;
+  hash_iterator *iterator;
+  iterator_node *__inode, *__prev_inode;
+  
+  if(!hash)
+    return NULL;
+
+  iterator = (hash_iterator*)calloc(1, sizeof(hash_iterator));
+  if(!iterator)
+    return NULL;
+
+  __inode = (iterator_node*)calloc(1, sizeof(hash_iterator));
+  if(!__inode)
+    {
+      hash_iterate_clean(iterator);
+      return NULL;
+    }
+
+  // Find first
+  for(i = 0; i < hash->max_size; i++)
+  {
+    if(node_isEmpty(hash->nodes[i]))
+      continue;
+    break; // We've found the first node
+  }
+
+  __inode->info = (const void*)hash->nodes[i]->info;
+  __inode->__next = NULL;
+
+  iterator->first = __inode;
+
+  for(i++; i < hash->max_size; i++)
+  {
+    if(node_isEmpty(hash->nodes[i]))
+      continue;
+    __prev_inode = __inode;
+    __inode = (iterator_node*)calloc(1, sizeof(hash_iterator));
+    if(!__inode)
+      {
+        hash_iterate_clean(iterator);
+        return NULL;
+      }
+    __prev_inode->__next = __inode;
+    __inode->info = (const void*)hash->nodes[i]->info;
+    __inode->__next = NULL;
+  }
+
+  return iterator;
+}
+
+iterator_node *first(hash_iterator *iterator)
+{
+  if(!iterator)
+    return NULL;
+  return iterator->first;
+}
+
+iterator_node *next(iterator_node *_inode)
+{
+  if(!_inode)
+    return NULL;
+  return _inode->__next;
+}
+
+void hash_iterate_clean(hash_iterator *iterator)
+{
+  iterator_node *__inode, *__next_inode;
+  
+  if(!iterator)
+    return;
+  
+  __inode = first(iterator);
+  while(next(__inode) != NULL)
+  {
+    __next_inode = next(__inode);
+    free(__inode);
+    __inode = __next_inode;
+  }
+
+  free(iterator);
 }

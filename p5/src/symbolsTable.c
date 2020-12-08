@@ -454,3 +454,12 @@ bool st_insertBlindCurrentScope(
     return false;
   }
 }
+
+/* -------------------------------------------- */
+
+Hash *st_getScopeHash(SymbolsTable *st)
+{
+  if(!st)
+    return NULL;
+  return st->currentScope == GLOBAL ? st->globalScope : st->localScope;
+}
