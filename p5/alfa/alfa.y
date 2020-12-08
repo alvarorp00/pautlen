@@ -40,8 +40,7 @@
   /* Function launched in case of failure */
   int yyerror(SymbolsTable *st, char *s);
 
-  /* Dump from Symbols Table */
-  void write_symbols_table(FPASM, SymbolsTable *st)
+  void write_symbols_table(FPASM, SymbolsTable *st);
 
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
   /* - - - - - - GLOBAL VARS - - - - - - - */
@@ -51,7 +50,7 @@
   DataType current_type; /* INT, BOOLEAN */
   IdentifierCategory current_class; /* SCALAR, VECTOR */
   Scope current_scope; /* GLOBAL, LOCAL */
-  int32_t current_pos; /* Position inside funct either params or localvars */
+  int current_pos; /* Position inside funct either params or localvars */
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
@@ -838,14 +837,33 @@ int yyerror(SymbolsTable *st, char *s)
 
 void write_symbols_table(FPASM, SymbolsTable *st)
 {
-  dyn_set_t *symbols_set;
-  size_t i;
+  hash_iterator *iterator;
+  iterator_node *__inode;
+  Symbol *__s;
+  int32_t size;
   
   if(!FPASM_NAME || !st)
     return;
 
-  symbols_set = st_currScope_toSet(st);
-
+  iterator = hash_iterate(st_getScopeHash(st));
+  if(!iterator)
+    return;
   
+  for(__inode = first(iterator); next(__inode) != NULL; __inode = next(__inode))
+  {
+    __s = (Symbol*)__inode->info;
+    if(symbol_get_category(__s) != VAR)
+      continue;
+    if(symbol_get_var_identifierCategory(__s) == SCALAR)
+    {
+      write_var_declaration(FPASM_NAME, symbol_get_key(__s), SCALAR, 1);
+    }
+    else
+    {
+      size = symbol_get_var_size(__s);
+      write_var_declaration(FPASM_NAME, symbol_get_key(__s), VECTOR, size);
+    }
+  }
   
+  hash_iterate_clean(iterator);
 }

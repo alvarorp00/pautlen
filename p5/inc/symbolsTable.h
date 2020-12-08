@@ -168,8 +168,6 @@ bool stopLocalScope(SymbolsTable *st);
  */
 Scope st_getScope(SymbolsTable *st);
 
-Hash *st_getScopeHash(SymbolsTable *st);
-
 /* ------------------------------------------------ */
 
 bool st_insertBlindCurrentScope(
@@ -184,5 +182,11 @@ bool st_insertBlindCurrentScope(
   int32_t params,
   int32_t localvars
 );
+
+/* ----------------------------------------------- */
+
+Hash *st_getScopeHash(SymbolsTable *st);
+
+/* ----------------------------------------------- */
 
 #endif

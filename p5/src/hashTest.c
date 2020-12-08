@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
 {
   Hash *hash;
   Symbol **symbols;
-  Symbol *__s;
+  const Symbol *__s;
   hash_iterator *iterator;
   iterator_node *__inode;
 
@@ -56,12 +56,13 @@ int main(int argc, char const *argv[])
   printf("\n\nIterating...\n");
 
   iterator = hash_iterate(hash);
+  
   if(!iterator)
     exit(EXIT_FAILURE);
-  __inode = first(iterator);
+
   for(__inode = first(iterator); next(__inode) != NULL; __inode = next(__inode))
   {
-    __s = (Symbol*)__inode->info;
+    __s = (const Symbol*)__inode->info;
     printf("Retrieved key: %s\n", symbol_get_key(__s));
   }
 
