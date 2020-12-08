@@ -93,10 +93,11 @@
 /**
  * Prints failure trace
  */
+#define _DEBUG_
 #ifdef _DEBUG_
-#define TRACE() eprintf("Trace coming from:\t @ file: %s @ funct: %s @ line: %d", __FILE__, __func__, __LINE__);
+#define TRACE eprintf("Trace coming from:\t @ file: %s @ funct: %s @ line: %d", __FILE__, __func__, __LINE__);
 #else
-#define TRACE() eprintf("Debug option is not specified. Skipping trace...");
+#define TRACE eprintf("Debug option is not specified. Skipping trace...");
 #endif
 
 /**
@@ -105,7 +106,7 @@
  * @param str string to print
  */
 #define COPYERR(file, str, ...) \
-            TRACE(); \
+            TRACE; \
             snprintf(errbuff, BUFF, "*** at %s: [at line: %d; col: %d]: " str, file, line, col, ##__VA_ARGS__)
 
 /**

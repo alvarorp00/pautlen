@@ -137,7 +137,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 62 "alfa/alfa.y"
+#line 61 "alfa/alfa.y"
 
   attrs_type attrs;
 

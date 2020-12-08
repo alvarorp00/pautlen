@@ -54,7 +54,6 @@ int main(int argc, char **argv)
   st = symbolsTableInit();
   if(!st)
   {
-    #line 51 "alfa.c"
     TO_STDERR("Error at %s: %d. SymbolsTable init FAILED****", __FILE__, __LINE__);
     exit(EXIT_FAILURE);
   }

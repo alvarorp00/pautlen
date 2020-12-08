@@ -10,9 +10,8 @@
   #include "symbolsTable.h"
   #include "generator.h"
 
-  #define _DEBUG_
-
-  #ifdef _DEBUG_
+  // #define _PRINT_RULES_
+  #ifdef _PRINT_RULES_
   #define PRINT_RULE(str, val) \
               fprintf(yyout, ";R%d:\t%s\n", val, str);
   #else
@@ -136,7 +135,7 @@
 program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements TOK_LLAVEDERECHA
       {
         PRINT_RULE("<programa> ::= main { <declaraciones> <funciones> <sentencias> }", 1);
-        write_end(FPASM_NAME);
+        // write_end(FPASM_NAME);
       }
       ;
 
@@ -172,7 +171,7 @@ declarations: declaration
 /*------------------------------------------------------*/
 declarations: declaration declarations
             {
-              PRINT_RULE("<declaraciones> ::= <declaracion> <declaraciones>", 2);
+              PRINT_RULE("<declaraciones> ::= <declaracion> <declaraciones>", 3);
             }
             ;
 
@@ -190,7 +189,7 @@ declaration: class identifiers TOK_PUNTOYCOMA
 /*------------------------------------------------------*/
 class: class_scalar
       {
-        current_class = SCALAR;
+        // current_class = SCALAR;
         PRINT_RULE("<clase> ::= <clase_escalar>", 5);
       }
       ;
@@ -200,7 +199,7 @@ class: class_scalar
 /*------------------------------------------------------*/
 class: class_vector
       {
-        current_class = VECTOR;
+        // current_class = VECTOR;
         PRINT_RULE("<clase> ::= <clase_vector>", 7);
       }
       ;
@@ -219,7 +218,7 @@ class_scalar: type
 /*------------------------------------------------------*/
 type: TOK_INT
       {
-        current_type = INT;
+        // current_type = INT;
         PRINT_RULE("<tipo> ::= int", 10);
       }
       ;
@@ -229,7 +228,7 @@ type: TOK_INT
 /*------------------------------------------------------*/
 type: TOK_BOOLEAN
       {
-        current_type = BOOLEAN;
+        // current_type = BOOLEAN;
         PRINT_RULE("<tipo> ::= boolean", 11);
       }
       ;
@@ -311,7 +310,7 @@ function_params: /* empty */
 /*------------------------------------------------------*/
 remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_params
                         {
-                          PRINT_RULE("<resto_parametros_funcion> ::= ; <parametro_funcion> <resto_parametros_funcion>", 24);
+                          PRINT_RULE("<resto_parametros_funcion> ::= ; <parametro_funcion> <resto_parametros_funcion>", 25);
                         }
                         ;
 
@@ -320,7 +319,7 @@ remaining_function_params: TOK_PUNTOYCOMA function_param remaining_function_para
 /*------------------------------------------------------*/
 remaining_function_params: /* empty */
                         {
-                          
+                          PRINT_RULE("<resto_parametros_funcion> ::= ", 26);
                         }
                         ;
 
@@ -445,7 +444,7 @@ block: loop
 /*                      PROD: 43                        */
 /*------------------------------------------------------*/
 /* should be "assignment: identifier TOK_ASIGNACION etc.." */
-assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
+assignment: identifier TOK_ASIGNACION exp
     {
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
     }
@@ -506,11 +505,11 @@ reading: TOK_SCANF identifier
       ;
 
 /*------------------------------------------------------*/
-/*                      PROD: 55                        */
+/*                      PROD: 56                        */
 /*------------------------------------------------------*/
 writing: TOK_PRINTF exp
       {
-        PRINT_RULE("<escritura> ::= printf <exp>", 55);
+        PRINT_RULE("<escritura> ::= printf <exp>", 56);
       }
       ;
 
@@ -599,7 +598,7 @@ exp: TOK_NOT exp
 /*                      PROD: 80                        */
 /*------------------------------------------------------*/
 /* should be "exp: identifier" */
-exp: TOK_IDENTIFICADOR
+exp: identifier
     {
       PRINT_RULE("<exp> ::= <identificador>", 80);
     }
@@ -792,7 +791,7 @@ constant_int: TOK_CONSTANTE_ENTERA
 identifier: TOK_IDENTIFICADOR
           {
             PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
-            if(st_searchCurrentScope(st, $1.lexeme) != NULL)
+            /*if(st_searchCurrentScope(st, $1.lexeme) != NULL)
             {
               #line 743 "alfa.y"
               COPYERR(__FILE__, "Identifier %s already at current scope", $1.lexeme);
@@ -812,7 +811,7 @@ identifier: TOK_IDENTIFICADOR
                 current_params,
                 current_localvars
               );
-            }
+            }*/
           }
           ;
 

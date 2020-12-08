@@ -8,8 +8,8 @@ BISONFLAGS = -y -d -v -Wyacc
 YACCFLAGS = 
 
 _STD_ = _STD_
-
 _EXPLAIN_ = _EXPLAIN_
+_SYNTACTIC_ = _SYNTACTIC_
 
 INC = inc/
 DIR = alfa/
@@ -18,8 +18,8 @@ OBJ = obj/
 SRC = src/
 INFO = info/
 
-RESULTS = testresults/
 TESTFILES = testfiles/
+RESULTS = testresults/
 
 COMPILED = program
 
@@ -41,6 +41,26 @@ SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH) $(GEN
 
 TESTFILEIN = $(TESTFILES)pruebaTS.txt
 TESTFILEOUT = $(TESTFILES)expectedResTS.txt
+
+# TEST FOR SYNTACTIC
+
+TESTFILE1 = $(TESTFILES)entrada_sin_1.txt
+TESTFILE2 = $(TESTFILES)entrada_sin_2.txt
+TESTFILE3 = $(TESTFILES)entrada_sin_3.txt
+
+OUTPUT1 = $(TESTFILES)salida_sin_1.txt
+OUTPUT2 = $(TESTFILES)salida_sin_2.txt
+OUTPUT3 = $(TESTFILES)salida_sin_3.txt
+
+TESTOUTPUT1 = $(RESULTS)testoutput_sin_1.txt
+TESTOUTPUT2 = $(RESULTS)testoutput_sin_2.txt
+TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
+
+# END
+
+# SCRIP
+
+TEST_VERIFY = ./testverify.sh 
 
 TESTRESULT = $(RESULTS)testresult.txt
 
@@ -75,10 +95,19 @@ hash_test: ## Test hash
 	 	@$(CC) -I $(INC) -o run_hash_test $(SRC)hashTest.c $(SYMBOL) $(HASH)
 		./run_hash_test
 
-syntactic_test: all
+syntactic_test: clean $(OALFA) ## Bison syntactic test
+		@ clear
+		@ echo "Compiling all --> syntactic specified --> Testing..."
+		@ $(CC) -I $(INC) $(CFLAGS) -D $(_SYNTACTIC_) -o $(COMPILED) $(SOURCEFILES)
 		@ echo "\nExecuting first test"
-		@ ./$(ALFA) $(TESTFILE1) $(TESTOUTPUT1)
+		@ ./$(COMPILED) $(TESTFILE1) $(TESTOUTPUT1)
 		@ $(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
+		@  echo "\nExecuting second test"
+		@ ./$(COMPILED) $(TESTFILE2) $(TESTOUTPUT2)
+		@ $(TEST_VERIFY) $(OUTPUT2) $(TESTOUTPUT2)
+		@ echo "\nExecuting third test"
+		@ ./$(COMPILED) $(TESTFILE3) $(TESTOUTPUT3)
+		@ $(TEST_VERIFY) $(OUTPUT3) $(TESTOUTPUT3)
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
