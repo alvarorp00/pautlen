@@ -189,8 +189,8 @@ declaration: class identifiers TOK_PUNTOYCOMA
 /*------------------------------------------------------*/
 class: class_scalar
       {
-        // current_class = SCALAR;
         PRINT_RULE("<clase> ::= <clase_escalar>", 5);
+        current_class = SCALAR;
       }
       ;
 
@@ -199,8 +199,8 @@ class: class_scalar
 /*------------------------------------------------------*/
 class: class_vector
       {
-        // current_class = VECTOR;
         PRINT_RULE("<clase> ::= <clase_vector>", 7);
+        current_class = VECTOR;
       }
       ;
 
@@ -218,18 +218,17 @@ class_scalar: type
 /*------------------------------------------------------*/
 type: TOK_INT
       {
-        // current_type = INT;
         PRINT_RULE("<tipo> ::= int", 10);
+        current_type = INT;
       }
       ;
 
 /*------------------------------------------------------*/
-/*                      PROD: 11                        */
 /*------------------------------------------------------*/
 type: TOK_BOOLEAN
       {
-        // current_type = BOOLEAN;
         PRINT_RULE("<tipo> ::= boolean", 11);
+        current_type = BOOLEAN;
       }
       ;
 
@@ -253,6 +252,7 @@ identifiers: identifier
  
 /*------------------------------------------------------*/
 /*                      PROD: 19                        */
+/*                      PROD: 11                        */
 /*------------------------------------------------------*/
 identifiers: identifier TOK_COMA identifiers
           {
@@ -444,7 +444,7 @@ block: loop
 /*                      PROD: 43                        */
 /*------------------------------------------------------*/
 /* should be "assignment: identifier TOK_ASIGNACION etc.." */
-assignment: identifier TOK_ASIGNACION exp
+assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
     }
@@ -598,7 +598,7 @@ exp: TOK_NOT exp
 /*                      PROD: 80                        */
 /*------------------------------------------------------*/
 /* should be "exp: identifier" */
-exp: identifier
+exp: TOK_IDENTIFICADOR
     {
       PRINT_RULE("<exp> ::= <identificador>", 80);
     }
@@ -791,9 +791,8 @@ constant_int: TOK_CONSTANTE_ENTERA
 identifier: TOK_IDENTIFICADOR
           {
             PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
-            /*if(st_searchCurrentScope(st, $1.lexeme) != NULL)
+            if(st_searchCurrentScope(st, $1.lexeme) != NULL)
             {
-              #line 743 "alfa.y"
               COPYERR(__FILE__, "Identifier %s already at current scope", $1.lexeme);
               return PARSEFAIL;
             }
@@ -811,7 +810,7 @@ identifier: TOK_IDENTIFICADOR
                 current_params,
                 current_localvars
               );
-            }*/
+            }
           }
           ;
 

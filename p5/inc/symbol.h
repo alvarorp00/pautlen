@@ -20,9 +20,9 @@ typedef struct _Parametre Parametre;
 typedef struct _Function Function;
 
 /**
- * Union with element stored
+ * struct with element stored
  */
-typedef union _Element Element;
+typedef struct _Element Element;
 
 /**
  * Initializes a new Symbol

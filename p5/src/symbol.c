@@ -41,9 +41,9 @@ struct _Function
 };
 
 /**
- * Union with element stored
+ * Structure with element stored
  */
-union _Element
+struct _Element
 {
   Variable var; /* Element is a variable */
   Parametre param; /* Element is a parametre */
@@ -55,7 +55,7 @@ union _Element
  */
 struct _Symbol {
   char key[MAX_LEN]; /* Key to access this element */
-  ElementCategory elemCat; /* Type of element stored in union {Function, Parametre, Variable} */
+  ElementCategory elemCat; /* Type of element stored in struct {Function, Parametre, Variable} */
   Element element; /* Element */
   int value; /* Element's associated value */
 };
