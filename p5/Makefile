@@ -5,7 +5,6 @@ TOKEN = tokens.h
 CC = gcc
 CFLAGS = -g -Wall
 BISONFLAGS = -y -d -v -Wyacc
-YACCFLAGS = 
 
 _STD_ = _STD_
 _EXPLAIN_ = _EXPLAIN_
@@ -58,13 +57,13 @@ TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 
 # END
 
-# SCRIP
+# SCRIPT
 
 TEST_VERIFY = ./testverify.sh 
 
 TESTRESULT = $(RESULTS)testresult.txt
 
-default: clean semantic_manual ## Equivalent to 'make all'
+default: clean semantic ## Equivalent to 'make all'
 		@# clear
 
 help:	## This guide

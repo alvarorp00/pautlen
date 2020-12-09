@@ -14,7 +14,11 @@
 #define MAX_LEN 100
 
 /* Prints token in default flex output */
+#ifdef _PRINT_PARSED_
 #define PRINT_TOK(str) fprintf(yyout, ";D:\t%s\n", str);
+#else
+#define PRINT_TOK(str)
+#endif
 
 /* Common line value defined in "alfa.h" */
 int line;

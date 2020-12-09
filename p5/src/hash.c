@@ -360,7 +360,7 @@ hash_iterator *hash_iterate(Hash *hash)
     break; // We've found the first node
   }
 
-  __inode->info = (const void*)hash->nodes[i]->info;
+  __inode->info = (void*)hash->nodes[i]->info;
   __inode->__next = NULL;
 
   iterator->first = __inode;
@@ -377,7 +377,7 @@ hash_iterator *hash_iterate(Hash *hash)
         return NULL;
       }
     __prev_inode->__next = __inode;
-    __inode->info = (const void*)hash->nodes[i]->info;
+    __inode->info = (void*)hash->nodes[i]->info;
     __inode->__next = NULL;
   }
 

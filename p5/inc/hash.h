@@ -16,7 +16,7 @@ typedef struct _hash_iterator hash_iterator;
 
 struct _iterator_node
 {
-  const void *info;
+  void *info;
   iterator_node *__next;
 };
 

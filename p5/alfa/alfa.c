@@ -20,7 +20,7 @@ extern int yyparse(SymbolsTable *st);
 /* Locals */
 
 /* Where assembly is written */
-extern FILE *fpasm;
+FILE *fpasm;
 
 /* Common errbuff defined in "alfa.h" */
 char errbuff[BUFF];
@@ -104,8 +104,8 @@ int setup(int argc, char **argv)
     return 1;
   }
 
-  yyout = WRITE(argv[2]);
-  if(!yyout)
+  fpasm = WRITE(argv[2]);
+  if(!fpasm)
   {
     strcpy(errbuff, "Output file error.\n");
     return 1;

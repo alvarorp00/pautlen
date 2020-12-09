@@ -1,4 +1,5 @@
 #include "generator.h"
+#include "alfa.h"
 
 // macro utils
 #define STRINGIFY( x )        #x

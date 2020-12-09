@@ -10,10 +10,9 @@
   #include "symbolsTable.h"
   #include "generator.h"
 
-  // #define _PRINT_RULES_
-  #ifdef _PRINT_RULES_
-  #define PRINT_RULE(str, val) \
-              fprintf(yyout, ";R%d:\t%s\n", val, str);
+  #ifdef _PRINT_PARSED_
+  #define _PRINT_PARSED_(str, val) \
+              fprintf(stdout, ";R%d:\t%s\n", val, str);
   #else
   #define PRINT_RULE(str, val)
   #endif
@@ -56,6 +55,7 @@
   int32_t current_localvars; /* Function localvars amount */
 
   bool in_declare; /* true if we're in declarations part, false if not */
+  bool in_main; /* true if we're in main part, else false */
   
 %}
 
@@ -147,6 +147,7 @@ program: TOK_MAIN TOK_LLAVEIZQUIERDA declarations er1 functions er2 statements T
 er1: /* empty --> write data section */
     {
       write_data_header(FPASM_NAME);
+      write_bss_header(FPASM_NAME);
       write_symbols_table(FPASM_NAME, st);
       write_code_segment(FPASM_NAME);
       in_declare = false;
@@ -158,7 +159,7 @@ er1: /* empty --> write data section */
 /*------------------------------------------------------*/
 er2: /* empty --> write "main:" */
     {
-
+      write_main_begin(FPASM_NAME);
     }
     ;
 
@@ -849,9 +850,13 @@ void write_symbols_table(FPASM, SymbolsTable *st)
   if(!iterator)
     return;
   
-  for(__inode = first(iterator); next(__inode) != NULL; __inode = next(__inode))
+  if(!first(iterator))
+    return;
+
+  for(__inode = first(iterator); __inode != NULL; __inode = next(__inode))
   {
     __s = (Symbol*)__inode->info;
+
     if(symbol_get_category(__s) != VAR)
       continue;
     if(symbol_get_var_identifierCategory(__s) == SCALAR)
