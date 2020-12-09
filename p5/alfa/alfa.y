@@ -853,9 +853,9 @@ void write_symbols_table(FPASM, SymbolsTable *st)
   if(!first(iterator))
     return;
 
-  for(__inode = first(iterator); __inode != NULL; __inode = next(__inode))
+  for(__inode = first(iterator); hashNext(__inode); __inode = next(__inode))
   {
-    __s = (Symbol*)__inode->info;
+    __s = (Symbol*)iter_nodeInfo(__inode);
 
     if(symbol_get_category(__s) != VAR)
       continue;

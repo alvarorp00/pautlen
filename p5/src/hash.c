@@ -10,6 +10,18 @@
 typedef struct _ProbingResponse ProbingResponse;
 typedef struct _Node Node;
 
+struct _iterator_node
+{
+  void *info;
+  iterator_node *__next;
+};
+
+struct _hash_iterator
+{
+  uint_fast64_t size;
+  iterator_node *first;
+};
+
 struct _ProbingResponse
 {
   bool present;
@@ -396,6 +408,18 @@ iterator_node *next(iterator_node *_inode)
   if(!_inode)
     return NULL;
   return _inode->__next;
+}
+
+bool hasNext(iterator_node *_inode)
+{
+  return _inode == NULL ? false : _inode->__next != NULL;
+}
+
+void *iter_nodeInfo(iterator_node *_inode)
+{
+  if(!_inode)
+    return NULL;
+  return _inode->info;
 }
 
 void hash_iterate_clean(hash_iterator *iterator)

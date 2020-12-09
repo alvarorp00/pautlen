@@ -155,4 +155,5 @@ clean: ## Cleans output files
 		rm -f $(CYYPARSE)
 		rm -f $(INC)/y.tab.h 
 		rm -f run_hash_test
+		rm -f prg1
 		@echo "Data cleaned."
