@@ -62,13 +62,9 @@ int main(int argc, char **argv)
   {
     fprintf(stderr, "%s.\n", errbuff);
   }
-  
-  #ifndef _STD_
-  
-  fclose(yyin);
-  fclose(yyout);
 
-  #endif
+  fclose(yyin);
+  fclose(fpasm);
 
   symbolsTableClean(st);
 
@@ -88,8 +84,6 @@ int setup(int argc, char **argv)
   col = 1;
 
   morfofailure = false;
-  
-  #ifndef _STD_
 
   if(argc < 3)
   {
@@ -110,13 +104,6 @@ int setup(int argc, char **argv)
     strcpy(errbuff, "Output file error.\n");
     return 1;
   }
-
-  #else
-
-  yyin = stdin;
-  yyout = stdout;
-
-  #endif
 
   return 0;
 }

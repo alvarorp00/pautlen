@@ -153,6 +153,12 @@ void symbol_delete(void *s);
 /* -- -- -- - GETTERS -- -- -- -- */
 /* ------------------------------ */
 
+/* - - - COMMON - - - */
+
+DataType symbol_blind_dataType(Symbol *s);
+
+IdentifierCategory symbol_blind_identifierCategory(Symbol *s);
+
 /*- - - VARS - - - */
 
 DataType symbol_get_var_dataType(Symbol *s);

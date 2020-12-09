@@ -257,6 +257,28 @@ String symbol_toString(Symbol *s)
 /* -- -- -- - GETTERS -- -- -- -- */
 /* ------------------------------ */
 
+/* - - - COMMON - - - */
+
+DataType symbol_blind_dataType(Symbol *s)
+{
+  if(!s || symbol_get_category(s) == FUNCT)
+    return UNSP_ERR;
+  if(symbol_get_category(s) == VAR)
+    return s->element.var.dataType;
+  else
+    return s->element.param.dataType;
+}
+
+IdentifierCategory symbol_blind_identifierCategory(Symbol *s)
+{
+  if(!s || symbol_get_category(s) == FUNCT)
+    return UNSP_ERR;
+  if(symbol_get_category(s) == VAR)
+    return s->element.var.classCat;
+  else
+    return s->element.param.classCat;
+}
+
 /*- - - VARS - - - */
 
 DataType symbol_get_var_dataType(Symbol *s)

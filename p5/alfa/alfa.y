@@ -5,12 +5,13 @@
 /* C delimiters */
 
   #include <stdio.h>
+  #include <stdlib.h>
   #include <stdbool.h>
   #include "alfa.h"
   #include "symbolsTable.h"
   #include "generator.h"
 
-  #ifdef _PRINT_PARSED_
+  #ifdef _DEBUG_
   #define _PRINT_PARSED_(str, val) \
               fprintf(stdout, ";R%d:\t%s\n", val, str);
   #else
@@ -44,6 +45,12 @@
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
   /* - - - - - - GLOBAL VARS - - - - - - - */
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
+
+  Symbol *_sleft;
+  Symbol *_sright;
+  Symbol *_smid;
+
+  char __buff[MAX_LEN + 1];
 
   ElementCategory current_category; /* VAR, PARAM, FUNCT */
   DataType current_type; /* INT, BOOLEAN */
@@ -103,14 +110,13 @@
 %token TOK_MENORIGUAL
 %token TOK_MAYORIGUAL
 
-%token TOK_CONSTANTE_ENTERA
 %token TOK_TRUE
 %token TOK_FALSE
 %token TOK_ERROR
 
 %token MENOSU
 
-%token <attrs> TOK_CTE_ENTERA 
+%token <attrs> TOK_CONSTANTE_ENTERA 
 %token <attrs> TOK_IDENTIFICADOR
 
 %type <attrs> conditional
@@ -453,6 +459,28 @@ block: loop
 assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
+      if((_sleft = st_searchCurrentScope(st, $1.lexeme)) == NULL)
+      {
+        /* Symbol is not declared */
+        COPYERR("Identifier %s not declared.", $1.lexeme); 
+        return PARSEFAIL;
+      }
+      if(symbol_get_category(_sleft) == FUNCT)
+      {
+        COPYERR("Identifier %s is a function.", $1.lexeme); 
+        return PARSEFAIL;
+      }
+      else if(symbol_blind_identifierCategory(_sleft) == VECTOR)
+      {
+        COPYERR("Identifier %s is a vector.", $1.lexeme); 
+        return PARSEFAIL;
+      }
+      else if(symbol_blind_dataType(_sleft) != $3.type)
+      {
+        COPYERR("Identifiers type missmatch");
+        return PARSEFAIL;
+      }
+      write_assignment(FPASM_NAME, $1.lexeme, $3.is_dir);
     }
     ;
 
@@ -516,6 +544,7 @@ reading: TOK_SCANF identifier
 writing: TOK_PRINTF exp
       {
         PRINT_RULE("<escritura> ::= printf <exp>", 56);
+        
       }
       ;
 
@@ -607,6 +636,25 @@ exp: TOK_NOT exp
 exp: TOK_IDENTIFICADOR
     {
       PRINT_RULE("<exp> ::= <identificador>", 80);
+      if((_sleft = st_searchCurrentScope(st, $1.lexeme)) == NULL)
+      {
+        COPYERR("Identifier %s doesn't exists", $1.lexeme);
+        return PARSEFAIL;
+      }
+      if(symbol_get_category(_sleft) == FUNCT)
+      {
+        COPYERR("Identifier %s is a function", $1.lexeme);
+        return PARSEFAIL;
+      }
+      else if(symbol_blind_identifierCategory(_sleft) == VECTOR)
+      {
+        COPYERR("Identifier %s is a vector", $1.lexeme);
+        return PARSEFAIL;
+      }
+      $$.type = symbol_blind_dataType(_sleft);
+      $$.is_dir = true;
+
+      write_operand(FPASM_NAME, $1.lexeme, $$.is_dir);
     }
     ;
 
@@ -616,6 +664,8 @@ exp: TOK_IDENTIFICADOR
 exp: constant
     {
       PRINT_RULE("<exp> ::= <constante>", 81);
+      $$.type = $1.type;
+      $$.is_dir = $1.is_dir;
     }
     ;
 
@@ -760,6 +810,8 @@ constant: constant_logic
 constant: constant_int
           {
             PRINT_RULE("<constante> ::= <constante_entera>", 100);
+            $$.type = $1.type;
+            $$.is_dir = $1.is_dir;
           }
           ;
 
@@ -787,7 +839,12 @@ constant_logic: TOK_FALSE
 constant_int: TOK_CONSTANTE_ENTERA
             {
               PRINT_RULE("<constante_entera> ::= TOK_CONSTANTE_ENTERA", 104);
-              /* write_operand(FPASM_NAME, $1.int_value, false); */
+              $$.type = INT;
+              $$.is_dir = false;
+              $$.int_value = $1.int_value;
+              /* push */
+              snprintf(__buff, MAX_LEN, "%d", $1.int_value);
+              write_operand(FPASM_NAME, __buff, false);
             }
             ;
 
@@ -799,7 +856,7 @@ identifier: TOK_IDENTIFICADOR
             PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
             if(st_searchCurrentScope(st, $1.lexeme) != NULL)
             {
-              COPYERR(__FILE__, "Identifier %s already at current scope", $1.lexeme);
+              COPYERR("Identifier %s already at current scope", $1.lexeme);
               return PARSEFAIL;
             }
             else
@@ -831,7 +888,7 @@ int yyerror(SymbolsTable *st, char *s)
     return -1;
   }
   
-  COPYERR("alfa.y", "Syntactic error: %s", s);
+  COPYERR("Syntactic error: %s", s);
   
   return -1;
 }
@@ -853,7 +910,7 @@ void write_symbols_table(FPASM, SymbolsTable *st)
   if(!first(iterator))
     return;
 
-  for(__inode = first(iterator); hashNext(__inode); __inode = next(__inode))
+  for(__inode = first(iterator); __inode != NULL; __inode = next(__inode))
   {
     __s = (Symbol*)iter_nodeInfo(__inode);
 

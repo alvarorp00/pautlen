@@ -410,16 +410,16 @@ iterator_node *next(iterator_node *_inode)
   return _inode->__next;
 }
 
-bool hasNext(iterator_node *_inode)
-{
-  return _inode == NULL ? false : _inode->__next != NULL;
-}
-
 void *iter_nodeInfo(iterator_node *_inode)
 {
   if(!_inode)
     return NULL;
   return _inode->info;
+}
+
+bool hasNext(iterator_node *_inode)
+{
+  return _inode == NULL ? false : _inode->__next != NULL;
 }
 
 void hash_iterate_clean(hash_iterator *iterator)

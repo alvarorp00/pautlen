@@ -82,8 +82,8 @@ bool hash_contains(Hash *hash, void *info);
 hash_iterator *hash_iterate(Hash *hash);
 iterator_node *first(hash_iterator *iterator);
 iterator_node *next(iterator_node *_inode);
-bool hasNext(iterator_node *_inode);
 void *iter_nodeInfo(iterator_node *_inode);
+bool hasNext(iterator_node *_inode);
 void hash_iterate_clean(hash_iterator *iterator);
 
 #endif

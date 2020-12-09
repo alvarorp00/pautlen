@@ -1,6 +1,8 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
+
 #include <stdio.h>
+#include <stdbool.h>
 
 #define FPASM_NAME            fpasm
 #define FPASM                 FILE *FPASM_NAME
@@ -81,7 +83,7 @@
 #define while_exp_pila write_while_exp
 #define while_fin write_while_end
 
-void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, int is_var2 );
+void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, bool is_var2 );
 
 void write_bss_header(FPASM);
 
@@ -94,29 +96,29 @@ void write_main_begin(FPASM);
 
 void write_end(FPASM);
 
-void write_operand(FPASM, char* name, int is_var);
-void write_assignment(FPASM, char* name, int is_var);
+void write_operand(FPASM, char* name, bool is_var);
+void write_assignment(FPASM, char* name, bool is_var);
 
 
-void write_sum(FPASM, int is_var1, int is_var2);
-void write_subtract(FPASM, int is_var1, int is_var2);
-void write_mult(FPASM, int is_var1, int is_var2);
-void write_div(FPASM, int is_var1, int is_var2);
-void write_or(FPASM, int is_var1, int is_var2);
-void write_and(FPASM, int is_var1, int is_var2);
-void write_sign_change(FPASM, int is_var);
+void write_sum(FPASM, bool is_var1, bool is_var2);
+void write_subtract(FPASM, bool is_var1, bool is_var2);
+void write_mult(FPASM, bool is_var1, bool is_var2);
+void write_div(FPASM, bool is_var1, bool is_var2);
+void write_or(FPASM, bool is_var1, bool is_var2);
+void write_and(FPASM, bool is_var1, bool is_var2);
+void write_sign_change(FPASM, bool is_var);
 
-void write_not(FPASM, int is_var, int cuantos_no);
+void write_not(FPASM, bool is_var, int cuantos_no);
 
-void write_equal(FPASM, int is_var1, int is_var2, int label);
-void write_different(FPASM, int is_var1, int is_var2, int label);
-void write_lower_equal(FPASM, int is_var1, int is_var2, int label);
-void write_greater_equal(FPASM, int is_var1, int is_var2, int label);
-void write_lower(FPASM, int is_var1, int is_var2, int label);
-void write_greater(FPASM, int is_var1, int is_var2, int label);
+void write_equal(FPASM, bool is_var1, bool is_var2, int label);
+void write_different(FPASM, bool is_var1, bool is_var2, int label);
+void write_lower_equal(FPASM, bool is_var1, bool is_var2, int label);
+void write_greater_equal(FPASM, bool is_var1, bool is_var2, int label);
+void write_lower(FPASM, bool is_var1, bool is_var2, int label);
+void write_greater(FPASM, bool is_var1, bool is_var2, int label);
 
 void write_reading(FPASM, char* name, int type);
-void write_writing(FPASM, int is_var, int type);
+void write_writing(FPASM, bool is_var, int type);
 
 /**
  * IF-THEN-ELSE
@@ -145,8 +147,8 @@ void write_function_call(FPASM, char* name, int argc);
 void write_param(FPASM, int index, int total_params);
 void write_local_var(FPASM, int index);
 
-void write_stack_asign_dest(FPASM, int is_var);
-void write_stack_optoarg(FPASM, int is_var);
+void write_stack_asign_dest(FPASM, bool is_var);
+void write_stack_optoarg(FPASM, bool is_var);
 void write_stack_clean(FPASM, int argc);
 
 #endif

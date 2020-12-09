@@ -98,11 +98,12 @@
 /**
  * Prints failure trace
  */
-#define _DEBUG_
+// #define _DEBUG_
+#undef _DEBUG_
 #ifdef _DEBUG_
 #define TRACE eprintf("Trace coming from:\t @ file: %s @ funct: %s @ line: %d", __FILE__, __func__, __LINE__);
 #else
-#define TRACE eprintf("Debug option is not specified. Skipping trace...");
+#define TRACE //eprintf("Debug option is not specified. Skipping trace...");
 #endif
 
 /**
@@ -110,9 +111,9 @@
  * @param file where failure occured
  * @param str string to print
  */
-#define COPYERR(file, str, ...) \
+#define COPYERR(str, ...) \
             TRACE; \
-            snprintf(errbuff, BUFF, "*** at %s: [at line: %d; col: %d]: " str, file, line, col, ##__VA_ARGS__)
+            snprintf(errbuff, BUFF, "*** at %s: [at line: %d; col: %d]: " str, __FILE__, line, col, ##__VA_ARGS__)
 
 /**
  * Vector's maximum length
@@ -230,6 +231,7 @@ struct _attrs_type
   char lexeme[MAX_LEN + 1];
   int int_value;
   DataType type;
+  bool is_dir;
   int32_t addresses;
   int32_t tag;
   int32_t low;

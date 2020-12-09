@@ -14,8 +14,8 @@
 #define MAX_LEN 100
 
 /* Prints token in default flex output */
-#ifdef _PRINT_PARSED_
-#define PRINT_TOK(str) fprintf(yyout, ";D:\t%s\n", str);
+#ifdef _DEBUG_
+#define PRINT_TOK(str) fprintf(stdout, ";D:\t%s\n", str);
 #else
 #define PRINT_TOK(str)
 #endif
@@ -271,7 +271,7 @@ int checkIdentifier()
   }
 
   morfofailure = true;
-  COPYERR("alfa.l", "Indentifier length > %d: %s", MAX_LEN, yytext);
+  COPYERR("Indentifier length > %d: %s", MAX_LEN, yytext);
   return TOK_ERROR;
 
 }
@@ -279,7 +279,7 @@ int checkIdentifier()
 /* Process response on morfologic failure */
 void unknownSymbol()
 {
-  COPYERR("alfa.l", "Unknown symbol %s. ", yytext);
+  COPYERR("Unknown symbol %s. ", yytext);
   morfofailure = true;
 }
 

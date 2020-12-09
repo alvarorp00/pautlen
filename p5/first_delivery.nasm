@@ -12,6 +12,10 @@ segment .text
 	extern alfa_malloc, alfa_free, ld_float
 main:
 	mov dword [__esp], esp
+	push dword 8
+	pop dword eax
+	mov dword [_x], eax
+	push dword _x
 __end:
 	mov dword esp, [__esp]
 	ret

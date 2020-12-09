@@ -63,58 +63,30 @@ TEST_VERIFY = ./testverify.sh
 
 TESTRESULT = $(RESULTS)testresult.txt
 
-default: clean semantic ## Equivalent to 'make all'
-		@# clear
+default: clean $(OALFA) ## Equivalent to 'make all'
+		@ echo "Compiling all..."
+		@ $(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(SOURCEFILES)
+		@ clear
+		@ echo "Compiled."
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 all: default ## Produces nasm file
-	clear
 	./$(COMPILED) samples/first_delivery.alf first_delivery.nasm
 
 nasm: all ## Compiles nasm file
-	./compile_nasm.sh first_delivery.nasm prg1
+	./nasm_to_exec.sh first_delivery.nasm prg1
 	@echo "Success. Program --> prg1"
-
-test: default ## Executes test and compares result
-		@echo "Executing test..."
-		./$(COMPILED) $(TESTFILEIN) $(TESTRESULT)
-		@./testverify.sh $(TESTFILEOUT) $(TESTRESULT)
-
-semantic: $(OALFA)
-		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(SOURCEFILES)
-
-semantic_manual: $(OALFA)
-		@echo "Compiling all..."
-		@$(CC) -I $(INC) $(CFLAGS) -D $(_STD_) -o $(COMPILED) $(SOURCEFILES)
 
 manual:
 		@clear
 		@echo "Parsing from terminal..."
 		./$(COMPILED)
 
-auto:
-		./$(COMPILED) samples/ejemplo17.alf outputsamples/ejemploalfa17.txt
-
 hash_test: ## Test hash
 	 	@$(CC) -I $(INC) -o run_hash_test $(SRC)hashTest.c $(SYMBOL) $(HASH)
 		./run_hash_test
-
-syntactic_test: clean $(OALFA) ## Bison syntactic test
-		@ clear
-		@ echo "Compiling all --> syntactic specified --> Testing..."
-		@ $(CC) -I $(INC) $(CFLAGS) -D $(_SYNTACTIC_) -o $(COMPILED) $(SOURCEFILES)
-		@ echo "\nExecuting first test"
-		@ ./$(COMPILED) $(TESTFILE1) $(TESTOUTPUT1)
-		@ $(TEST_VERIFY) $(OUTPUT1) $(TESTOUTPUT1)
-		@  echo "\nExecuting second test"
-		@ ./$(COMPILED) $(TESTFILE2) $(TESTOUTPUT2)
-		@ $(TEST_VERIFY) $(OUTPUT2) $(TESTOUTPUT2)
-		@ echo "\nExecuting third test"
-		@ ./$(COMPILED) $(TESTFILE3) $(TESTOUTPUT3)
-		@ $(TEST_VERIFY) $(OUTPUT3) $(TESTOUTPUT3)
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
