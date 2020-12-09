@@ -38,31 +38,6 @@ SYMBOL = $(SRC)symbol.c
 
 SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH) $(GENERATOR)
 
-TESTFILEIN = $(TESTFILES)pruebaTS.txt
-TESTFILEOUT = $(TESTFILES)expectedResTS.txt
-
-# TEST FOR SYNTACTIC
-
-TESTFILE1 = $(TESTFILES)entrada_sin_1.txt
-TESTFILE2 = $(TESTFILES)entrada_sin_2.txt
-TESTFILE3 = $(TESTFILES)entrada_sin_3.txt
-
-OUTPUT1 = $(TESTFILES)salida_sin_1.txt
-OUTPUT2 = $(TESTFILES)salida_sin_2.txt
-OUTPUT3 = $(TESTFILES)salida_sin_3.txt
-
-TESTOUTPUT1 = $(RESULTS)testoutput_sin_1.txt
-TESTOUTPUT2 = $(RESULTS)testoutput_sin_2.txt
-TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
-
-# END
-
-# SCRIPT
-
-TEST_VERIFY = ./testverify.sh
-
-TESTRESULT = $(RESULTS)testresult.txt
-
 default: clean $(OALFA) ## Equivalent to 'make all'
 		@ echo "Compiling all..."
 		@ $(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(SOURCEFILES)
