@@ -480,7 +480,7 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
         COPYERR("Identifiers type missmatch");
         return PARSEFAIL;
       }
-      write_assignment(FPASM_NAME, $1.lexeme, $3.is_dir);
+      write_assignment(FPASM_NAME, $1.lexeme, $3.is_var);
     }
     ;
 
@@ -544,7 +544,9 @@ reading: TOK_SCANF identifier
 writing: TOK_PRINTF exp
       {
         PRINT_RULE("<escritura> ::= printf <exp>", 56);
-        
+
+        write_writing(FPASM_NAME, $2.is_var, $2.type);
+
       }
       ;
 
@@ -652,9 +654,9 @@ exp: TOK_IDENTIFICADOR
         return PARSEFAIL;
       }
       $$.type = symbol_blind_dataType(_sleft);
-      $$.is_dir = true;
+      $$.is_var = true;
 
-      write_operand(FPASM_NAME, $1.lexeme, $$.is_dir);
+      write_operand(FPASM_NAME, $1.lexeme, $$.is_var);
     }
     ;
 
@@ -665,7 +667,7 @@ exp: constant
     {
       PRINT_RULE("<exp> ::= <constante>", 81);
       $$.type = $1.type;
-      $$.is_dir = $1.is_dir;
+      $$.is_var = $1.is_var;
     }
     ;
 
@@ -811,7 +813,7 @@ constant: constant_int
           {
             PRINT_RULE("<constante> ::= <constante_entera>", 100);
             $$.type = $1.type;
-            $$.is_dir = $1.is_dir;
+            $$.is_var = $1.is_var;
           }
           ;
 
@@ -840,7 +842,7 @@ constant_int: TOK_CONSTANTE_ENTERA
             {
               PRINT_RULE("<constante_entera> ::= TOK_CONSTANTE_ENTERA", 104);
               $$.type = INT;
-              $$.is_dir = false;
+              $$.is_var = false;
               $$.int_value = $1.int_value;
               /* push */
               snprintf(__buff, MAX_LEN, "%d", $1.int_value);

@@ -16,6 +16,12 @@ main:
 	pop dword eax
 	mov dword [_x], eax
 	push dword _x
+	pop dword eax
+	mov dword eax, [eax]
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
 __end:
 	mov dword esp, [__esp]
 	ret
