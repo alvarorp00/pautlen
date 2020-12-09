@@ -20,7 +20,7 @@ INFO = info/
 TESTFILES = testfiles/
 RESULTS = testresults/
 
-COMPILED = program
+COMPILED = compiler
 
 CALFA = $(DIR)alfa.c
 OALFA = $(OBJ)alfa.o
@@ -59,7 +59,7 @@ TESTOUTPUT3 = $(RESULTS)testoutput_sin_3.txt
 
 # SCRIPT
 
-TEST_VERIFY = ./testverify.sh 
+TEST_VERIFY = ./testverify.sh
 
 TESTRESULT = $(RESULTS)testresult.txt
 
@@ -68,6 +68,14 @@ default: clean semantic ## Equivalent to 'make all'
 
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+all: default ## Produces nasm file
+	clear
+	./$(COMPILED) samples/first_delivery.alf first_delivery.nasm
+
+nasm: all ## Compiles nasm file
+	./compile_nasm.sh first_delivery.nasm prg1
+	@echo "Success. Program --> prg1"
 
 test: default ## Executes test and compares result
 		@echo "Executing test..."
