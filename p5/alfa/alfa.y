@@ -61,6 +61,7 @@
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
+  int32_t tags = 0; /* Current tags amount */
 
   bool in_declare; /* true if we're in declarations part, false if not */
   bool in_main; /* true if we're in main part, else false */
@@ -712,6 +713,8 @@ exp: TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
 exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= ( <comparacion> )", 83);
+      $$.type = $2.type;
+      $$.is_dir = $2.type;
     }
     ;
 
@@ -775,6 +778,19 @@ exp_remaining_list: /* empty */
 comparison: exp TOK_IGUAL exp
           {
             PRINT_RULE("<comparacion> ::= <exp> == <exp>", 93);
+            if($1.type == BOOLEAN || $3.type == BOOLEAN)
+            {
+              COPYERR("Types missmatch. Integers required");
+              return PARSEFAIL;
+            }
+            if($1.type != INT || $1.type != INT)
+            {
+              COPYERR("Types missmatch. Integers required.");
+              return PARSEFAIL;
+            }
+            write_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            $$.type = BOOLEAN;
+            $$.is_dir = true;
           }
           ;
 

@@ -5,6 +5,7 @@ segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
 	_x2 resd 1
+	_y1 resd 1
 	_x1 resd 1
 segment .text
 	global main
@@ -35,6 +36,30 @@ main:
 	pop dword eax
 	push dword eax
 	call print_int
+	call print_endofline
+	add esp, 4
+	push dword _x1
+	push dword _x2
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	cmp eax, ebx
+	je _je_if_0
+	jmp _je_else_0
+_je_if_0:
+	push dword 1
+	jmp _je_fi_0
+_je_else_0:
+	push dword 0
+_je_fi_0:
+	pop dword eax
+	mov dword [_y1], eax
+	push dword _y1
+	pop dword eax
+	mov dword eax, [eax]
+	push dword eax
+	call print_boolean
 	call print_endofline
 	add esp, 4
 __end:
