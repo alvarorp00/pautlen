@@ -98,11 +98,11 @@
 /**
  * Prints failure trace
  */
-#define _DEBUG_
+// #define _DEBUG_
 #ifdef _DEBUG_
 #define TRACE eprintf("Trace coming from:\t @ file: %s @ funct: %s @ line: %d", __FILE__, __func__, __LINE__);
 #else
-#define TRACE eprintf("Debug option is not specified. Skipping trace...");
+#define TRACE
 #endif
 
 /**
