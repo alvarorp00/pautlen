@@ -403,7 +403,7 @@ iterator_node *first(hash_iterator *iterator)
 
 iterator_node *next(iterator_node *_inode)
 {
-  return _inode == NULL ? NULL : _inode->__next
+  return _inode == NULL ? NULL : _inode->__next;
 }
 
 void *iter_nodeInfo(iterator_node *_inode)

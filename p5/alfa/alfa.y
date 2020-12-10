@@ -18,7 +18,7 @@
   #define PRINT_RULE(str, val)
   #endif
   
-  #define PARSEFAIL 0
+  #define PARSEFAIL INT_MAX
 
   extern char errbuff[BUFF];
 
@@ -46,6 +46,7 @@
   /* - - - - - - GLOBAL VARS - - - - - - - */
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
 
+  Symbol *_sgeneric;
   Symbol *_sleft;
   Symbol *_sright;
   Symbol *_smid;
@@ -532,9 +533,26 @@ loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUI
 /*------------------------------------------------------*/
 /*                      PROD: 54                        */
 /*------------------------------------------------------*/
-reading: TOK_SCANF identifier
+reading: TOK_SCANF TOK_IDENTIFICADOR
       {
         PRINT_RULE("<lectura> ::= scanf <identificador>", 54);
+
+        if((_sgeneric = st_searchCurrentScope(st, $2.lexeme)) == NULL)
+        {
+          COPYERR("Identifier not found");
+          return PARSEFAIL;
+        }
+        if(symbol_get_category(_sgeneric) == FUNCT)
+        {
+          COPYERR("Trying to print a function");
+          return PARSEFAIL;
+        }
+        else if(symbol_blind_identifierCategory(_sgeneric) == VECTOR)
+        {
+          COPYERR("Trying to print a vector");
+          return PARSEFAIL;
+        }
+        write_reading(FPASM_NAME, $2.lexeme, $2.type);
       }
       ;
 
@@ -565,6 +583,14 @@ function_return: TOK_RETURN exp
 exp: exp TOK_MAS exp
     {
       PRINT_RULE("<exp> ::= <exp> + <exp>", 72);
+      if($1.type != $3.type || ($1.type != INT && $1.type != BOOLEAN))
+      {
+        COPYERR("Types missmatch");
+        return PARSEFAIL;
+      }
+      write_sum(FPASM_NAME, $1.is_var, $3.is_var);
+      $$.type = $1.type; // also $$.type = $3.type
+      $$.is_dir = false;
     }
     ;
 
