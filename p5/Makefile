@@ -6,9 +6,7 @@ CC = gcc
 CFLAGS = -g -Wall
 BISONFLAGS = -y -d -v -Wyacc
 
-_STD_ = _STD_
-_EXPLAIN_ = _EXPLAIN_
-_SYNTACTIC_ = _SYNTACTIC_
+_DEBUG_ = _DEBUG_
 
 INC = inc/
 DIR = alfa/
@@ -53,11 +51,6 @@ all: default ## Produces nasm file
 nasm: all ## Compiles nasm file
 	./nasm_to_exec.sh first_delivery.nasm prg1
 	@echo "Success. Program --> prg1"
-
-manual:
-		@clear
-		@echo "Parsing from terminal..."
-		./$(COMPILED)
 
 hash_test: ## Test hash
 	 	@$(CC) -I $(INC) -o run_hash_test $(SRC)hashTest.c $(SYMBOL) $(HASH)

@@ -12,7 +12,7 @@
   #include "generator.h"
 
   #ifdef _DEBUG_
-  #define _PRINT_PARSED_(str, val) \
+  #define PRINT_RULE(str, val) \
               fprintf(stdout, ";R%d:\t%s\n", val, str);
   #else
   #define PRINT_RULE(str, val)

@@ -75,7 +75,6 @@ int main(int argc, char **argv)
 /**
  * 
  * Configures basic things for the execution.
- * If _STD_ is specified, will run in manual mode
  */
 int setup(int argc, char **argv)
 {
