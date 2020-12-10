@@ -398,23 +398,17 @@ hash_iterator *hash_iterate(Hash *hash)
 
 iterator_node *first(hash_iterator *iterator)
 {
-  if(!iterator)
-    return NULL;
-  return iterator->first;
+  return iterator == NULL ? NULL : iterator->first;
 }
 
 iterator_node *next(iterator_node *_inode)
 {
-  if(!_inode)
-    return NULL;
-  return _inode->__next;
+  return _inode == NULL ? NULL : _inode->__next
 }
 
 void *iter_nodeInfo(iterator_node *_inode)
 {
-  if(!_inode)
-    return NULL;
-  return _inode->info;
+  return _inode == NULL ? NULL : _inode->info;
 }
 
 bool hasNext(iterator_node *_inode)
