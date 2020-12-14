@@ -61,7 +61,7 @@
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
-  int32_t tags = 0; /* Current tags amount */
+  uint_32_t tags = 0; /* Current tags amount */
 
   bool in_declare; /* true if we're in declarations part, false if not */
   bool in_main; /* true if we're in main part, else false */
@@ -714,7 +714,7 @@ exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= ( <comparacion> )", 83);
       $$.type = $2.type;
-      $$.is_dir = $2.type;
+      $$.is_dir = $2.is_dir;
     }
     ;
 
@@ -800,6 +800,14 @@ comparison: exp TOK_IGUAL exp
 comparison: exp TOK_DISTINTO exp
           {
             PRINT_RULE("<comparacion> ::= <exp> != <exp>", 94);
+            if($1.type != INT || $3.type != INT)
+            {
+              COPYERR("Types missmatch. Integers required);
+              return PARSEFAIL;
+            }
+            write_different(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            $$.type = BOOLEAN;
+            $$.is_dir = true;
           }
           ;
 
@@ -809,6 +817,14 @@ comparison: exp TOK_DISTINTO exp
 comparison: exp TOK_MENORIGUAL exp
           {
             PRINT_RULE("<comparacion> ::= <exp> <= <exp>", 95);
+            if($1.type != INT || $3.type != INT)
+            {
+              COPYERR("Types missmatch. Integers required);
+              return PARSEFAIL;
+            }
+            write_lower_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            $$.type = BOOLEAN;
+            $$.is_dir = true;
           }
           ;
 
@@ -818,6 +834,14 @@ comparison: exp TOK_MENORIGUAL exp
 comparison: exp TOK_MAYORIGUAL exp
           {
             PRINT_RULE("<comparacion> ::= <exp> >= <exp>", 96);
+            if($1.type != INT || $3.type != INT)
+            {
+              COPYERR("Types missmatch. Integers required);
+              return PARSEFAIL;
+            }
+            write_greater_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            $$.type = BOOLEAN;
+            $$.is_dir = true;
           }
           ;
 
@@ -827,6 +851,14 @@ comparison: exp TOK_MAYORIGUAL exp
 comparison: exp TOK_MENOR exp
           {
             PRINT_RULE("<comparacion> ::= <exp> < <exp>", 97);
+            if($1.type != INT || $3.type != INT)
+            {
+              COPYERR("Types missmatch. Integers required);
+              return PARSEFAIL;
+            }
+            write_lower(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            $$.type = BOOLEAN;
+            $$.is_dir = true;
           }
           ;
 
@@ -836,6 +868,14 @@ comparison: exp TOK_MENOR exp
 comparison: exp TOK_MAYOR exp
           {
             PRINT_RULE("<comparacion> ::= <exp> > <exp>", 98);
+            if($1.type != INT || $3.type != INT)
+            {
+              COPYERR("Types missmatch. Integers required);
+              return PARSEFAIL;
+            }
+            write_greater(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            $$.type = BOOLEAN;
+            $$.is_dir = true;
           }
           ;
 
