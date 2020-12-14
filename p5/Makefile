@@ -39,7 +39,7 @@ SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH) $(GEN
 default: clean $(OALFA) ## Equivalent to 'make all'
 		@ echo "Compiling all..."
 		@ $(CC) -I $(INC) $(CFLAGS) -o $(COMPILED) $(SOURCEFILES)
-		@ clear
+		@ # clear
 		@ echo "Compiled."
 
 help:	## This guide

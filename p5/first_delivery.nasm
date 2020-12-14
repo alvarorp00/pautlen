@@ -62,6 +62,33 @@ _je_fi_0:
 	call print_boolean
 	call print_endofline
 	add esp, 4
+	push dword _x1
+	push dword _x2
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	cmp eax, ebx
+	je _je_if_1
+	jmp _je_else_1
+_je_if_1:
+	push dword 1
+	jmp _je_fi_1
+_je_else_1:
+	push dword 0
+_je_fi_1:
+	pop dword eax
+	cmp eax, 0
+	je near _else_2
+	push dword 1
+	pop dword eax
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
+	jmp near _fi_2
+_else_2:
+_fi_2:
 __end:
 	mov dword esp, [__esp]
 	ret

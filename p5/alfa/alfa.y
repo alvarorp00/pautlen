@@ -509,28 +509,17 @@ vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 /*------------------------------------------------------*/
 /*                      PROD: 50                        */
 /*------------------------------------------------------*/
-conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+conditional: if_exp_stm
           {
             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> }", 50);
-            if($3.type != BOOLEAN)
-            {
-              COPYERR("Types missmatch. 'Conditionals' require boolean");
-              return PARSEFAIL;
-            }
-            $$.tags = tags++;
-            write_fithen_begin(FPASM_NAME, $3.is_var)
+            $$.tags = $1.tags;
+            write_ifthenelse_end(FPASM_NAME, $$.tags);
           }
           ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 51                        */
 /*------------------------------------------------------*/
-// conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
-//           {
-//             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", 51);
-//           }
-//           ;
-
 conditional: if_exp_stm TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
           {
             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", 51);
@@ -819,9 +808,9 @@ comparison: exp TOK_IGUAL exp
               COPYERR("Types missmatch. Integers required.");
               return PARSEFAIL;
             }
-            write_equal(FPASM_NAME, $1.is_var, $3.is_var, tags);
+            write_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
-            $$.is_var = true;
+            $$.is_var = false;
           }
           ;
 
@@ -836,9 +825,9 @@ comparison: exp TOK_DISTINTO exp
               COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_different(FPASM_NAME, $1.is_var, $3.is_var, tags);
+            write_different(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
-            $$.is_var = true;
+            $$.is_var = false;
           }
           ;
 
@@ -853,9 +842,9 @@ comparison: exp TOK_MENORIGUAL exp
               COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_lower_equal(FPASM_NAME, $1.is_var, $3.is_var, tags);
+            write_lower_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
-            $$.is_var = true;
+            $$.is_var = false;
           }
           ;
 
@@ -870,9 +859,9 @@ comparison: exp TOK_MAYORIGUAL exp
               COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_greater_equal(FPASM_NAME, $1.is_var, $3.is_var, tags);
+            write_greater_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
-            $$.is_var = true;
+            $$.is_var = false;
           }
           ;
 
@@ -887,9 +876,9 @@ comparison: exp TOK_MENOR exp
               COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_lower(FPASM_NAME, $1.is_var, $3.is_var, tags);
+            write_lower(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
-            $$.is_var = true;
+            $$.is_var = false;
           }
           ;
 
@@ -904,9 +893,9 @@ comparison: exp TOK_MAYOR exp
               COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_greater(FPASM_NAME, $1.is_var, $3.is_var, tags);
+            write_greater(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
-            $$.is_var = true;
+            $$.is_var = false;
           }
           ;
 
