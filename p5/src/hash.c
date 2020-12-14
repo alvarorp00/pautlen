@@ -7,6 +7,16 @@
 
 #include "hash.h"
 
+#define H__MAX( h ) ( h )->max_size
+#define H__SIZE( h ) ( h )->curr_size
+#define H__FACTOR( h ) ( h )->factor 
+#define H__NODES( h ) ( h )->nodes
+#define H__AT( h, i ) ( h )->nodes[i]
+#define H__INFO( h, i ) ( h )->nodes[i]->info
+
+#define NS__INFO_AT( n, i ) ( n[i] )->info
+#define N__INFO( n ) ( n )->info
+
 typedef struct _ProbingResponse ProbingResponse;
 typedef struct _Node Node;
 
@@ -127,14 +137,14 @@ static bool init_nodes(Hash *hash)
   if(!hash)
     return false;
 
-  hash->nodes = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
-  hash->max_size = _DEF_HASHLEN_;
-  hash->curr_size = 0;
-  hash->factor = 0;
+  H__NODES( hash ) = (Node**)calloc(_DEF_HASHLEN_, sizeof(Node*));
+  H__MAX( hash ) = _DEF_HASHLEN_;
+  H__SIZE( hash ) = 0;
+  H__FACTOR( hash ) = 0;
 
-  memset(hash->nodes, 0, sizeof(Node*)*_DEF_HASHLEN_);
+  memset(H__NODES( hash ), 0, sizeof(Node*)*_DEF_HASHLEN_);
 
-  if(!hash->nodes)
+  if(!H__NODES( hash ))
   {
     hash_clean(hash);
     return false;
@@ -148,9 +158,9 @@ void hash_clean(Hash *hash)
   if(!hash)
     return;
 
-  clean_nodes(hash->nodes, hash->clean, hash->max_size);
+  clean_nodes(H__NODES( hash ), hash->clean, H__MAX( hash ));
 
-  free(hash->nodes);
+  free(H__NODES( hash ));
 
   free(hash);
   
@@ -164,18 +174,18 @@ bool hash_encode(Hash *hash, void* info)
     return false;
 
   response = linearProbing(
-    hash->nodes,
+    H__NODES( hash ),
     info,
     hash->hashcode,
     hash->equals,
-    hash->max_size
+    H__MAX( hash )
   );
 
   if(response.present == true)
     return false;
 
-  hash->nodes[response.index] = init_node(info);
-  hash->curr_size += 1;
+  H__AT( hash, response.index ) = init_node(info);
+  H__SIZE( hash ) += 1;
 
   refactor_ifNeeded(hash);
   
@@ -187,17 +197,18 @@ void* hash_decode(Hash *hash, void* info)
   ProbingResponse response;
 
   response = linearProbing(
-    hash->nodes,
+    H__NODES( hash ),
     info,
     hash->hashcode,
     hash->equals,
-    hash->max_size
+    H__MAX( hash )
   );
+
   
   if(response.present == false)
     return NULL;
 
-  return hash->nodes[response.index]->info;
+  return H__AT( hash, response.index );
 }
 
 static ProbingResponse linearProbing(
@@ -218,14 +229,15 @@ static ProbingResponse linearProbing(
   {
     val = (hashed + i)%max_size;
 
+
     if(!node_isEmpty(nodes[val]))
     {
       if(equals(nodes[val]->info, info))
-        {
-          response.index = val;
-          response.present = true;
-          return response;
-        }
+      {
+        response.index = val;
+        response.present = true;
+        return response;
+      }
     }
     else
     {
@@ -248,15 +260,15 @@ bool hash_contains(Hash *hash, void* info)
   if(!hash || !info)
     return false;
 
-  if(hash->factor == 0)
+  if(H__FACTOR( hash ) == 0)
     return false;
 
   response = linearProbing(
-    hash->nodes,
+    H__NODES( hash ),
     info,
     hash->hashcode,
     hash->equals,
-    hash->max_size
+    H__MAX( hash )
   );
 
   return response.present;
@@ -272,38 +284,39 @@ static void refactor_ifNeeded(Hash *hash)
   if(!hash)
     return;
   
-  hash->factor = (float)(hash->curr_size)/(float)(hash->max_size);
+  H__FACTOR( hash ) = (float)(H__SIZE( hash ))/(float)(H__MAX( hash ));
 
-  if(hash->factor < _HIGH_CRITICAL_FACTOR_)
+  if(H__FACTOR( hash ) < _HIGH_CRITICAL_FACTOR_)
     return;
 
-  __size = hash->max_size << 1;
+  __size = (H__MAX( hash )) << 1;
   __nodes = (Node**)calloc(__size, sizeof(Node*));
   memset(__nodes, 0, sizeof(Node*)*_DEF_HASHLEN_);
+
   
-  for(i = 0; i < hash->max_size; i++)
+  for(i = 0; i < H__MAX( hash ); i++)
   {
-    if(node_isEmpty(hash->nodes[i]))
+    if(node_isEmpty(H__AT( hash, i )))
     {
-      free(hash->nodes[i]);
+      free(H__AT( hash, i ));
       continue;
     }
     
     r_response = linearProbing(
       __nodes,
-      hash->nodes[i]->info,
+      H__AT( hash, i )->info,
       hash->hashcode,
       hash->equals,
       __size
     );
 
-    __nodes[r_response.index] = hash->nodes[i];
+    __nodes[r_response.index] = H__AT( hash, i );
   }
   
-  free(hash->nodes);
-  hash->nodes = __nodes;
-  hash->max_size = __size;
-  hash->factor = (float)hash->curr_size/(float)hash->max_size;
+  free(H__NODES( hash ));
+  H__NODES( hash ) = __nodes;
+  H__MAX( hash ) = __size;
+  H__FACTOR( hash ) = (float)H__SIZE( hash )/(float)H__MAX( hash );
 
 }
 
@@ -365,21 +378,21 @@ hash_iterator *hash_iterate(Hash *hash)
     }
 
   // Find first
-  for(i = 0; i < hash->max_size; i++)
+  for(i = 0; i < H__MAX( hash ); i++)
   {
-    if(node_isEmpty(hash->nodes[i]))
+    if(node_isEmpty(H__AT( hash, i )))
       continue;
     break; // We've found the first node
   }
 
-  __inode->info = (void*)hash->nodes[i]->info;
+  __inode->info = (void*)H__AT( hash, i )->info;
   __inode->__next = NULL;
 
   iterator->first = __inode;
 
-  for(i++; i < hash->max_size; i++)
+  for(i++; i < H__MAX( hash ); i++)
   {
-    if(node_isEmpty(hash->nodes[i]))
+    if(node_isEmpty(H__AT( hash, i )))
       continue;
     __prev_inode = __inode;
     __inode = (iterator_node*)calloc(1, sizeof(hash_iterator));
@@ -389,7 +402,7 @@ hash_iterator *hash_iterate(Hash *hash)
         return NULL;
       }
     __prev_inode->__next = __inode;
-    __inode->info = (void*)hash->nodes[i]->info;
+    __inode->info = (void*)H__AT( hash, i )->info;
     __inode->__next = NULL;
   }
 

@@ -6,7 +6,7 @@
 
 #define STR(x) #x
 
-#define LIMIT 10
+#define LIMIT 100
 
 int main(int argc, char const *argv[])
 {
@@ -38,6 +38,7 @@ int main(int argc, char const *argv[])
       printf("Fatal error in encode");
       exit(EXIT_FAILURE);
     }
+    
     printf("hash encode [ %ld ] : OK! --> %s\r", i, symbol_get_key(hash_decode(hash, symbols[i])));
   }
 
