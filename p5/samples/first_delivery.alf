@@ -5,12 +5,28 @@ main {
 
         scanf x1;
         scanf x2;
-        printf 3+x1+x2;
-        y1 = (x1 == x2);
-        printf y1;
+        scanf y1;
 
         if ( (x1 == x2) )
         {
-                printf 1;
+                if ( y1 )
+                {
+                        printf 110;
+                }
+                else
+                {
+                        printf 111;
+                }
+        }
+        else
+        {
+                if ( y1 )
+                {
+                        printf 10;
+                }
+                else
+                {
+                        printf 11;
+                }
         }
 }
