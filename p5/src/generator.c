@@ -346,11 +346,11 @@ void write_greater( FPASM, bool is_var1, bool is_var2, int id ) {
 
 /* Conditionals */
 
-void write_ifthen_begin( FPASM, int exp_is_var, int label ) {
+void write_ifthen_begin( FPASM, bool is_var, int label ) {
 
   _ASM( "pop dword eax" );
   
-  if ( exp_is_var ) {
+  if ( is_var ) {
     _ASM( "mov eax, [eax]" );
   }
 
@@ -363,11 +363,11 @@ void write_ifthen_end( FPASM, int label ) {
   _LABEL( FI_, label ); 
 }
 
-void write_ifthenelse_begin( FPASM, int exp_is_var, int label ) {
+void write_ifthenelse_begin( FPASM, bool is_var, int label ) {
 
   _ASM( "pop dword eax" );
   
-  if ( exp_is_var ) {
+  if ( is_var ) {
     _ASM( "mov eax, [eax]" );
   }
 
@@ -391,9 +391,9 @@ void write_while_begin( FPASM, int label ) {
   _LABEL( WHILE_, label );
 }
 
-void write_while_exp( FPASM, int exp_is_var, int label ) {
+void write_while_exp( FPASM, bool is_var, int label ) {
   _ASM( "pop dword eax" );
-  if ( exp_is_var ) {
+  if ( is_var ) {
     _ASM( "mov eax, [eax]" );
   }
   _ASM( "cmp eax, 0" );
@@ -407,10 +407,10 @@ void write_while_end( FPASM, int label ) {
 
 /* Index Vector */
 
-void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
+void write_index_vector(FPASM, char* name, int max_size, bool is_var) {
   _ASM("pop eax"); // eax := index
 
-  if(is_dir)
+  if(is_var)
     _ASM("mov dword eax, dword [eax]");
 
   _ASM("mov edx, %d", max_size); // edx := max_size
@@ -444,7 +444,7 @@ void write_function_declare(FPASM, char* name, int local_vars) {
   _ASM("sub esp, %d", 4*local_vars); //4 == resd, 4Bytes
 }
 
-void write_function_return(FPASM, int* is_var) {
+void write_function_return(FPASM, bool is_var) {
   _ASM("pop eax");
 
   if(is_var){

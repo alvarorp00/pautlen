@@ -91,7 +91,7 @@ void write_index_check(FPASM) {
 
 /* required routines */
 
-void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, int is_var2 ) {
+void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, bool is_var2 ) {
 
   _ASM( "pop dword %s", reg2 );
   _ASM( "pop dword %s", reg1 );
@@ -159,7 +159,7 @@ void write_end(FPASM) {
 
 }
 
-void write_operand(FPASM, char* name, int is_var) {
+void write_operand(FPASM, char* name, bool is_var) {
   if ( is_var ) {
     _ASM( "push dword _%s", name );
   } else {
@@ -167,7 +167,7 @@ void write_operand(FPASM, char* name, int is_var) {
   }
 }
 
-void write_assignment(FPASM, char* name, int is_var) {
+void write_assignment(FPASM, char* name, bool is_var) {
 
   _ASM( "pop dword eax" );
 
@@ -186,7 +186,7 @@ void write_reading(FPASM, char* name, int type) {
 
   if ( type == BOOLEAN ) {
     _ASM( "call scan_boolean" );
-  } else if ( type == INTEGER ) {
+  } else if ( type == INT ) {
     _ASM( "call scan_int" );
   }
 
@@ -194,7 +194,7 @@ void write_reading(FPASM, char* name, int type) {
 
 }
 
-void write_writing(FPASM, int is_var, int type) {
+void write_writing(FPASM, bool is_var, int type) {
 
   _ASM( "pop dword eax" );
 
@@ -206,7 +206,7 @@ void write_writing(FPASM, int is_var, int type) {
 
   if ( type == BOOLEAN ) {
     _ASM( "call print_boolean" );
-  } else if ( type == INTEGER ) {
+  } else if ( type == INT ) {
     _ASM( "call print_int" );
   }
 
@@ -218,25 +218,25 @@ void write_writing(FPASM, int is_var, int type) {
 
 /* Operations */
 
-void write_sum(FPASM, int is_var1, int is_var2) {
+void write_sum(FPASM, bool is_var1, bool is_var2) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "add eax, ebx" );
   _ASM( "push dword eax" );
 }
 
-void write_subtract(FPASM, int is_var1, int is_var2) {
+void write_subtract(FPASM, bool is_var1, bool is_var2) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "sub eax, ebx" );
   _ASM( "push dword eax" );
 }
 
-void write_mult(FPASM, int is_var1, int is_var2) {
+void write_mult(FPASM, bool is_var1, bool is_var2) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "imul ebx" );
   _ASM( "push dword eax" );
 }
 
-void write_div( FPASM, int is_var1, int is_var2 ) {
+void write_div( FPASM, bool is_var1, bool is_var2 ) {
 
   write_double_pop( FPASM_NAME, EAX, ECX, is_var1, is_var2 );
 
@@ -251,19 +251,19 @@ void write_div( FPASM, int is_var1, int is_var2 ) {
 }
 
 
-void write_or( FPASM, int is_var1, int is_var2 ) {
+void write_or( FPASM, bool is_var1, bool is_var2 ) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "or eax, ebx" );
   _ASM( "push dword eax" );
 }
 
-void write_and( FPASM, int is_var1, int is_var2 ) {
+void write_and( FPASM, bool is_var1, bool is_var2 ) {
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
   _ASM( "and eax, ebx" );
   _ASM( "push dword eax" );
 }
 
-void write_sign_change( FPASM, int is_var ) {
+void write_sign_change( FPASM, bool is_var ) {
 
   _ASM( "pop dword eax" );
 
@@ -281,7 +281,7 @@ void write_sign_change( FPASM, int is_var ) {
  * @param nno parameter is ignored becouse it is not
  * necessary
  */
-void write_not( FPASM, int is_var, int nno ) {
+void write_not( FPASM, bool is_var, int nno ) {
 
   _ASM( "pop dword eax" );
 
@@ -300,7 +300,7 @@ void write_not( FPASM, int is_var, int nno ) {
 
 /* Compare */
 
-void write_comparator( FPASM, const char *jf, int is_var1, int is_var2, int id ) {
+void write_comparator( FPASM, const char *jf, bool is_var1, bool is_var2, int id ) {
 
   write_double_pop( FPASM_NAME, EAX, EBX, is_var1, is_var2 );
 
@@ -319,37 +319,37 @@ void write_comparator( FPASM, const char *jf, int is_var1, int is_var2, int id )
 
 }
 
-void write_equal( FPASM, int is_var1, int is_var2, int id ) {
+void write_equal( FPASM, bool is_var1, bool is_var2, int id ) {
   write_comparator( FPASM_NAME, "je", is_var1, is_var2, id );
 }
 
-void write_different( FPASM, int is_var1, int is_var2, int id ) {
+void write_different( FPASM, bool is_var1, bool is_var2, int id ) {
   write_comparator( FPASM_NAME, "jne", is_var1, is_var2, id );
 }
 
-void write_lower_equal( FPASM, int is_var1, int is_var2, int id ) {
+void write_lower_equal( FPASM, bool is_var1, bool is_var2, int id ) {
   write_comparator( FPASM_NAME, "jle", is_var1, is_var2, id );
 }
 
-void write_greater_equal( FPASM, int is_var1, int is_var2, int id ) {
+void write_greater_equal( FPASM, bool is_var1, bool is_var2, int id ) {
   write_comparator( FPASM_NAME, "jge", is_var1, is_var2, id );
 }
 
-void write_lower( FPASM, int is_var1, int is_var2, int id ) {
+void write_lower( FPASM, bool is_var1, bool is_var2, int id ) {
   write_comparator( FPASM_NAME, "jl", is_var1, is_var2, id );
 }
 
-void write_greater( FPASM, int is_var1, int is_var2, int id ) {
+void write_greater( FPASM, bool is_var1, bool is_var2, int id ) {
   write_comparator( FPASM_NAME, "jg", is_var1, is_var2, id );
 }
 
 /* Conditionals */
 
-void write_ifthen_begin( FPASM, int exp_is_var, int label ) {
+void write_ifthen_begin( FPASM, bool is_var, int label ) {
 
   _ASM( "pop dword eax" );
   
-  if ( exp_is_var ) {
+  if ( is_var ) {
     _ASM( "mov eax, [eax]" );
   }
 
@@ -362,11 +362,11 @@ void write_ifthen_end( FPASM, int label ) {
   _LABEL( FI_, label ); 
 }
 
-void write_ifthenelse_begin( FPASM, int exp_is_var, int label ) {
+void write_ifthenelse_begin( FPASM, bool is_var, int label ) {
 
   _ASM( "pop dword eax" );
   
-  if ( exp_is_var ) {
+  if ( is_var ) {
     _ASM( "mov eax, [eax]" );
   }
 
@@ -390,9 +390,9 @@ void write_while_begin( FPASM, int label ) {
   _LABEL( WHILE_, label );
 }
 
-void write_while_exp( FPASM, int exp_is_var, int label ) {
+void write_while_exp( FPASM, bool is_var, int label ) {
   _ASM( "pop dword eax" );
-  if ( exp_is_var ) {
+  if ( is_var ) {
     _ASM( "mov eax, [eax]" );
   }
   _ASM( "cmp eax, 0" );
@@ -406,10 +406,10 @@ void write_while_end( FPASM, int label ) {
 
 /* Index Vector */
 
-void write_index_vector(FPASM, char* name, int max_size, int is_dir) {
+void write_index_vector(FPASM, char* name, int max_size, bool is_var) {
   _ASM("pop eax"); // eax := index
 
-  if(is_dir)
+  if(is_var)
     _ASM("mov dword eax, dword [eax]");
 
   _ASM("mov edx, %d", max_size); // edx := max_size
@@ -443,7 +443,7 @@ void write_function_declare(FPASM, char* name, int local_vars) {
   _ASM("sub esp, %d", 4*local_vars); //4 == resd, 4Bytes
 }
 
-void write_function_return(FPASM, int* is_var) {
+void write_function_return(FPASM, bool is_var) {
   _ASM("pop eax");
 
   if(is_var){
@@ -493,12 +493,12 @@ void write_local_var(FPASM, int index) {
 
 /* Stack Part */
 
-void write_stack_asign_dest(FPASM, int is_var) {
+void write_stack_asign_dest(FPASM, bool is_var) {
   write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0); // ebx := offset; eax:=value
   _ASM("mov dword [ebx], dword eax");
 }
 
-void write_stack_optoarg(FPASM, int is_var) {
+void write_stack_optoarg(FPASM, bool is_var) {
   if(!is_var)
     return;
   

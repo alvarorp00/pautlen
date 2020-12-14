@@ -61,7 +61,7 @@
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
-  uint_32_t tags = 0; /* Current tags amount */
+  uint32_t tags = 0; /* Current tags amount */
 
   bool in_declare; /* true if we're in declarations part, false if not */
   bool in_main; /* true if we're in main part, else false */
@@ -129,6 +129,8 @@
 %type <attrs> constant_int
 %type <attrs> constant_logic
 %type <attrs> identifier
+%type <attrs> if_exp
+%type <attrs> if_exp_stm
 
 %left TOK_MAS TOK_MENOS TOK_OR
 %left TOK_ASTERISCO TOK_DIVISION TOK_AND
@@ -510,17 +512,51 @@ vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
           {
             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> }", 50);
+            if($3.type != BOOLEAN)
+            {
+              COPYERR("Types missmatch. 'Conditionals' require boolean");
+              return PARSEFAIL;
+            }
+            $$.tags = tags++;
+            write_fithen_begin(FPASM_NAME, $3.is_var)
           }
           ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 51                        */
 /*------------------------------------------------------*/
-conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+// conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+//           {
+//             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", 51);
+//           }
+//           ;
+
+conditional: if_exp_stm TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
           {
             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", 51);
+            $$.tags = $1.tags;
+            write_ifthenelse_end(FPASM_NAME, $$.tags);
           }
           ;
+
+if_exp_stm: if_exp statements TOK_LLAVEDERECHA
+          {
+            $$.tags = $1.tags;
+            write_ifthenelse_middle(FPASM_NAME, $$.tags);
+          }
+          ;
+
+if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA
+      {
+        if($3.type != BOOLEAN)
+        {
+          COPYERR("Type missmatch. 'IF' requires boolean exp");
+          return PARSEFAIL;
+        }
+        $$.tags = tags++;
+        write_ifthenelse_begin(FPASM_NAME, $3.is_var, $$.tags);
+      }
+      ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 52                        */
@@ -591,7 +627,7 @@ exp: exp TOK_MAS exp
       }
       write_sum(FPASM_NAME, $1.is_var, $3.is_var);
       $$.type = $1.type; // also $$.type = $3.type
-      $$.is_dir = false;
+      $$.is_var = false;
     }
     ;
 
@@ -714,7 +750,7 @@ exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= ( <comparacion> )", 83);
       $$.type = $2.type;
-      $$.is_dir = $2.is_dir;
+      $$.is_var = $2.is_var;
     }
     ;
 
@@ -778,19 +814,14 @@ exp_remaining_list: /* empty */
 comparison: exp TOK_IGUAL exp
           {
             PRINT_RULE("<comparacion> ::= <exp> == <exp>", 93);
-            if($1.type == BOOLEAN || $3.type == BOOLEAN)
-            {
-              COPYERR("Types missmatch. Integers required");
-              return PARSEFAIL;
-            }
             if($1.type != INT || $1.type != INT)
             {
               COPYERR("Types missmatch. Integers required.");
               return PARSEFAIL;
             }
-            write_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            write_equal(FPASM_NAME, $1.is_var, $3.is_var, tags);
             $$.type = BOOLEAN;
-            $$.is_dir = true;
+            $$.is_var = true;
           }
           ;
 
@@ -802,12 +833,12 @@ comparison: exp TOK_DISTINTO exp
             PRINT_RULE("<comparacion> ::= <exp> != <exp>", 94);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required);
+              COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_different(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            write_different(FPASM_NAME, $1.is_var, $3.is_var, tags);
             $$.type = BOOLEAN;
-            $$.is_dir = true;
+            $$.is_var = true;
           }
           ;
 
@@ -819,12 +850,12 @@ comparison: exp TOK_MENORIGUAL exp
             PRINT_RULE("<comparacion> ::= <exp> <= <exp>", 95);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required);
+              COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_lower_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            write_lower_equal(FPASM_NAME, $1.is_var, $3.is_var, tags);
             $$.type = BOOLEAN;
-            $$.is_dir = true;
+            $$.is_var = true;
           }
           ;
 
@@ -836,12 +867,12 @@ comparison: exp TOK_MAYORIGUAL exp
             PRINT_RULE("<comparacion> ::= <exp> >= <exp>", 96);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required);
+              COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_greater_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            write_greater_equal(FPASM_NAME, $1.is_var, $3.is_var, tags);
             $$.type = BOOLEAN;
-            $$.is_dir = true;
+            $$.is_var = true;
           }
           ;
 
@@ -853,12 +884,12 @@ comparison: exp TOK_MENOR exp
             PRINT_RULE("<comparacion> ::= <exp> < <exp>", 97);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required);
+              COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_lower(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            write_lower(FPASM_NAME, $1.is_var, $3.is_var, tags);
             $$.type = BOOLEAN;
-            $$.is_dir = true;
+            $$.is_var = true;
           }
           ;
 
@@ -870,12 +901,12 @@ comparison: exp TOK_MAYOR exp
             PRINT_RULE("<comparacion> ::= <exp> > <exp>", 98);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required);
+              COPYERR("Types missmatch. Integers required");
               return PARSEFAIL;
             }
-            write_greater(FPASM_NAME, $1.is_var, $3.is_var, tags++);
+            write_greater(FPASM_NAME, $1.is_var, $3.is_var, tags);
             $$.type = BOOLEAN;
-            $$.is_dir = true;
+            $$.is_var = true;
           }
           ;
 

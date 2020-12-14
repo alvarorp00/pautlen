@@ -123,9 +123,9 @@ void write_writing(FPASM, bool is_var, int type);
 /**
  * IF-THEN-ELSE
  */
-void write_ifthen_begin( FPASM, int exp_is_var, int label );
+void write_ifthen_begin( FPASM, bool is_var, int label );
 void write_ifthen_end( FPASM, int label );
-void write_ifthenelse_begin( FPASM, int exp_is_var, int label );
+void write_ifthenelse_begin( FPASM, bool is_var, int label );
 void write_ifthenelse_middle( FPASM, int label );
 void write_ifthenelse_end( FPASM, int label );
 
@@ -134,14 +134,14 @@ void write_ifthenelse_end( FPASM, int label );
  * Bucles
  */
 void write_while_begin( FPASM, int label );
-void write_while_exp( FPASM, int exp_is_var, int label );
+void write_while_exp( FPASM, bool is_var, int label );
 void write_while_end( FPASM, int label );
 
 /* ****** */
-void write_index_vector(FPASM, char* name, int max_size, int is_dir);
+void write_index_vector(FPASM, char* name, int max_size, bool is_var);
 
 void write_function_declare(FPASM, char* name, int local_vars);
-void write_function_return(FPASM, int* is_var);
+void write_function_return(FPASM, bool is_var);
 void write_function_call(FPASM, char* name, int argc);
 
 void write_param(FPASM, int index, int total_params);

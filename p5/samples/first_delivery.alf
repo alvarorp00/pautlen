@@ -1,15 +1,13 @@
-main
-{
-	int x;
-	int y;
+main {
 
-	x = 8;
-	x = -8;
+        int x1, x2;
+        boolean y1;
 
-	printf x;
-	printf y;
+        scanf x1;
+        scanf x2;
+
+        printf 3+x1+x2;
+
+        y1 = (x1 == x2);
+        printf y1;
 }
-
-
-
-

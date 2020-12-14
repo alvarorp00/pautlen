@@ -231,9 +231,8 @@ struct _attrs_type
   int int_value;
   DataType type;
   bool is_var;
-  bool is_dir;
   int32_t addresses;
-  int32_t tag;
+  uint32_t tags;
   int32_t low;
   int32_t hight;
 };

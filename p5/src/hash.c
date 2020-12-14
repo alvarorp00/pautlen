@@ -208,7 +208,7 @@ void* hash_decode(Hash *hash, void* info)
   if(response.present == false)
     return NULL;
 
-  return H__NODE_AT( hash, response.index );
+  return H__INFO( hash, response.index );
 }
 
 static ProbingResponse linearProbing(
