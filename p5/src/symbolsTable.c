@@ -71,8 +71,8 @@ bool declareGlobal(SymbolsTable *st, String identifier, int value)
 {
   Symbol *s;
 
-  if(value < 0)
-    return declareFunction(st, identifier, value);
+  // if(value < 0)
+  //   return declareFunction(st, identifier, value);
   
   if(!st || !identifier)
     return false;
@@ -134,7 +134,7 @@ Symbol* localUse(SymbolsTable *st, String identifier)
   return searchSymbol(st->globalScope, identifier); 
 }
 
-bool declareFunction(SymbolsTable *st, String identifier, int value)
+bool declareFunction(SymbolsTable *st, String identifier, DataType returnType ,int value)
 {
   Symbol *s;
   
@@ -188,10 +188,9 @@ Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier)
 {
   if(!st || !identifier)
     return NULL;
-  return searchSymbol(
-    st->currentScope == GLOBAL ? st->globalScope : st->localScope,
-    identifier
-  );
+  
+  return st->currentScope == GLOBAL ? 
+    globalUse(st, identifier) : localUse(st, identifier);
 }
 
 /* -------------------------------------------- */
@@ -311,7 +310,8 @@ bool st_set_function(
   SymbolsTable *st,
   String identifier,
   int32_t params,
-  int32_t localvars
+  int32_t localvars,
+  DataType returnType
 )
 {
   Symbol *s;
@@ -326,7 +326,7 @@ bool st_set_function(
     return false;
 
   s = symbol_init(identifier, NONE);
-  symbol_configure_function(s, params, localvars);
+  symbol_configure_function(s, params, localvars, returnType);
 
   return hash_encode(st->localScope, s);
 }
@@ -367,7 +367,8 @@ bool st_insertBlindCurrentScope(
   DataType dataType,
   IdentifierCategory identifierCategory,
   Scope scope,
-  int pos,
+  int32_t param_pos,
+  int32_t var_pos,
   int8_t size,
   int32_t params,
   int32_t localvars
@@ -398,7 +399,7 @@ bool st_insertBlindCurrentScope(
         identifier,
         dataType,
         scope,
-        pos
+        var_pos
       );
 
     case VECTOR:
@@ -407,7 +408,7 @@ bool st_insertBlindCurrentScope(
         identifier,
         dataType,
         scope,
-        pos,
+        var_pos,
         size
       );
     
@@ -425,7 +426,7 @@ bool st_insertBlindCurrentScope(
         st,
         identifier,
         dataType,
-        pos
+        param_pos
       );
 
     case VECTOR:
@@ -433,7 +434,7 @@ bool st_insertBlindCurrentScope(
         st,
         identifier,
         dataType,
-        pos,
+        param_pos,
         size
       );
     
@@ -447,7 +448,8 @@ bool st_insertBlindCurrentScope(
       st,
       identifier,
       params,
-      localvars
+      localvars,
+      dataType
     );
 
   default:

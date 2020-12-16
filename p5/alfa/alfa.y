@@ -17,6 +17,10 @@
   #else
   #define PRINT_RULE(str, val)
   #endif
+
+  #define EXITFAIL(str, ...) \
+              COPYERR(" "str " ", ##__VA_ARGS__); \
+              return PARSEFAIL;
   
   #define PARSEFAIL INT_MAX
 
@@ -57,7 +61,8 @@
   DataType current_type; /* INT, BOOLEAN */
   IdentifierCategory current_class; /* SCALAR, VECTOR */
   Scope current_scope; /* GLOBAL, LOCAL */
-  int current_pos; /* Position inside funct either params or localvars */
+  int32_t current_var_pos; /* Position inside funct localvars */
+  int32_t current_param_pos; /* Position inside funct params */
   int8_t current_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
@@ -131,6 +136,12 @@
 %type <attrs> identifier
 %type <attrs> if_exp
 %type <attrs> if_exp_stm
+
+%type <attrs> type
+
+%type <attrs> function
+%type <attrs> fn_name
+%type <attrs> fn_declarations
 
 %left TOK_MAS TOK_MENOS TOK_OR
 %left TOK_ASTERISCO TOK_DIVISION TOK_AND
@@ -254,6 +265,13 @@ type: TOK_BOOLEAN
 class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERECHO 
             {
               PRINT_RULE("<clase_vector> ::= array <tipo> [ <constante_entera> ]", 15);
+              
+              current_size = $4.int_value;
+              if( current_size < _VECTOR_MIN_LEN_ ||
+                    current_size > _VECTOR_MAX_LEN_ )
+              {
+                EXITFAIL("Vector's size out of allowed bounds");
+              }
             }
             ;
 
@@ -263,6 +281,8 @@ class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERE
 identifiers: identifier
           {
             PRINT_RULE("<identificadores> ::= <identificador>", 18);
+
+            
           }
           ;
  
@@ -297,11 +317,82 @@ functions: /* empty */
 /*------------------------------------------------------*/
 /*                      PROD: 22                        */
 /*------------------------------------------------------*/
-function: TOK_FUNCTION type identifier TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA function_declarations statements TOK_LLAVEDERECHA
+function: fn_declarations statements TOK_LLAVEDERECHA
         {
           PRINT_RULE("<funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }", 22);
+
+          if(( _sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL )
+          {
+            EXITFAIL("Fatal error. Function identifier %s not found! ", $1.lexeme);
+          }
+
+          if ( !stopLocalScope(st) )
+          {
+            EXITFAIL("Fatal error, %s's scope coulnd't be closed.", $1.lexeme);
+          }
+
+          if (( _sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL)
+          {
+            EXITFAIL("Fatal error. Function identifier %s not in global scope", $1.lexeme );
+          }
+
+          symbol_configure_function(
+            _sgeneric,
+            current_params,
+            current_localvars,
+            $1.type
+          );
+
+          $$.type = $1.type; // propagate function return type
+                strcpy($$.lexeme, $1.lexeme); // propagate function name
         }
         ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 22_B                      */
+/*------------------------------------------------------*/
+fn_name: TOK_FUNCTION type TOK_IDENTIFICADOR
+      {
+        if(( _sgeneric = st_searchCurrentScope(st, $3.lexeme)) != NULL )
+        {
+          EXITFAIL("Identifier %s already exist. ", $3.lexeme);
+        }
+        if ( !declareFunction( st, $3.lexeme, $2.type, $3.int_value) )
+        {
+          EXITFAIL("Function %s could't be declared. ", $3.lexeme );
+        }
+        current_localvars = 0;
+        current_var_pos = 1;
+        current_params = 0;
+        current_param_pos = 0;
+
+        $$.type = $2.type; // propagate function return type
+        strcpy($$.lexeme, $3.lexeme); // propagate function name
+      }
+      ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 22_C                      */
+/*------------------------------------------------------*/
+fn_declarations: fn_name TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO
+                    TOK_LLAVEIZQUIERDA function_declarations
+              {
+                if(( _sgeneric = st_searchCurrentScope(st, $1.lexeme )) == NULL )
+                {
+                  EXITFAIL("Fatal error. Function identifier %s not found", $1.lexeme);
+                }
+
+                symbol_configure_function(
+                  _sgeneric,
+                  current_params,
+                  current_localvars,
+                  $1.type
+                );
+
+                $$.type = $1.type; // propagate function return type
+                strcpy($$.lexeme, $1.lexeme); // propagate function name
+              }
+              ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 23                        */
@@ -342,9 +433,11 @@ remaining_function_params: /* empty */
 /*------------------------------------------------------*/
 /*                      PROD: 27                        */
 /*------------------------------------------------------*/
-function_param: type identifier
+function_param: type TOK_IDENTIFICADOR
               {
                 PRINT_RULE("<parametro_funcion> ::= <tipo> <identificador>", 27);
+
+
               }
               ;
 
@@ -464,26 +557,21 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
       if((_sleft = st_searchCurrentScope(st, $1.lexeme)) == NULL)
-      {
         /* Symbol is not declared */
-        COPYERR("Identifier %s not declared.", $1.lexeme); 
-        return PARSEFAIL;
-      }
+        EXITFAIL("Identifier %s not declared.", $1.lexeme);
       if(symbol_get_category(_sleft) == FUNCT)
       {
-        COPYERR("Identifier %s is a function.", $1.lexeme); 
-        return PARSEFAIL;
+        EXITFAIL("Identifier %s is a function.", $1.lexeme);
       }
       else if(symbol_blind_identifierCategory(_sleft) == VECTOR)
       {
-        COPYERR("Identifier %s is a vector.", $1.lexeme); 
-        return PARSEFAIL;
-      }
+        EXITFAIL("Identifier %s is a vector.", $1.lexeme);
+      }  
       else if(symbol_blind_dataType(_sleft) != $3.type)
       {
-        COPYERR("Identifiers type missmatch");
-        return PARSEFAIL;
+        EXITFAIL("Identifiers type missmatch")
       }
+
       write_assignment(FPASM_NAME, $1.lexeme, $3.is_var);
     }
     ;
@@ -500,7 +588,7 @@ assignment: vector_element TOK_ASIGNACION exp
 /*------------------------------------------------------*/
 /*                      PROD: 48                        */
 /*------------------------------------------------------*/
-vector_element: identifier TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
+vector_element: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
               {
                 PRINT_RULE("<elemento_vector> ::= <identificador> [ <exp> ]", 48);
               }
@@ -539,8 +627,7 @@ if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIE
       {
         if($3.type != BOOLEAN)
         {
-          COPYERR("Type missmatch. 'IF' requires boolean exp");
-          return PARSEFAIL;
+          EXITFAIL("Type missmatch. 'IF' requires boolean exp");
         }
         $$.tags = tags++;
         write_ifthenelse_begin(FPASM_NAME, $3.is_var, $$.tags);
@@ -565,19 +652,17 @@ reading: TOK_SCANF TOK_IDENTIFICADOR
 
         if((_sgeneric = st_searchCurrentScope(st, $2.lexeme)) == NULL)
         {
-          COPYERR("Identifier not found");
-          return PARSEFAIL;
+          EXITFAIL("Identifier not found");
         }
         if(symbol_get_category(_sgeneric) == FUNCT)
         {
-          COPYERR("Trying to print a function");
-          return PARSEFAIL;
+          EXITFAIL("Trying to print a function");
         }
         else if(symbol_blind_identifierCategory(_sgeneric) == VECTOR)
         {
-          COPYERR("Trying to print a vector");
-          return PARSEFAIL;
+          EXITFAIL("Trying to print a vector");
         }
+
         write_reading(FPASM_NAME, $2.lexeme, $2.type);
       }
       ;
@@ -611,9 +696,9 @@ exp: exp TOK_MAS exp
       PRINT_RULE("<exp> ::= <exp> + <exp>", 72);
       if($1.type != $3.type || ($1.type != INT && $1.type != BOOLEAN))
       {
-        COPYERR("Types missmatch");
-        return PARSEFAIL;
+        EXITFAIL("Types missmatch");
       }
+
       write_sum(FPASM_NAME, $1.is_var, $3.is_var);
       $$.type = $1.type; // also $$.type = $3.type
       $$.is_var = false;
@@ -626,6 +711,12 @@ exp: exp TOK_MAS exp
 exp: exp TOK_MENOS exp
     {
       PRINT_RULE("<exp> ::= <exp> - <exp>", 73);
+      if( $1.type != $3.type || ($1.type != INT && $1.type != BOOLEAN) )
+      {
+        EXITFAIL("Substract requires both values to be the same");
+      }
+
+      write_subtract( FPASM_NAME, $1.is_var, $3.is_var );
     }
     ;
 
@@ -635,6 +726,11 @@ exp: exp TOK_MENOS exp
 exp: exp TOK_DIVISION exp
     {
       PRINT_RULE("<exp> ::= <exp> / <exp>", 74);
+      if( $1.type != $3.type || ($1.type != INT) )
+      {
+        EXITFAIL("Division requires both values to be integers");
+      }
+      
     }
     ;
 
@@ -653,6 +749,14 @@ exp: exp TOK_ASTERISCO exp
 exp: TOK_MENOS exp %prec MENOSU
     {
       PRINT_RULE("<exp> ::= - <exp>", 76);
+      if($2.type != INT)
+      {
+        EXITFAIL("Types missmatch. - <exp> requires integer value");
+      }
+
+      write_sign_change( FPASM_NAME, $2.is_var );
+      $$.is_var = false;
+      $$.type = INT;
     }
     ;
 
@@ -692,19 +796,17 @@ exp: TOK_IDENTIFICADOR
       PRINT_RULE("<exp> ::= <identificador>", 80);
       if((_sleft = st_searchCurrentScope(st, $1.lexeme)) == NULL)
       {
-        COPYERR("Identifier %s doesn't exists", $1.lexeme);
-        return PARSEFAIL;
+        EXITFAIL("Identifier %s doesn't exists", $1.lexeme);
       }
       if(symbol_get_category(_sleft) == FUNCT)
       {
-        COPYERR("Identifier %s is a function", $1.lexeme);
-        return PARSEFAIL;
+        EXITFAIL("Identifier %s is a function", $1.lexeme);
       }
       else if(symbol_blind_identifierCategory(_sleft) == VECTOR)
       {
-        COPYERR("Identifier %s is a vector", $1.lexeme);
-        return PARSEFAIL;
+        EXITFAIL("Identifier %s is a vector", $1.lexeme);
       }
+
       $$.type = symbol_blind_dataType(_sleft);
       $$.is_var = true;
 
@@ -755,7 +857,7 @@ exp: vector_element
 /*------------------------------------------------------*/
 /*                      PROD: 88                        */
 /*------------------------------------------------------*/
-exp: identifier TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
+exp: TOK_IDENTIFICADOR TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= <identificador> ( <lista_expresiones> )", 88);
     }
@@ -805,9 +907,9 @@ comparison: exp TOK_IGUAL exp
             PRINT_RULE("<comparacion> ::= <exp> == <exp>", 93);
             if($1.type != INT || $1.type != INT)
             {
-              COPYERR("Types missmatch. Integers required.");
-              return PARSEFAIL;
+              EXITFAIL("Types missmatch. Integers required.");
             }
+            
             write_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
             $$.is_var = false;
@@ -822,8 +924,7 @@ comparison: exp TOK_DISTINTO exp
             PRINT_RULE("<comparacion> ::= <exp> != <exp>", 94);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required");
-              return PARSEFAIL;
+              EXITFAIL("Types missmatch. Integers required");
             }
             write_different(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
@@ -839,9 +940,9 @@ comparison: exp TOK_MENORIGUAL exp
             PRINT_RULE("<comparacion> ::= <exp> <= <exp>", 95);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required");
-              return PARSEFAIL;
+              EXITFAIL("Types missmatch. Integers required");
             }
+            
             write_lower_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
             $$.is_var = false;
@@ -856,9 +957,9 @@ comparison: exp TOK_MAYORIGUAL exp
             PRINT_RULE("<comparacion> ::= <exp> >= <exp>", 96);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required");
-              return PARSEFAIL;
+              EXITFAIL("Types missmatch. Integers required");
             }
+
             write_greater_equal(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
             $$.is_var = false;
@@ -873,9 +974,9 @@ comparison: exp TOK_MENOR exp
             PRINT_RULE("<comparacion> ::= <exp> < <exp>", 97);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required");
-              return PARSEFAIL;
+              EXITFAIL("Types missmatch. Integers required");
             }
+            
             write_lower(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
             $$.is_var = false;
@@ -890,9 +991,9 @@ comparison: exp TOK_MAYOR exp
             PRINT_RULE("<comparacion> ::= <exp> > <exp>", 98);
             if($1.type != INT || $3.type != INT)
             {
-              COPYERR("Types missmatch. Integers required");
-              return PARSEFAIL;
+              EXITFAIL("Types missmatch. Integers required");
             }
+
             write_greater(FPASM_NAME, $1.is_var, $3.is_var, tags++);
             $$.type = BOOLEAN;
             $$.is_var = false;
@@ -960,8 +1061,7 @@ identifier: TOK_IDENTIFICADOR
             PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
             if(st_searchCurrentScope(st, $1.lexeme) != NULL)
             {
-              COPYERR("Identifier %s already at current scope", $1.lexeme);
-              return PARSEFAIL;
+              EXITFAIL("Identifier %s already at current scope", $1.lexeme);
             }
             else
             {
@@ -972,7 +1072,8 @@ identifier: TOK_IDENTIFICADOR
                 current_type,
                 current_class,
                 current_scope,
-                current_pos,
+                current_param_pos,
+                current_var_pos,
                 current_size,
                 current_params,
                 current_localvars
@@ -989,12 +1090,12 @@ int yyerror(SymbolsTable *st, char *s)
 {
   if(morfofailure)
   {
-    return -1;
+    return PARSEFAIL;
   }
   
   COPYERR("Syntactic error: %s", s);
   
-  return -1;
+  return PARSEFAIL;
 }
 
 void write_symbols_table(FPASM, SymbolsTable *st)

@@ -125,7 +125,8 @@ void symbol_configure_vector_parametre(
 void symbol_configure_function(
   Symbol *s,
   int32_t params,
-  int32_t localvars
+  int32_t localvars,
+  DataType returnType
 );
 
 /**

@@ -38,6 +38,7 @@ struct _Function
 {
   int32_t params; /* Number of function parametres */
   int32_t localvars; /* Number of function local variables */
+  DataType returnType; /* Function return type */
 };
 
 /**
@@ -164,7 +165,8 @@ void symbol_configure_vector_parametre(
 void symbol_configure_function(
   Symbol *s,
   int32_t params,
-  int32_t localvars
+  int32_t localvars,
+  DataType returnType
 )
 {
   if(!s)
@@ -172,6 +174,7 @@ void symbol_configure_function(
   s->elemCat = FUNCT;
   s->element.func.params = params;
   s->element.func.localvars = localvars;
+  s->element.func.returnType = returnType;
 }
 
 String symbol_get_key(Symbol *s)
@@ -366,6 +369,11 @@ int32_t symbol_get_funct_localvars(Symbol *s)
     return UNSP_ERR;
 
   return s->element.func.localvars;
+}
+
+DataType symbol_get_funct_returnType(Symbol *s)
+{
+  return s != NULL ? s->element.func.returnType : NONE;
 }
 
 /*  - * - * - * - * - * - * - * - */

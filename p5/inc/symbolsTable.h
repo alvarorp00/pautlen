@@ -63,7 +63,7 @@ Symbol* localUse(SymbolsTable *st, String identifier);
  * @param identifier of the function
  * @param value of the function
  */
-bool declareFunction(SymbolsTable *st, String identifier, int value);
+bool declareFunction(SymbolsTable *st, String identifier, DataType returnType, int value);
 
 /* ------------------------------------------------ */
 
@@ -151,7 +151,8 @@ bool st_set_function(
   SymbolsTable *st,
   String identifier,
   int32_t params,
-  int32_t localvars
+  int32_t localvars,
+  DataType returType
 );
 
 /**
@@ -177,7 +178,8 @@ bool st_insertBlindCurrentScope(
   DataType dataType,
   IdentifierCategory identifierCategory,
   Scope scope,
-  int pos,
+  int32_t param_pos,
+  int32_t var_pos,
   int8_t size,
   int32_t params,
   int32_t localvars
