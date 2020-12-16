@@ -1,4 +1,4 @@
-/* Seccion de definiciones */
+Seccion de definiciones
 
 %{
 
@@ -863,6 +863,8 @@ exp: constant
 exp: TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= ( <exp> )", 82);
+      $$.type = $2.type;
+      $$.is_var = $2.is_var;
     }
     ;
 
@@ -883,6 +885,8 @@ exp: TOK_PARENTESISIZQUIERDO comparison TOK_PARENTESISDERECHO
 exp: vector_element
     {
       PRINT_RULE("<exp> ::= <elemento_vector>", 85);
+      $$.type = $1.type;
+      $$.is_var = $1.is_var;
     }
     ;
 
@@ -1058,6 +1062,9 @@ constant: constant_int
 constant_logic: TOK_TRUE
           {
             PRINT_RULE("<constante_logica> ::= true", 102);
+            $$.type = BOOLEAN;
+            $$.is_var = false;
+            $$.bool_value = true;
           }
           ;
 
@@ -1067,6 +1074,9 @@ constant_logic: TOK_TRUE
 constant_logic: TOK_FALSE
           {
             PRINT_RULE("<constante_logica> ::= false", 103);
+            $$.type = BOOLEAN;
+            $$.is_var = false;
+            $$.bool_value = false;
           }
           ;
 

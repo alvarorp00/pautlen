@@ -229,6 +229,7 @@ struct _attrs_type
 {
   char lexeme[MAX_LEN + 1];
   int int_value;
+  bool bool_value;
   DataType type;
   bool is_var;
   int32_t addresses;
