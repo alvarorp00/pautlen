@@ -282,7 +282,7 @@ void write_sign_change( FPASM, bool is_var ) {
  * @param nno parameter is ignored becouse it is not
  * necessary
  */
-void write_not( FPASM, bool is_var, int nno ) {
+void write_not( FPASM, bool is_var ) {
 
   _ASM( "pop dword eax" );
 

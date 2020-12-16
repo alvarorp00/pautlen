@@ -41,48 +41,6 @@
 #define __FAILED              "__failed"
 #define __END                 "__end"
 
-#define escribir_subseccion_data write_data_header
-#define escribir_cabecera_bss write_bss_header
-#define declarar_variable write_var_declaration
-#define escribir_segmento_codigo write_code_segment
-#define escribir_inicio_main write_main_begin
-#define escribir_fin write_end
-#define escribir_operando write_operand
-#define asignar write_assignment
-#define sumar write_sum
-#define restar write_subtract
-#define multiplicar write_mult
-#define dividir write_div
-#define o write_or
-#define y write_and
-#define cambiar_signo write_sign_change
-#define no write_not
-#define igual write_equal
-#define distinto write_different
-#define menor_igual write_lower_equal
-#define mayor_igual write_greater_equal
-#define menor write_lower
-#define mayor write_greater
-#define escribir write_writing
-#define leer write_reading
-#define escribir_elemento_vector write_index_vector
-#define declararFuncion write_function_declare
-#define retornarFuncion write_function_return
-#define llamarFuncion write_function_call
-#define asignarDestinoEnPila write_stack_asign_dest
-#define operandoEnPilaAArgumento write_stack_optoarg
-#define limpiarPila write_stack_clean
-#define escribirParametro write_param
-#define escribirVariableLocal write_local_var
-#define ifthenelse_inicio write_ifthenelse_begin
-#define ifthen_inicio write_ifthen_begin
-#define ifthen_fin write_ifthen_end
-#define ifthenelse_fin_then write_ifthenelse_middle
-#define ifthenelse_fin write_ifthenelse_end
-#define while_inicio write_while_begin
-#define while_exp_pila write_while_exp
-#define while_fin write_while_end
-
 void write_double_pop( FPASM, const char *reg1, const char *reg2, int  is_var1, bool is_var2 );
 
 void write_bss_header(FPASM);
@@ -108,7 +66,7 @@ void write_or(FPASM, bool is_var1, bool is_var2);
 void write_and(FPASM, bool is_var1, bool is_var2);
 void write_sign_change(FPASM, bool is_var);
 
-void write_not(FPASM, bool is_var, int cuantos_no);
+void write_not(FPASM, bool is_var);
 
 void write_equal(FPASM, bool is_var1, bool is_var2, int label);
 void write_different(FPASM, bool is_var1, bool is_var2, int label);

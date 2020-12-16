@@ -552,22 +552,23 @@ block: loop
 /*------------------------------------------------------*/
 /*                      PROD: 43                        */
 /*------------------------------------------------------*/
-/* should be "assignment: identifier TOK_ASIGNACION etc.." */
 assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
     {
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
-      if((_sleft = st_searchCurrentScope(st, $1.lexeme)) == NULL)
+      if((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL)
+      {
         /* Symbol is not declared */
         EXITFAIL("Identifier %s not declared.", $1.lexeme);
-      if(symbol_get_category(_sleft) == FUNCT)
+      }
+      if(symbol_get_category(_sgeneric) == FUNCT)
       {
         EXITFAIL("Identifier %s is a function.", $1.lexeme);
       }
-      else if(symbol_blind_identifierCategory(_sleft) == VECTOR)
+      else if(symbol_blind_identifierCategory(_sgeneric) == VECTOR)
       {
         EXITFAIL("Identifier %s is a vector.", $1.lexeme);
       }  
-      else if(symbol_blind_dataType(_sleft) != $3.type)
+      else if(symbol_blind_dataType(_sgeneric) != $3.type)
       {
         EXITFAIL("Identifiers type missmatch")
       }
@@ -694,7 +695,7 @@ function_return: TOK_RETURN exp
 exp: exp TOK_MAS exp
     {
       PRINT_RULE("<exp> ::= <exp> + <exp>", 72);
-      if($1.type != $3.type || ($1.type != INT && $1.type != BOOLEAN))
+      if($1.type != $3.type || $1.type != INT )
       {
         EXITFAIL("Types missmatch");
       }
@@ -711,12 +712,14 @@ exp: exp TOK_MAS exp
 exp: exp TOK_MENOS exp
     {
       PRINT_RULE("<exp> ::= <exp> - <exp>", 73);
-      if( $1.type != $3.type || ($1.type != INT && $1.type != BOOLEAN) )
+      if( $1.type != $3.type || $1.type != INT )
       {
         EXITFAIL("Substract requires both values to be the same");
       }
 
       write_subtract( FPASM_NAME, $1.is_var, $3.is_var );
+      $$.is_var = false;
+      $$.type = INT;
     }
     ;
 
@@ -730,7 +733,9 @@ exp: exp TOK_DIVISION exp
       {
         EXITFAIL("Division requires both values to be integers");
       }
-      
+      write_div( FPASM_NAME, $1.is_var, $3.is_var );
+      $$.is_var = false;
+      $$.type = INT;
     }
     ;
 
@@ -740,6 +745,13 @@ exp: exp TOK_DIVISION exp
 exp: exp TOK_ASTERISCO exp
     {
       PRINT_RULE("<exp> ::= <exp> * <exp>", 75);
+      if( $1.type != $3.type || ($1.type != INT) )
+      {
+        EXITFAIL("Mult requires both values to be integers");
+      }
+      write_mult( FPASM_NAME, $1.is_var, $3.is_var );
+      $$.is_var = false;
+      $$.type = INT;
     }
     ;
 
@@ -766,6 +778,13 @@ exp: TOK_MENOS exp %prec MENOSU
 exp: exp TOK_AND exp
     {
       PRINT_RULE("<exp> ::= <exp> && <exp>", 77);
+      if( $1.type != $3.type || ($1.type != BOOLEAN) )
+      {
+        EXITFAIL("AND requires both values to be booleans");
+      }
+      write_and( FPASM_NAME, $1.is_var, $3.is_var );
+      $$.is_var = false;
+      $$.type = BOOLEAN;
     }
     ;
 
@@ -775,6 +794,13 @@ exp: exp TOK_AND exp
 exp: exp TOK_OR exp
     {
       PRINT_RULE("<exp> ::= <exp> || <exp>", 78);
+      if( $1.type != $3.type || ($1.type != BOOLEAN) )
+      {
+        EXITFAIL("OR requires both values to be booleans");
+      }
+      write_or( FPASM_NAME, $1.is_var, $3.is_var );
+      $$.is_var = false;
+      $$.type = BOOLEAN;
     }
     ;
 
@@ -784,13 +810,19 @@ exp: exp TOK_OR exp
 exp: TOK_NOT exp
     {
       PRINT_RULE("<exp> ::= ! <exp>", 79);
+      if( $1.type != BOOLEAN )
+      {
+        EXITFAIL("NOT requires value to be boolean");
+      }
+      write_not( FPASM_NAME, $1.is_var );
+      $$.is_var = false;
+      $$.type = BOOLEAN;
     }
     ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 80                        */
 /*------------------------------------------------------*/
-/* should be "exp: identifier" */
 exp: TOK_IDENTIFICADOR
     {
       PRINT_RULE("<exp> ::= <identificador>", 80);

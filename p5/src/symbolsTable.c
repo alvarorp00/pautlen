@@ -188,9 +188,12 @@ Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier)
 {
   if(!st || !identifier)
     return NULL;
-  
-  return st->currentScope == GLOBAL ? 
-    globalUse(st, identifier) : localUse(st, identifier);
+  return searchSymbol(
+    st->currentScope == GLOBAL ? st->globalScope : st->localScope,
+    identifier
+  );
+  // return st->currentScope == GLOBAL ? 
+  //   globalUse(st, identifier) : localUse(st, identifier);
 }
 
 /* -------------------------------------------- */
