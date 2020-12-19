@@ -81,16 +81,20 @@ void processLine(String line)
   if(!line)
     return;
 
+  identifier[0] = '\0';
+
   for(i = 0; line[i] != '\t' && line[i] != '\0' && line[i] != '\n'; i++);
 
   if(line[i] != '\t')
   {
+    identifier[0] = '\0';
     strncpy(identifier, line, i);
     formatString(identifier);
     searchSymbol(identifier);
   }
   else
   {
+    identifier[0] = '\0';
     strncpy(identifier, line, i);
 
     for(j = i; line[j] != '\0' && line[j] != '\n'; j++);

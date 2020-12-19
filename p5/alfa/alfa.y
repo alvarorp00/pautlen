@@ -1,4 +1,4 @@
-Seccion de definiciones
+/* Seccion de definiciones */
 
 %{
 
@@ -433,13 +433,22 @@ remaining_function_params: /* empty */
 /*------------------------------------------------------*/
 /*                      PROD: 27                        */
 /*------------------------------------------------------*/
-function_param: type TOK_IDENTIFICADOR
+function_param: type function_param_identifier
               {
                 PRINT_RULE("<parametro_funcion> ::= <tipo> <identificador>", 27);
 
 
               }
               ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 27_B                      */
+/*------------------------------------------------------*/
+function_param_identifier: TOK_IDENTIFICADOR
+                        {
+
+                        }
+                        ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 28                        */
@@ -810,11 +819,11 @@ exp: exp TOK_OR exp
 exp: TOK_NOT exp
     {
       PRINT_RULE("<exp> ::= ! <exp>", 79);
-      if( $1.type != BOOLEAN )
+      if( $2.type != BOOLEAN )
       {
         EXITFAIL("NOT requires value to be boolean");
       }
-      write_not( FPASM_NAME, $1.is_var );
+      write_not( FPASM_NAME, $2.is_var );
       $$.is_var = false;
       $$.type = BOOLEAN;
     }
@@ -1042,6 +1051,8 @@ comparison: exp TOK_MAYOR exp
 constant: constant_logic
           {
             PRINT_RULE("<constante> ::= <constante_logica>", 99);
+            $$.type = $1.type;
+            $$.is_var = $1.is_var;
           }
           ;
 
@@ -1101,13 +1112,18 @@ constant_int: TOK_CONSTANTE_ENTERA
 identifier: TOK_IDENTIFICADOR
           {
             PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
-            if(st_searchCurrentScope(st, $1.lexeme) != NULL)
+            if((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) != NULL)
             {
-              EXITFAIL("Identifier %s already at current scope", $1.lexeme);
+              EXITFAIL("Identifier %s already at %s scope", $1.lexeme, current_scope == GLOBAL ? "global" : "local");
             }
             else
             {
-              st_insertBlindCurrentScope(
+              if(current_scope == LOCAL && symbol_get_var_identifierCategory(_sgeneric) != SCALAR)
+              {
+                EXITFAIL("In local scope, var must be scalar");
+              }
+              
+              if( st_insertBlindCurrentScope(
                 st,
                 $1.lexeme,
                 current_category,
@@ -1119,7 +1135,16 @@ identifier: TOK_IDENTIFICADOR
                 current_size,
                 current_params,
                 current_localvars
-              );
+              )
+              )
+              {
+                current_localvars++;
+              }
+              else
+              {
+                EXITFAIL("Failure in insertion of %s identifier in %s scope.\n",
+                            $1.lexeme, current_scope == GLOBAL ? "global" : "local");
+              }
             }
           }
           ;
