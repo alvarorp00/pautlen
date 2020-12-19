@@ -5,6 +5,7 @@ segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
 	_x resd 1
+	_y resd 1
 segment .text
 	global main
 	extern scan_int, print_int, scan_float, print_float, scan_boolean, print_boolean
@@ -12,18 +13,75 @@ segment .text
 	extern alfa_malloc, alfa_free, ld_float
 main:
 	mov dword [__esp], esp
-	push dword 8
+	push dword _x
+	call scan_int
+	add esp, 4
+	push dword _y
+	call scan_int
+	add esp, 4
+	push dword _x
+	push dword _y
+	pop dword ebx
 	pop dword eax
-	mov dword [_x], eax
-	push dword 7
-	pop dword eax
-	neg eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	add eax, ebx
 	push dword eax
 	pop dword eax
-	mov dword [_x], eax
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
+	push dword _x
+	push dword _y
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	sub eax, ebx
+	push dword eax
+	pop dword eax
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
+	push dword _x
+	push dword _y
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	imul ebx
+	push dword eax
+	pop dword eax
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
+	push dword _x
+	push dword _y
+	pop dword ecx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ecx, [ecx]
+	call __check_div
+	cmp ebx, 1
+	je __failed
+	mov edx, 0
+	cdq 
+	idiv ecx
+	push dword eax
+	pop dword eax
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
 	push dword _x
 	pop dword eax
 	mov dword eax, [eax]
+	neg eax
+	push dword eax
+	pop dword eax
 	push dword eax
 	call print_int
 	call print_endofline

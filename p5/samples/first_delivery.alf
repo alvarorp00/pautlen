@@ -1,6 +1,19 @@
-main {
-int x;
-x = 8;
-x = -7;
-   	printf x;
+main
+{
+    int x, y;
+
+	scanf x;
+	scanf y;
+
+	printf x+y;
+
+	printf x-y;
+
+	printf x*y;
+
+	printf x/y;
+
+	printf -x;
 }
+
+

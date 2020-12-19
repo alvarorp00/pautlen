@@ -246,6 +246,7 @@ void write_div( FPASM, bool is_var1, bool is_var2 ) {
   _ASM("je %s", __FAILED);
 
   _ASM( "mov edx, 0" );
+  _ASM( "cdq ");
   _ASM( "idiv ecx" );
   _ASM( "push dword eax" );
 
