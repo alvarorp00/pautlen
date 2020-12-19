@@ -4,9 +4,10 @@ segment .data
 segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
-	_vector2 resd 3
-	_vector3 resd 3
-	_vector1 resd 3
+	_x resd 1
+	_resultado resd 1
+	_y resd 1
+	_i resd 1
 segment .text
 	global main
 	extern scan_int, print_int, scan_float, print_float, scan_boolean, print_boolean
@@ -14,271 +15,63 @@ segment .text
 	extern alfa_malloc, alfa_free, ld_float
 main:
 	mov dword [__esp], esp
-	push dword 0
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector1
-	mov dword edx, dword eax
-	push edx
-	push dword 1
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 1
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector1
-	mov dword edx, dword eax
-	push edx
-	push dword 0
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 2
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector1
-	mov dword edx, dword eax
-	push edx
-	push dword 1
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 0
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector2
-	mov dword edx, dword eax
-	push edx
-	push dword 0
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 1
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector2
-	mov dword edx, dword eax
-	push edx
-	push dword 0
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 2
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector2
-	mov dword edx, dword eax
-	push edx
-	push dword 0
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 0
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector3
-	mov dword edx, dword eax
-	push edx
-	push dword 0
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector1
-	mov dword edx, dword eax
-	push edx
-	push dword 0
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector2
-	mov dword edx, dword eax
-	push edx
-	pop dword ebx
-	pop dword eax
-	mov dword eax, [eax]
-	mov dword ebx, [ebx]
-	or eax, ebx
-	push dword eax
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 1
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector3
-	mov dword edx, dword eax
-	push edx
-	push dword 1
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector1
-	mov dword edx, dword eax
-	push edx
-	push dword 1
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector2
-	mov dword edx, dword eax
-	push edx
-	pop dword ebx
-	pop dword eax
-	mov dword eax, [eax]
-	mov dword ebx, [ebx]
-	or eax, ebx
-	push dword eax
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 2
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector3
-	mov dword edx, dword eax
-	push edx
-	push dword 2
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector1
-	mov dword edx, dword eax
-	push edx
-	push dword 2
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector2
-	mov dword edx, dword eax
-	push edx
-	pop dword ebx
-	pop dword eax
-	mov dword eax, [eax]
-	mov dword ebx, [ebx]
-	or eax, ebx
-	push dword eax
-	pop dword eax
-	pop dword ebx
-	mov dword [ebx], dword eax
-	push dword 0
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector3
-	mov dword edx, dword eax
-	push edx
-	pop dword eax
-	mov dword eax, [eax]
-	push dword eax
-	call print_boolean
-	call print_endofline
+	push dword _x
+	call scan_int
 	add esp, 4
-	push dword 1
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector3
-	mov dword edx, dword eax
-	push edx
-	pop dword eax
-	mov dword eax, [eax]
-	push dword eax
-	call print_boolean
-	call print_endofline
+	push dword _y
+	call scan_int
 	add esp, 4
-	push dword 2
-	pop eax
-	mov edx, 3
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _vector3
-	mov dword edx, dword eax
-	push edx
+	push dword 0
+	pop dword eax
+	mov dword [_resultado], eax
+	push dword 0
+	pop dword eax
+	mov dword [_i], eax
+while_0:
+	push dword _i
+	push dword _y
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	cmp eax, ebx
+	jl _jl_if_1
+	jmp _jl_else_1
+_jl_if_1:
+	push dword 1
+	jmp _jl_fi_1
+_jl_else_1:
+	push dword 0
+_jl_fi_1:
+	pop dword eax
+	cmp eax, 0
+	je near _while_end_0
+	push dword _resultado
+	push dword _x
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	add eax, ebx
+	push dword eax
+	pop dword eax
+	mov dword [_resultado], eax
+	push dword _i
+	push dword 1
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	add eax, ebx
+	push dword eax
+	pop dword eax
+	mov dword [_i], eax
+	jmp while_0
+_while_end_0:
+	push dword _resultado
 	pop dword eax
 	mov dword eax, [eax]
 	push dword eax
-	call print_boolean
+	call print_int
 	call print_endofline
 	add esp, 4
 __end:

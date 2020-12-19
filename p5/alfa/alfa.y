@@ -72,7 +72,7 @@
   bool in_declare; /* true if we're in declarations part, false if not */
   bool in_expList; /* true if we're in exp list part, else false */
   bool in_main; /* true if we're in main part, else false */
-  
+  bool in_fn_call; /* true if we're in function call, else false */
 %}
 
 %union
@@ -138,6 +138,9 @@
 %type <attrs> identifier
 %type <attrs> if_exp
 %type <attrs> if_exp_stm
+%type <attrs> loop
+%type <attrs> while_exp
+%type <attrs> while
 
 %type <attrs> type
 
@@ -212,6 +215,7 @@ declarations: declaration declarations
 declaration: class identifiers TOK_PUNTOYCOMA 
           {
             PRINT_RULE("<declaracion> ::= <clase> <identificadores> ;", 4);
+            in_declare = true;
           }
           ;
 
@@ -315,6 +319,7 @@ functions: function functions
 functions: /* empty */
         {
           PRINT_RULE("<funciones> ::= ", 21);
+          in_fn_call = false;
         }
         ;
 
@@ -363,12 +368,13 @@ fn_name: TOK_FUNCTION type TOK_IDENTIFICADOR
         }
         if ( !declareFunction( st, $3.lexeme, $2.type, $3.int_value) )
         {
-          EXITFAIL("Function %s could't be declared. ", $3.lexeme );
+          EXITFAIL("Function %s couldn't be declared. ", $3.lexeme );
         }
         current_localvars = 0;
         current_var_pos = 1;
         current_params = 0;
         current_param_pos = 0;
+        in_fn_call = true;
 
         $$.type = $2.type; // propagate function return type
         strcpy($$.lexeme, $3.lexeme); // propagate function name
@@ -675,7 +681,7 @@ if_exp_stm: if_exp statements TOK_LLAVEDERECHA
 
 if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA
       {
-        if($3.type != BOOLEAN)
+        if( $3.type != BOOLEAN)
         {
           EXITFAIL("Type missmatch. 'IF' requires boolean exp");
         }
@@ -687,9 +693,36 @@ if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIE
 /*------------------------------------------------------*/
 /*                      PROD: 52                        */
 /*------------------------------------------------------*/
-loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
+loop: while_exp TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA
     {
       PRINT_RULE("<bucle> ::= whie ( <exp> ) { <sentencias> }", 52);
+      $$.tags = $1.tags;
+      write_while_end( FPASM_NAME, $$.tags );
+    }
+    ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 52_B                      */
+/*------------------------------------------------------*/
+while_exp: while 
+            TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
+        {
+          if ( $3.type != BOOLEAN )
+          {
+            EXITFAIL("Type missmatch. 'While' requires boolean as condition");
+          }
+          $$.tags = $1.tags;
+          write_while_exp( FPASM_NAME, $3.is_var, $$.tags );
+        }
+        ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 52_C                      */
+/*------------------------------------------------------*/
+while: TOK_WHILE
+    {
+      $$.tags = tags++;
+      write_while_begin( FPASM_NAME, $$.tags );
     }
     ;
 
@@ -735,6 +768,7 @@ writing: TOK_PRINTF exp
 function_return: TOK_RETURN exp
       {
         PRINT_RULE("<retorno_funcion> ::= return <exp>", 61);
+        
       }
       ;
 
@@ -878,6 +912,8 @@ exp: TOK_IDENTIFICADOR
       PRINT_RULE("<exp> ::= <identificador>", 80);
       if((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL)
       {
+        if ( in_fn_call )
+          break;
         EXITFAIL("Identifier %s doesn't exists", $1.lexeme);
       }
       

@@ -138,7 +138,7 @@ bool declareFunction(SymbolsTable *st, String identifier, DataType returnType ,i
 {
   Symbol *s;
   
-  if(!st || !identifier || value >= 0)
+  if(!st || !identifier )
     return false;
   if(searchSymbol(st->globalScope, identifier) != NULL)
     return false;
