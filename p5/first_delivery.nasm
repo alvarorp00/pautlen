@@ -79,7 +79,10 @@ main:
 	call print_int
 	call print_endofline
 	add esp, 4
-	push dword 14
+	push dword 1
+	pop dword eax
+	neg eax
+	push dword eax
 	pop eax
 	mov edx, 10
 	call __check_idx
@@ -95,6 +98,33 @@ main:
 	pop dword eax
 	mov dword [ebx], dword eax
 	push dword 2
+	push dword 1
+	pop dword eax
+	neg eax
+	push dword eax
+	pop eax
+	mov edx, 10
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _v
+	mov dword edx, dword eax
+	push edx
+	push dword _v
+	pop dword ebx
+	pop dword eax
+	mov dword [ebx], dword eax
+	pop dword eax
+	mov dword [_y], eax
+	push dword _y
+	pop dword eax
+	mov dword eax, [eax]
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
 __end:
 	mov dword esp, [__esp]
 	ret
@@ -117,12 +147,15 @@ __check_div_end:
 	ret
 __check_idx:
 	cmp eax, edx
-	jl __idx_vector_ok
+	jl __idx_vector_p_ok
+__idx_vector_err:
 	mov edx, _msg_segment_err
 	mov [_msg_fail_err], edx
 	mov edx, 1
 	jmp __check_idx_end
-__idx_vector_ok:
+__idx_vector_p_ok:
+	cmp eax, 0
+	jl __idx_vector_err
 	mov edx, 0
 __check_idx_end:
 	ret

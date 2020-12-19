@@ -37,6 +37,7 @@
 #define __CHECK_IDX           "__check_idx"
 #define __CHECK_IDX_END       "__check_idx_end"
 #define __IDX_VECTOR_OK       "__idx_vector_ok"
+#define __IDX_VECTOR_P_OK     "__idx_vector_p_ok"
 #define __IDX_VECTOR_ERR      "__idx_vector_err"
 #define __FAILED              "__failed"
 #define __END                 "__end"

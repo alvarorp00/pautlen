@@ -75,14 +75,20 @@ void write_index_check(FPASM) {
   _LABEL(__CHECK_IDX);
 
   _ASM("cmp eax, edx");
-  _ASM("jl %s", __IDX_VECTOR_OK);
+  _ASM("jl %s", __IDX_VECTOR_P_OK);
+
+  _LABEL(__IDX_VECTOR_ERR);
 
   _ASM("mov edx, %s", _MSG_SEGMENT_ERR);
   _ASM("mov [%s], edx", _MSG_FAIL_ERR);
   _ASM("mov edx, 1");
   _ASM("jmp %s", __CHECK_IDX_END);
 
-  _LABEL(__IDX_VECTOR_OK);
+  _LABEL(__IDX_VECTOR_P_OK);
+
+  _ASM("cmp eax, 0");
+  _ASM("jl %s", __IDX_VECTOR_ERR);
+  
   _ASM("mov edx, 0");
 
   _LABEL(__CHECK_IDX_END);
