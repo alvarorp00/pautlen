@@ -1,15 +1,11 @@
-	push dword 10
+	push dword 3
 segment .data
 	_msg_div_err db 'err: division by 0',0
 	_msg_segment_err db 'err: segment out of range',0
 segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
-	_x resd 1
-	_b resd 1
-	_y resd 1
-	_v resd 10
-	_a resd 1
+	_vector1 resd 3
 segment .text
 	global main
 	extern scan_int, print_int, scan_float, print_float, scan_boolean, print_boolean
@@ -17,16 +13,79 @@ segment .text
 	extern alfa_malloc, alfa_free, ld_float
 main:
 	mov dword [__esp], esp
-	push dword 3
+	push dword 0
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector1
+	mov dword edx, dword eax
+	push edx
+	push dword 10
 	pop dword eax
-	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 1
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector1
+	mov dword edx, dword eax
+	push edx
 	push dword 20
 	pop dword eax
-	mov dword [_x], eax
-	push dword _x
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 2
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector1
+	mov dword edx, dword eax
+	push edx
+	push dword 30
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 0
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector1
+	mov dword edx, dword eax
+	push edx
+	pop dword eax
+	mov dword eax, [eax]
+	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
+	push dword 1
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector1
+	mov dword edx, dword eax
+	push edx
 	pop dword eax
 	mov dword eax, [eax]
 	push dword eax
@@ -35,90 +94,15 @@ main:
 	add esp, 4
 	push dword 2
 	pop eax
-	mov edx, 10
+	mov edx, 3
 	call __check_idx
 	cmp edx, 1
 	je __failed
 	mov edx, 4
 	imul edx
-	add eax, _v
+	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
-	push dword _v
-	pop dword ebx
-	pop dword eax
-	mov dword [ebx], dword eax
-	push dword 14
-	push dword 2
-	pop eax
-	mov edx, 10
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _v
-	mov dword edx, dword eax
-	push edx
-	push dword _v
-	pop dword ebx
-	pop dword eax
-	mov dword [ebx], dword eax
-	pop dword eax
-	mov dword [_x], eax
-	push dword _x
-	pop dword eax
-	mov dword eax, [eax]
-	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
-	push dword 51
-	pop dword eax
-	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
-	push dword 1
-	pop dword eax
-	neg eax
-	push dword eax
-	pop eax
-	mov edx, 10
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _v
-	mov dword edx, dword eax
-	push edx
-	push dword _v
-	pop dword ebx
-	pop dword eax
-	mov dword [ebx], dword eax
-	push dword 2
-	push dword 1
-	pop dword eax
-	neg eax
-	push dword eax
-	pop eax
-	mov edx, 10
-	call __check_idx
-	cmp edx, 1
-	je __failed
-	mov edx, 4
-	imul edx
-	add eax, _v
-	mov dword edx, dword eax
-	push edx
-	push dword _v
-	pop dword ebx
-	pop dword eax
-	mov dword [ebx], dword eax
-	pop dword eax
-	mov dword [_y], eax
-	push dword _y
 	pop dword eax
 	mov dword eax, [eax]
 	push dword eax

@@ -592,7 +592,7 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
         EXITFAIL("Identifiers type missmatch")
       }
 
-      write_assignment(FPASM_NAME, $1.lexeme, $1.is_var);
+      write_assignment(FPASM_NAME, $1.lexeme, $3.is_var);
     }
     ;
 
@@ -611,7 +611,7 @@ assignment: vector_element TOK_ASIGNACION exp
             {
               EXITFAIL("Invalid assignment. Vector does not exist");
             }
-
+            write_stack_assign_dest( FPASM_NAME, $3.is_var );
           }
           ;
 
@@ -637,9 +637,9 @@ vector_element: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                 $$.is_var = true;
                 strncpy($$.lexeme, $1.lexeme, MAX_LEN);
 
+                // write_operand( FPASM_NAME, )
                 write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), $3.is_var );
-                write_operand( FPASM_NAME, $1.lexeme, true );
-                write_stack_assign_dest( FPASM_NAME, $3.is_var );
+                // write_operand( FPASM_NAME, $1.lexeme, true );
 
               }
               ;

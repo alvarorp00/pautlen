@@ -502,7 +502,7 @@ void write_local_var(FPASM, int index) {
 /* Stack Part */
 
 void write_stack_assign_dest(FPASM, bool is_var) {
-  write_double_pop(FPASM_NAME, EAX, EBX, 0, is_var); // ebx := offset; eax:=value
+  write_double_pop(FPASM_NAME, EBX, EAX, 0, is_var); // ebx := offset; eax:=value
   _ASM("mov dword [ebx], dword eax");
 }
 

@@ -1,27 +1,13 @@
 main
 {
-    int x, y;
-    boolean a, b;
 
-    array int[10] v;
-
-    printf 3;
-
-    x = 20;
-
-    printf x;
-
-    v[2] = 14;
-
-    x = v[2];
-
-    printf x;
-
-    printf 51;
-
-    v[-1] = 2;
-
-    y = v[-1];
-
-    printf y;
+    array int[3] vector1;
+	
+	vector1[0]=10;
+	vector1[1]=20;
+	vector1[2]=30;
+	
+	printf vector1[0];
+	printf vector1[1];
+	printf vector1[2];
 }
