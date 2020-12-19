@@ -1139,6 +1139,9 @@ constant: constant_logic
             PRINT_RULE("<constante> ::= <constante_logica>", 99);
             $$.type = $1.type;
             $$.is_var = $1.is_var;
+            /* push */
+            snprintf( __buff, MAX_LEN, "%d", $1.bool_value );
+            write_operand( FPASM_NAME, __buff, false );
           }
           ;
 
@@ -1150,6 +1153,9 @@ constant: constant_int
             PRINT_RULE("<constante> ::= <constante_entera>", 100);
             $$.type = $1.type;
             $$.is_var = $1.is_var;
+            /* push */
+            snprintf(__buff, MAX_LEN, "%d", $1.int_value);
+            write_operand(FPASM_NAME, __buff, false);
           }
           ;
 
@@ -1186,9 +1192,6 @@ constant_int: TOK_CONSTANTE_ENTERA
               $$.type = INT;
               $$.is_var = false;
               $$.int_value = $1.int_value;
-              /* push */
-              snprintf(__buff, MAX_LEN, "%d", $1.int_value);
-              write_operand(FPASM_NAME, __buff, false);
             }
             ;
 

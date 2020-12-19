@@ -1,10 +1,11 @@
-	push dword 3
 segment .data
 	_msg_div_err db 'err: division by 0',0
 	_msg_segment_err db 'err: segment out of range',0
 segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
+	_vector2 resd 3
+	_vector3 resd 3
 	_vector1 resd 3
 segment .text
 	global main
@@ -24,7 +25,7 @@ main:
 	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
-	push dword 10
+	push dword 1
 	pop dword eax
 	pop dword ebx
 	mov dword [ebx], dword eax
@@ -39,7 +40,7 @@ main:
 	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
-	push dword 20
+	push dword 0
 	pop dword eax
 	pop dword ebx
 	mov dword [ebx], dword eax
@@ -54,7 +55,7 @@ main:
 	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
-	push dword 30
+	push dword 1
 	pop dword eax
 	pop dword ebx
 	mov dword [ebx], dword eax
@@ -66,15 +67,96 @@ main:
 	je __failed
 	mov edx, 4
 	imul edx
+	add eax, _vector2
+	mov dword edx, dword eax
+	push edx
+	push dword 0
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 1
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector2
+	mov dword edx, dword eax
+	push edx
+	push dword 0
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 2
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector2
+	mov dword edx, dword eax
+	push edx
+	push dword 0
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 0
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector3
+	mov dword edx, dword eax
+	push edx
+	push dword 0
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
 	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
+	push dword 0
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector2
+	mov dword edx, dword eax
+	push edx
+	pop dword ebx
 	pop dword eax
 	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	or eax, ebx
 	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 1
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector3
+	mov dword edx, dword eax
+	push edx
 	push dword 1
 	pop eax
 	mov edx, 3
@@ -86,12 +168,37 @@ main:
 	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
+	push dword 1
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector2
+	mov dword edx, dword eax
+	push edx
+	pop dword ebx
 	pop dword eax
 	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	or eax, ebx
 	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 2
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector3
+	mov dword edx, dword eax
+	push edx
 	push dword 2
 	pop eax
 	mov edx, 3
@@ -103,10 +210,75 @@ main:
 	add eax, _vector1
 	mov dword edx, dword eax
 	push edx
+	push dword 2
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector2
+	mov dword edx, dword eax
+	push edx
+	pop dword ebx
+	pop dword eax
+	mov dword eax, [eax]
+	mov dword ebx, [ebx]
+	or eax, ebx
+	push dword eax
+	pop dword eax
+	pop dword ebx
+	mov dword [ebx], dword eax
+	push dword 0
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector3
+	mov dword edx, dword eax
+	push edx
 	pop dword eax
 	mov dword eax, [eax]
 	push dword eax
-	call print_int
+	call print_boolean
+	call print_endofline
+	add esp, 4
+	push dword 1
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector3
+	mov dword edx, dword eax
+	push edx
+	pop dword eax
+	mov dword eax, [eax]
+	push dword eax
+	call print_boolean
+	call print_endofline
+	add esp, 4
+	push dword 2
+	pop eax
+	mov edx, 3
+	call __check_idx
+	cmp edx, 1
+	je __failed
+	mov edx, 4
+	imul edx
+	add eax, _vector3
+	mov dword edx, dword eax
+	push edx
+	pop dword eax
+	mov dword eax, [eax]
+	push dword eax
+	call print_boolean
 	call print_endofline
 	add esp, 4
 __end:
