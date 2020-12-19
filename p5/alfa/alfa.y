@@ -437,7 +437,8 @@ function_param: type function_param_identifier
               {
                 PRINT_RULE("<parametro_funcion> ::= <tipo> <identificador>", 27);
 
-
+                st_set_scalar_parametre( st, $2.lexeme, $1.type, current_param_pos++);
+                current_params++;
               }
               ;
 
@@ -446,7 +447,12 @@ function_param: type function_param_identifier
 /*------------------------------------------------------*/
 function_param_identifier: TOK_IDENTIFICADOR
                         {
+                          if ((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) != NULL)
+                          {
+                            EXITFAIL("Function param identifier exists in current scope.");
+                          }
 
+                          strcpy($$.lexeme, $1.lexeme);
                         }
                         ;
 
@@ -1123,7 +1129,7 @@ identifier: TOK_IDENTIFICADOR
                 EXITFAIL("In local scope, var must be scalar");
               }
               
-              if( st_insertBlindCurrentScope(
+              bool ret = st_insertBlindCurrentScope(
                 st,
                 $1.lexeme,
                 current_category,
@@ -1135,16 +1141,19 @@ identifier: TOK_IDENTIFICADOR
                 current_size,
                 current_params,
                 current_localvars
-              )
-              )
+              );
+
+              printf("Insertion:: %s\n", ret ? "ok" : "error");
+              
+              if( current_scope == LOCAL )
               {
                 current_localvars++;
               }
-              else
-              {
-                EXITFAIL("Failure in insertion of %s identifier in %s scope.\n",
-                            $1.lexeme, current_scope == GLOBAL ? "global" : "local");
-              }
+              // else
+              // {
+              //   EXITFAIL("Failure in insertion of %s identifier in %s scope.\n",
+              //               $1.lexeme, current_scope == GLOBAL ? "global" : "local");
+              // }
             }
           }
           ;

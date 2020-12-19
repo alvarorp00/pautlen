@@ -257,7 +257,7 @@ bool st_set_vector_variable(
   s = symbol_init(identifier, NONE);
   symbol_configure_vector_variable(s, dt, scope, scope == LOCAL ? pos : NONE, size);
   
-  return hash_encode(dst, s);;
+  return hash_encode(dst, s);
 }
 
 bool st_set_scalar_parametre(

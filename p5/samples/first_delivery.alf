@@ -1,19 +1,10 @@
 main
 {
     int x, y;
+    boolean a, b;
 
-	scanf x;
-	scanf y;
+    array int[10] v;
 
-	printf x+y;
-
-	printf x-y;
-
-	printf x*y;
-
-	printf x/y;
-
-	printf -x;
+    v[12] = 3;
+   
 }
-
-

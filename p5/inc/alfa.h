@@ -231,6 +231,7 @@ struct _attrs_type
   int int_value;
   bool bool_value;
   DataType type;
+  IdentifierCategory classCat;
   bool is_var;
   int32_t addresses;
   uint32_t tags;
