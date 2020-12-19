@@ -20,9 +20,9 @@ typedef struct _Parametre Parametre;
 typedef struct _Function Function;
 
 /**
- * struct with element stored
+ * union with element stored
  */
-typedef struct _Element Element;
+typedef union _Element Element;
 
 /**
  * Initializes a new Symbol
@@ -160,6 +160,8 @@ DataType symbol_blind_dataType(Symbol *s);
 
 IdentifierCategory symbol_blind_identifierCategory(Symbol *s);
 
+int8_t symbol_blind_size(Symbol *s);
+
 /*- - - VARS - - - */
 
 DataType symbol_get_var_dataType(Symbol *s);
@@ -187,6 +189,8 @@ int8_t symbol_get_param_size(Symbol *s);
 int32_t symbol_get_funct_params(Symbol *s);
 
 int32_t symbol_get_funct_localvars(Symbol *s);
+
+DataType symbol_get_funct_returnType(Symbol *s);
 
 /*  - * - * - * - * - * - * - * - */
 

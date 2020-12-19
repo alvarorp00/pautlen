@@ -241,7 +241,7 @@ bool st_set_vector_variable(
   Symbol *s;
   Hash *dst;
   
-  if(!st || !identifier || pos == 0)
+  if(!st || !identifier || !size )
     return false;
 
   if(scope == LOCAL && st->currentScope != LOCAL)

@@ -42,9 +42,9 @@ struct _Function
 };
 
 /**
- * Structure with element stored
+ * Union with element stored
  */
-struct _Element
+union _Element
 {
   Variable var; /* Element is a variable */
   Parametre param; /* Element is a parametre */
@@ -280,6 +280,14 @@ IdentifierCategory symbol_blind_identifierCategory(Symbol *s)
     return s->element.var.classCat;
   else
     return s->element.param.classCat;
+}
+
+int8_t symbol_blind_size(Symbol *s)
+{
+  if (! s || symbol_get_category(s) == FUNCT)
+    return CHAR_MIN;
+  return symbol_get_category(s) == VAR ? 
+    s->element.var.size : s->element.param.size;
 }
 
 /*- - - VARS - - - */

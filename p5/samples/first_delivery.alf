@@ -5,6 +5,19 @@ main
 
     array int[10] v;
 
-    v[12] = 3;
-   
+    printf 3;
+
+    x = 20;
+
+    printf x;
+
+    v[2] = 14;
+
+    x = v[2];
+
+    printf x;
+
+    printf 51;
+
+    v[14] = 2;
 }

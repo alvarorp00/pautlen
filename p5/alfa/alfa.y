@@ -63,12 +63,14 @@
   Scope current_scope; /* GLOBAL, LOCAL */
   int32_t current_var_pos; /* Position inside funct localvars */
   int32_t current_param_pos; /* Position inside funct params */
-  int8_t current_size; /* Vector's size */
+  int8_t current_vector_size; /* Vector's size */
   int32_t current_params; /* Function params amount */
   int32_t current_localvars; /* Function localvars amount */
   uint32_t tags = 0; /* Current tags amount */
 
+  int32_t current_call_param_count;
   bool in_declare; /* true if we're in declarations part, false if not */
+  bool in_expList; /* true if we're in exp list part, else false */
   bool in_main; /* true if we're in main part, else false */
   
 %}
@@ -142,6 +144,8 @@
 %type <attrs> function
 %type <attrs> fn_name
 %type <attrs> fn_declarations
+%type <attrs> function_param_identifier
+%type <attrs> fidf_funct_call
 
 %left TOK_MAS TOK_MENOS TOK_OR
 %left TOK_ASTERISCO TOK_DIVISION TOK_AND
@@ -266,9 +270,9 @@ class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERE
             {
               PRINT_RULE("<clase_vector> ::= array <tipo> [ <constante_entera> ]", 15);
               
-              current_size = $4.int_value;
-              if( current_size < _VECTOR_MIN_LEN_ ||
-                    current_size > _VECTOR_MAX_LEN_ )
+              current_vector_size = $4.int_value;
+              if( current_vector_size < _VECTOR_MIN_LEN_ ||
+                    current_vector_size > _VECTOR_MAX_LEN_ )
               {
                 EXITFAIL("Vector's size out of allowed bounds");
               }
@@ -588,7 +592,7 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
         EXITFAIL("Identifiers type missmatch")
       }
 
-      write_assignment(FPASM_NAME, $1.lexeme, $3.is_var);
+      write_assignment(FPASM_NAME, $1.lexeme, $1.is_var);
     }
     ;
 
@@ -596,10 +600,25 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
 /*                      PROD: 44                        */
 /*------------------------------------------------------*/
 assignment: vector_element TOK_ASIGNACION exp
-    {
-      PRINT_RULE("<asignacion> ::= <elemento_vector> = <exp>", 44);
-    }
-    ;
+          {
+            PRINT_RULE("<asignacion> ::= <elemento_vector> = <exp>", 44);
+            if ( $1.type != $3.type )
+            {
+              EXITFAIL("Invalid assignment. 1st type != 3rd type");
+            }
+            _sleft = st_searchCurrentScope( st, $1.lexeme );
+            if ( _sleft == NULL )
+            {
+              EXITFAIL("Invalid assignment. Vector does not exist");
+            }
+
+            // write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), $3.is_var );
+            // write_stack_assign_dest( FPASM_NAME, $3.is_var );
+
+            // write_assignment( FPASM_NAME, $1.lexeme, $1.is_var );
+            // write_index_vector(FPASM, char* name, int max_size, bool is_var);
+          }
+          ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 48                        */
@@ -607,6 +626,27 @@ assignment: vector_element TOK_ASIGNACION exp
 vector_element: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
               {
                 PRINT_RULE("<elemento_vector> ::= <identificador> [ <exp> ]", 48);
+                if ( ( _sleft = st_searchCurrentScope(st, $1.lexeme ) ) == NULL )
+                {
+                  EXITFAIL("Indexing to undeclared vector");
+                }
+                if ( symbol_blind_identifierCategory( _sleft ) != VECTOR )
+                {
+                  EXITFAIL("Trying to index %s -> ¡It's not a vector!", $1.lexeme );
+                }
+                else if ( $3.type != INT )
+                {
+                  EXITFAIL("Vector integer must be a integer"); // This is protected by assembly write_index_vector routine
+                }
+                $$.type = symbol_blind_dataType( _sleft );
+                $$.is_var = true;
+                strncpy($$.lexeme, $1.lexeme, MAX_LEN);
+
+                write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), $3.is_var );
+                write_operand( FPASM_NAME, $1.lexeme, true );
+                write_stack_assign_dest( FPASM_NAME, $3.is_var );
+
+                // write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), true );
               }
               ;
 
@@ -840,21 +880,23 @@ exp: TOK_NOT exp
 /*------------------------------------------------------*/
 exp: TOK_IDENTIFICADOR
     {
+      
       PRINT_RULE("<exp> ::= <identificador>", 80);
-      if((_sleft = st_searchCurrentScope(st, $1.lexeme)) == NULL)
+      if((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL)
       {
         EXITFAIL("Identifier %s doesn't exists", $1.lexeme);
       }
-      if(symbol_get_category(_sleft) == FUNCT)
+      
+      if(symbol_get_category(_sgeneric) == FUNCT)
       {
         EXITFAIL("Identifier %s is a function", $1.lexeme);
       }
-      else if(symbol_blind_identifierCategory(_sleft) == VECTOR)
+      else if(symbol_blind_identifierCategory(_sgeneric) == VECTOR)
       {
         EXITFAIL("Identifier %s is a vector", $1.lexeme);
       }
 
-      $$.type = symbol_blind_dataType(_sleft);
+      $$.type = symbol_blind_dataType(_sgeneric);
       $$.is_var = true;
 
       write_operand(FPASM_NAME, $1.lexeme, $$.is_var);
@@ -908,11 +950,53 @@ exp: vector_element
 /*------------------------------------------------------*/
 /*                      PROD: 88                        */
 /*------------------------------------------------------*/
-exp: TOK_IDENTIFICADOR TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
+exp: fidf_funct_call TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= <identificador> ( <lista_expresiones> )", 88);
+      if ((_sgeneric = st_searchCurrentScope( st, $1.lexeme )) == NULL)
+      {
+        EXITFAIL("function called doesn't exist");
+      }
+      if ( symbol_get_category( _sgeneric ) != FUNCT )
+      {
+        EXITFAIL("identifier called is not a function");
+      }
+      if ( symbol_get_funct_params(_sgeneric) != current_call_param_count )
+      {
+        EXITFAIL("function call err: %d arguments missmatch. Expected %d args\n",
+                    symbol_get_funct_params( _sgeneric ), current_call_param_count );
+      }
+      in_expList = false;
+      $$.type = symbol_get_funct_returnType( _sgeneric );
+      $$.is_var = false;
     }
     ;
+
+/*------------------------------------------------------*/
+/*                      PROD: 88_B                      */
+/*------------------------------------------------------*/
+fidf_funct_call: TOK_IDENTIFICADOR
+              {
+                if ((_sgeneric = st_searchCurrentScope( st, $1.lexeme )) == NULL)
+                {
+                  EXITFAIL("function called doesn't exist");
+                }
+                if ( symbol_get_category( _sgeneric ) != FUNCT )
+                {
+                  EXITFAIL("identifier called is not a function");
+                }
+                if ( in_expList )
+                {
+                  // EXITFAIL("function call inside a function call");
+                }
+                else
+                {
+                  current_call_param_count = 0;
+                  in_expList = true;
+                }
+                strncpy($$.lexeme, $1.lexeme, MAX_LEN);
+              }
+              ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 89                        */
@@ -920,6 +1004,7 @@ exp: TOK_IDENTIFICADOR TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
 exp_list: exp exp_remaining_list
         {
           PRINT_RULE("<lista_expresiones> ::= <exp> <resto_lista_expresiones>", 89);
+          current_call_param_count++;
         }
         ;
 
@@ -938,6 +1023,7 @@ exp_list: /* empty */
 exp_remaining_list: TOK_COMA exp exp_remaining_list
                   {
                     PRINT_RULE("<resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>", 91);
+                    current_call_param_count++;
                   }
                   ;
 
@@ -1128,8 +1214,8 @@ identifier: TOK_IDENTIFICADOR
               {
                 EXITFAIL("In local scope, var must be scalar");
               }
-              
-              bool ret = st_insertBlindCurrentScope(
+
+              st_insertBlindCurrentScope(
                 st,
                 $1.lexeme,
                 current_category,
@@ -1138,12 +1224,10 @@ identifier: TOK_IDENTIFICADOR
                 current_scope,
                 current_param_pos,
                 current_var_pos,
-                current_size,
+                current_vector_size,
                 current_params,
                 current_localvars
               );
-
-              printf("Insertion:: %s\n", ret ? "ok" : "error");
               
               if( current_scope == LOCAL )
               {
