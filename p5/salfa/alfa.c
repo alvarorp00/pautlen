@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 
   if(setup(argc, argv))
   {
+    TO_STDOUT( "%s <source.alf> <dest.nasm>", argv[0] );
     fprintf(stderr, "Failure on setup(): %s\n", errbuff);
     return 1;
   }

@@ -9,7 +9,7 @@ BISONFLAGS = -y -d -v -Wyacc
 _DEBUG_ = _DEBUG_
 
 INC = inc
-DIR = alfa
+DIR = salfa
 OUT = out
 OBJ = obj
 SRC = src
@@ -17,19 +17,19 @@ INFO = info
 
 COMPILED = alfa
 
-CALFA = $(DIR)alfa.c
-OALFA = $(OBJ)alfa.o
+CALFA = $(DIR)/alfa.c
+OALFA = $(OBJ)/alfa.o
 
-CYYLEX = $(SRC)lex.yy.c
-OYYLEX = $(OBJ)lex.yy.o
+CYYLEX = $(SRC)/lex.yy.c
+OYYLEX = $(OBJ)/lex.yy.o
 
-CYYPARSE = $(SRC)y.tab.c
-OYYPARSE = $(OBJ)y.tab.o
+CYYPARSE = $(SRC)/y.tab.c
+OYYPARSE = $(OBJ)/y.tab.o
 
-GENERATOR = $(SRC)generator.c
-HASH = $(SRC)hash.c
-TSYMBOLS = $(SRC)symbolsTable.c
-SYMBOL = $(SRC)symbol.c
+GENERATOR = $(SRC)/generator.c
+HASH = $(SRC)/hash.c
+TSYMBOLS = $(SRC)/symbolsTable.c
+SYMBOL = $(SRC)/symbol.c
 
 SOURCEFILES = $(OYYLEX) $(OYYPARSE) $(CALFA) $(TSYMBOLS) $(SYMBOL) $(HASH) $(GENERATOR)
 
@@ -47,34 +47,35 @@ all: default ## Produces compiler
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
-		@mv alfa.o $(OBJ).
+		@mv alfa.o $(OBJ)/.
 
 $(CYYLEX): $(CYYPARSE)
 		@echo "Generating lex.yy.c"
-		@flex $(DIR)$(FLEXFILE)
-		@mv lex.yy.c $(SRC).
+		@flex $(DIR)/$(FLEXFILE)
+		@mv lex.yy.c $(SRC)/.
 
 $(OYYLEX): $(CYYLEX)
 		@echo "Generating lex.yy.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYLEX)
-		@mv lex.yy.o $(OBJ).
+		@mv lex.yy.o $(OBJ)/.
 
 $(CYYPARSE):
 		@echo "Generating y.tab.c"
-		@bison $(BISONFLAGS) $(DIR)$(BISONFILE)
-		@mv y.output $(INFO)
-		@mv y.tab.h $(INC).
-		@mv y.tab.c $(SRC).
+		@bison $(BISONFLAGS) $(DIR)/$(BISONFILE)
+		@mv y.output $(INFO)/
+		@mv y.tab.h $(INC)/.
+		@mv y.tab.c $(SRC)/.
 
 $(OYYPARSE): $(CYYPARSE)
 		@echo "Generating y.tab.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CYYPARSE)
-		@mv y.tab.o $(OBJ).
+		@mv y.tab.o $(OBJ)/.
 
 .PHONY: clean
 
 clean: ## Cleans output files
 		rm -rf $(INFO)/y.output
+		rm -f $(COMPILED)
 		rm -f $(OYYLEX)
 		rm -f $(OYYPARSE)
 		rm -f $(CYYLEX)
