@@ -278,6 +278,7 @@ bool st_set_scalar_parametre(
   if((s = searchSymbol(st->localScope, identifier)) != NULL)
     return false;
 
+  s = symbol_init(identifier, NONE);
 
   symbol_configure_scalar_parametre(s, dt, pos);
 

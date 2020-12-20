@@ -55,8 +55,11 @@
   Symbol *_sright;
   Symbol *_smid;
 
-  char __buff[MAX_LEN + 1];
+  Symbol *_funct;
 
+  char __buff[MAX_LEN + 1];
+  int32_t i;
+  
   ElementCategory current_category; /* VAR, PARAM, FUNCT */
   DataType current_type; /* INT, BOOLEAN */
   IdentifierCategory current_class; /* SCALAR, VECTOR */
@@ -68,11 +71,12 @@
   int32_t current_localvars; /* Function localvars amount */
   uint32_t tags = 0; /* Current tags amount */
 
-  int32_t current_call_param_count;
+  int32_t current_call_param_count; /* Params in actual call */
   bool in_declare; /* true if we're in declarations part, false if not */
   bool in_expList; /* true if we're in exp list part, else false */
   bool in_main; /* true if we're in main part, else false */
   bool in_fn_call; /* true if we're in function call, else false */
+  bool has_return; /* to control if function has return or not */
 %}
 
 %union
@@ -149,6 +153,8 @@
 %type <attrs> fn_declarations
 %type <attrs> function_param_identifier
 %type <attrs> fidf_funct_call
+%type <attrs> fer1
+%type <attrs> fer2
 
 %left TOK_MAS TOK_MENOS TOK_OR
 %left TOK_ASTERISCO TOK_DIVISION TOK_AND
@@ -319,20 +325,24 @@ functions: function functions
 functions: /* empty */
         {
           PRINT_RULE("<funciones> ::= ", 21);
-          in_fn_call = false;
         }
         ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 22                        */
 /*------------------------------------------------------*/
-function: fn_declarations statements TOK_LLAVEDERECHA
+function: fer2 /* fn_declarations */  fer1 statements TOK_LLAVEDERECHA
         {
           PRINT_RULE("<funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }", 22);
 
           if(( _sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL )
           {
             EXITFAIL("Fatal error. Function identifier %s not found! ", $1.lexeme);
+          }
+
+          if ( !has_return )
+          {
+            EXITFAIL("Fatal error. Function does not have return st");
           }
 
           if ( !stopLocalScope(st) )
@@ -352,10 +362,42 @@ function: fn_declarations statements TOK_LLAVEDERECHA
             $1.type
           );
 
+          printf("Function vars: %d\n", current_localvars);
+          printf("Function params: %d\n", current_params);
+          printf("Function name: %s\n", $1.lexeme );
+
           $$.type = $1.type; // propagate function return type
-                strcpy($$.lexeme, $1.lexeme); // propagate function name
+          strcpy($$.lexeme, $1.lexeme); // propagate function name
+
+          // printf("Function vars: %d\n", current_localvars);
+          // printf("Function params: %d\n", current_params);
+
+          // write_function_declare( FPASM_NAME, $1.lexeme, current_localvars ); // function init
         }
         ;
+
+fer1: /* function empty rule -> write function localvars */
+    {
+      // if( current_scope == LOCAL )
+      // {
+      //   current_localvars++;
+      //   write_local_var( FPASM_NAME, current_var_pos );
+      // }
+
+      // for ( i = current_params - 1; i >= 0; i--)
+      // {
+      //   write_param( FPASM_NAME, i, current_params );
+      //   // write_stack_assign_dest( FPASM_NAME, true );
+      // }
+
+      fprintf(fpasm, "\t; hola . %d\n", current_params);
+      
+      for( i = current_localvars; i > 0; i--)
+      {
+        write_local_var( FPASM_NAME, i );
+      }
+    }
+    ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 22_B                      */
@@ -374,7 +416,10 @@ fn_name: TOK_FUNCTION type TOK_IDENTIFICADOR
         current_var_pos = 1;
         current_params = 0;
         current_param_pos = 0;
-        in_fn_call = true;
+        current_scope = LOCAL;
+        has_return = false;
+
+        _funct = st_searchCurrentScope( st, $3.lexeme );
 
         $$.type = $2.type; // propagate function return type
         strcpy($$.lexeme, $3.lexeme); // propagate function name
@@ -385,7 +430,6 @@ fn_name: TOK_FUNCTION type TOK_IDENTIFICADOR
 /*                      PROD: 22_C                      */
 /*------------------------------------------------------*/
 fn_declarations: fn_name TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISDERECHO
-                    TOK_LLAVEIZQUIERDA function_declarations
               {
                 if(( _sgeneric = st_searchCurrentScope(st, $1.lexeme )) == NULL )
                 {
@@ -401,8 +445,17 @@ fn_declarations: fn_name TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISD
 
                 $$.type = $1.type; // propagate function return type
                 strcpy($$.lexeme, $1.lexeme); // propagate function name
+
+                // write_function_declare( FPASM_NAME, $1.lexeme, current_localvars ); // function init
               }
               ;
+
+fer2: fn_declarations TOK_LLAVEIZQUIERDA function_declarations
+    {
+      write_function_declare( FPASM_NAME, $1.lexeme, current_localvars ); // function init
+      fprintf(FPASM_NAME, "\t; -_-_- \n");
+    }
+    ;
 
 /*------------------------------------------------------*/
 /*                      PROD: 23                        */
@@ -553,6 +606,7 @@ simple_statement: writing
 simple_statement: function_return
               {
                 PRINT_RULE("<sentencia_simple> ::= <retorno_funcion>", 38);
+                has_return = true;
               }
               ;
 
@@ -768,7 +822,10 @@ writing: TOK_PRINTF exp
 function_return: TOK_RETURN exp
       {
         PRINT_RULE("<retorno_funcion> ::= return <exp>", 61);
-        
+        printf("\n\t@@@@ %s \t %d\n", $2.lexeme, $2.is_var );
+        write_function_return( FPASM_NAME, $2.is_var );
+        current_scope = GLOBAL;
+        _funct = NULL;
       }
       ;
 
@@ -929,7 +986,35 @@ exp: TOK_IDENTIFICADOR
       $$.type = symbol_blind_dataType(_sgeneric);
       $$.is_var = true;
 
-      write_operand(FPASM_NAME, $1.lexeme, $$.is_var);
+      // if ( in_fn_call )
+      // {
+      //   write_stack_optoarg( FPASM_NAME, $$.is_var );
+      // }
+
+      // if ( symbol_get_category( _sgeneric ) == PARAM )
+      // {
+      //   printf("\tIt's a param\n");
+      //   write_stack_optoarg( FPASM_NAME, $$.is_var );
+      // }
+      // else
+      // {
+      // }
+      // printf("\n\tIn function call : %s\n", in_fn_call ? "yes" : "no");
+      
+      if ( current_scope == GLOBAL )
+      {
+        write_operand(FPASM_NAME, $1.lexeme, $$.is_var);
+        if ( in_fn_call )
+        {
+          write_stack_optoarg( FPASM_NAME, $$.is_var );
+        }
+      }
+      else
+      {
+        // printf("\n\tIn %s\tTotal params: %d\n", symbol_get_key(_funct), symbol_get_funct_params(_funct));
+        write_param( FPASM_NAME, symbol_get_param_pos( _sgeneric ),
+                      symbol_get_funct_params( _funct ) );
+      }
     }
     ;
 
@@ -941,6 +1026,7 @@ exp: constant
       PRINT_RULE("<exp> ::= <constante>", 81);
       $$.type = $1.type;
       $$.is_var = $1.is_var;
+      // printf("\n\tIn function call : %s\n", in_fn_call ? "yes" : "no");
     }
     ;
 
@@ -983,22 +1069,25 @@ exp: vector_element
 exp: fidf_funct_call TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
     {
       PRINT_RULE("<exp> ::= <identificador> ( <lista_expresiones> )", 88);
-      if ((_sgeneric = st_searchCurrentScope( st, $1.lexeme )) == NULL)
+      if ((_funct = st_searchCurrentScope( st, $1.lexeme )) == NULL)
       {
         EXITFAIL("function called doesn't exist");
       }
-      if ( symbol_get_category( _sgeneric ) != FUNCT )
+      if ( symbol_get_category( _funct ) != FUNCT )
       {
         EXITFAIL("identifier called is not a function");
       }
-      if ( symbol_get_funct_params(_sgeneric) != current_call_param_count )
+      if ( symbol_get_funct_params( _funct ) != current_call_param_count )
       {
         EXITFAIL("function call err: %d arguments missmatch. Expected %d args\n",
-                    symbol_get_funct_params( _sgeneric ), current_call_param_count );
+                    symbol_get_funct_params( _funct ), current_call_param_count );
       }
+      write_function_call( FPASM_NAME, $1.lexeme, symbol_get_funct_params( _funct ) );
+      
       in_expList = false;
-      $$.type = symbol_get_funct_returnType( _sgeneric );
+      $$.type = symbol_get_funct_returnType( _funct );
       $$.is_var = false;
+      in_fn_call = false;
     }
     ;
 
@@ -1024,6 +1113,7 @@ fidf_funct_call: TOK_IDENTIFICADOR
                   current_call_param_count = 0;
                   in_expList = true;
                 }
+                in_fn_call = true;
                 strncpy($$.lexeme, $1.lexeme, MAX_LEN);
               }
               ;
@@ -1034,6 +1124,7 @@ fidf_funct_call: TOK_IDENTIFICADOR
 exp_list: exp exp_remaining_list
         {
           PRINT_RULE("<lista_expresiones> ::= <exp> <resto_lista_expresiones>", 89);
+          // write_stack_optoarg( FPASM_NAME, $1.is_var );
           current_call_param_count++;
         }
         ;
@@ -1053,6 +1144,7 @@ exp_list: /* empty */
 exp_remaining_list: TOK_COMA exp exp_remaining_list
                   {
                     PRINT_RULE("<resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>", 91);
+                    // write_stack_optoarg( FPASM_NAME, $2.is_var );
                     current_call_param_count++;
                   }
                   ;
@@ -1243,11 +1335,6 @@ identifier: TOK_IDENTIFICADOR
             }
             else
             {
-              if(current_scope == LOCAL && symbol_get_var_identifierCategory(_sgeneric) != SCALAR)
-              {
-                EXITFAIL("In local scope, var must be scalar");
-              }
-
               st_insertBlindCurrentScope(
                 st,
                 $1.lexeme,
@@ -1265,6 +1352,7 @@ identifier: TOK_IDENTIFICADOR
               if( current_scope == LOCAL )
               {
                 current_localvars++;
+                // write_local_var( FPASM_NAME, current_var_pos );
               }
               // else
               // {
