@@ -59,6 +59,20 @@ Finally, for executing your alfa program:
 ❯ ./<program_name>
 ```
 
+If you want to launch compiler with **_DEBUG_** mode - it'll print traces, rules applied, etc - you must uncomment this at **_alfa.h_**:
+
+```
+ 97 /**
+ 98  * Prints failure trace
+ 99  */
+100 // #define _DEBUG_ <------ HERE!
+101 #ifdef _DEBUG_
+102 #define TRACE eprintf("Trace coming from:\t @ file: %s @ funct: %s @ line: >
+103 #else
+104 #define TRACE
+105 #endif
+```
+
 ## Comments about design
 
 A common header - _alfa.h_ - contains all common stuff (buffers & related) used by _alfa.c_ - launcher -, _alfa.y_ - bison - and _alfa.l_ - flex.

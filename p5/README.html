@@ -404,6 +404,17 @@ help                           This guide
 <p>Finally, for executing your alfa program:</p>
 <pre class="hljs"><code><div>❯ ./&lt;program_name&gt;
 </div></code></pre>
+<p>If you want to launch compiler with <strong><em>DEBUG</em></strong> mode - it'll print traces, rules applied, etc - you must uncomment this at <strong><em>alfa.h</em></strong>:</p>
+<pre class="hljs"><code><div> 97 /**
+ 98  * Prints failure trace
+ 99  */
+100 // #define _DEBUG_ &lt;------ HERE!
+101 #ifdef _DEBUG_
+102 #define TRACE eprintf(&quot;Trace coming from:\t @ file: %s @ funct: %s @ line: &gt;
+103 #else
+104 #define TRACE
+105 #endif
+</div></code></pre>
 <h2 id="comments-about-design">Comments about design</h2>
 <p>A common header - <em>alfa.h</em> - contains all common stuff (buffers &amp; related) used by <em>alfa.c</em> - launcher -, <em>alfa.y</em> - bison - and <em>alfa.l</em> - flex.</p>
 <p>The project uses the next data structures:</p>

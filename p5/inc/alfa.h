@@ -13,7 +13,6 @@
 /**
  * DEBUG MODE -> prints execution process
  */
-// #define _PRINT_PARSED_
 
 /**
  * Converts literal to string
