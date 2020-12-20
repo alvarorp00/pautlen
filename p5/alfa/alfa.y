@@ -261,6 +261,7 @@ type: TOK_INT
       {
         PRINT_RULE("<tipo> ::= int", 10);
         current_type = INT;
+        $$.type = INT;
       }
       ;
 
@@ -270,6 +271,7 @@ type: TOK_BOOLEAN
       {
         PRINT_RULE("<tipo> ::= boolean", 11);
         current_type = BOOLEAN;
+        $$.type = BOOLEAN;
       }
       ;
 
@@ -369,10 +371,6 @@ function: fer2 /* fn_declarations */  fer1 statements TOK_LLAVEDERECHA
           $$.type = $1.type; // propagate function return type
           strcpy($$.lexeme, $1.lexeme); // propagate function name
 
-          // printf("Function vars: %d\n", current_localvars);
-          // printf("Function params: %d\n", current_params);
-
-          // write_function_declare( FPASM_NAME, $1.lexeme, current_localvars ); // function init
         }
         ;
 
@@ -389,8 +387,6 @@ fer1: /* function empty rule -> write function localvars */
       //   write_param( FPASM_NAME, i, current_params );
       //   // write_stack_assign_dest( FPASM_NAME, true );
       // }
-
-      fprintf(fpasm, "\t; hola . %d\n", current_params);
       
       for( i = current_localvars; i > 0; i--)
       {
@@ -435,6 +431,8 @@ fn_declarations: fn_name TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISD
                 {
                   EXITFAIL("Fatal error. Function identifier %s not found", $1.lexeme);
                 }
+
+                printf("\n\tASType::: %s\n", $1.type == BOOLEAN ? "bool" : "int");
 
                 symbol_configure_function(
                   _sgeneric,
@@ -649,6 +647,7 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
       }  
       else if(symbol_blind_dataType(_sgeneric) != $3.type)
       {
+        printf("\n\tType::: %s\n", $3.type == BOOLEAN ? "bool" : "int");
         EXITFAIL("Identifiers type missmatch")
       }
 
@@ -1086,6 +1085,7 @@ exp: fidf_funct_call TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
       
       in_expList = false;
       $$.type = symbol_get_funct_returnType( _funct );
+      printf("\n\tFType::: %s\n", $$.type == BOOLEAN ? "bool" : "int");
       $$.is_var = false;
       in_fn_call = false;
     }

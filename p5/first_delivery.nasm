@@ -4,114 +4,46 @@ segment .data
 segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
-	_x resd 1
-	_resultado resd 1
-	_y resd 1
+	_b resd 1
 segment .text
 	global main
 	extern scan_int, print_int, scan_float, print_float, scan_boolean, print_boolean
 	extern print_endofline, print_blank, print_string
 	extern alfa_malloc, alfa_free, ld_float
-_suma:
+_imprimir:
 	push ebp
 	mov ebp, esp
 	sub esp, 0
 	; -_-_- 
-	; hola . 2
-	mov edx, 2
-	sub edx, 0
-	inc edx
-	lea eax, [ebp + edx*4]
-	push dword eax
-	mov edx, 2
-	sub edx, 1
-	inc edx
-	lea eax, [ebp + edx*4]
-	push dword eax
-	pop dword ebx
+	push dword 1000
 	pop dword eax
-	mov dword eax, [eax]
-	mov dword ebx, [ebx]
-	add eax, ebx
 	push dword eax
+	call print_int
+	call print_endofline
+	add esp, 4
+	push dword 1
+	pop dword eax
+	push dword eax
+	call print_boolean
+	call print_endofline
+	add esp, 4
+	push dword 0
 	pop eax
 	mov esp, ebp
 	pop ebp
 	ret
 main:
 	mov dword [__esp], esp
-	push dword 1
-	pop dword eax
-	mov dword [_x], eax
-	push dword 3
-	pop dword eax
-	mov dword [_y], eax
-	push dword _x
-	pop dword eax
-	mov dword eax, dword [eax] 
-	push eax
-	push dword _y
-	pop dword eax
-	mov dword eax, dword [eax] 
-	push eax
-	call _suma
-	add esp, 8
+	call _imprimir
+	add esp, 0
 	push dword eax
 	pop dword eax
-	mov dword [_resultado], eax
-	push dword _resultado
+	mov dword [_b], eax
+	push dword _b
 	pop dword eax
 	mov dword eax, [eax]
 	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
-	push dword _x
-	pop dword eax
-	mov dword eax, dword [eax] 
-	push eax
-	push dword 1
-	call _suma
-	add esp, 8
-	push dword eax
-	pop dword eax
-	mov dword [_resultado], eax
-	push dword _resultado
-	pop dword eax
-	mov dword eax, [eax]
-	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
-	push dword 10
-	push dword _y
-	pop dword eax
-	mov dword eax, dword [eax] 
-	push eax
-	call _suma
-	add esp, 8
-	push dword eax
-	pop dword eax
-	mov dword [_resultado], eax
-	push dword _resultado
-	pop dword eax
-	mov dword eax, [eax]
-	push dword eax
-	call print_int
-	call print_endofline
-	add esp, 4
-	push dword 3
-	push dword 5
-	call _suma
-	add esp, 8
-	push dword eax
-	pop dword eax
-	mov dword [_resultado], eax
-	push dword _resultado
-	pop dword eax
-	mov dword eax, [eax]
-	push dword eax
-	call print_int
+	call print_boolean
 	call print_endofline
 	add esp, 4
 __end:

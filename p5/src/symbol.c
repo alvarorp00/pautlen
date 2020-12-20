@@ -264,12 +264,14 @@ String symbol_toString(Symbol *s)
 
 DataType symbol_blind_dataType(Symbol *s)
 {
-  if(!s || symbol_get_category(s) == FUNCT)
+  if(!s )
     return UNSP_ERR;
   if(symbol_get_category(s) == VAR)
     return s->element.var.dataType;
-  else
+  else if (symbol_get_category(s) == PARAM)
     return s->element.param.dataType;
+  else
+    return s->element.func.returnType;
 }
 
 IdentifierCategory symbol_blind_identifierCategory(Symbol *s)
