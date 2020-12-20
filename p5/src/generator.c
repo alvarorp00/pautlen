@@ -506,6 +506,12 @@ void write_stack_assign_dest(FPASM, bool is_var) {
   _ASM("mov dword [ebx], dword eax");
 }
 
+void write_inv_stack_assign_dest(FPASM, bool is_var)
+{
+  write_double_pop(FPASM_NAME, EAX, EBX, is_var, 0);
+  _ASM("mov dword [ebx], dword eax");
+}
+
 void write_stack_optoarg(FPASM, bool is_var) {
   if(!is_var)
     return;

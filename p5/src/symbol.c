@@ -292,6 +292,14 @@ int8_t symbol_blind_size(Symbol *s)
     s->element.var.size : s->element.param.size;
 }
 
+Scope symbol_blind_scope(Symbol *s)
+{
+  if(!s || symbol_get_category(s) == FUNCT)
+    return NONE;
+  return symbol_get_category( s ) == VAR ?
+    s->element.var.scope : LOCAL;  
+}
+
 /*- - - VARS - - - */
 
 DataType symbol_get_var_dataType(Symbol *s)

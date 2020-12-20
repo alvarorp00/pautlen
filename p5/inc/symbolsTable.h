@@ -57,6 +57,8 @@ Symbol* globalUse(SymbolsTable *st, String identifier);
  */
 Symbol* localUse(SymbolsTable *st, String identifier);
 
+Symbol* findExclusiveLocal(SymbolsTable *st, String identifier);
+
 /**
  * Declares function and starts local scope
  * @param st table where func will be stored

@@ -1,15 +1,40 @@
+// Tratamiento de funciones: recursividad
+
 main
 {
-	boolean b;
+// Declaraciones
 
-	function boolean imprimir ()
-	{
-		printf 1000;
-    printf true;
-		return false;
-	}
+    int x, resultado;
 
-    b = imprimir();
+// Funciones
+    function int fibonacci (int num1)
+    {
+        // Declaraciones
+	int res1, res2;
 	
-  printf b;
+        if ((num1 == 0))
+        {
+          return 0;
+	}  
+	if ((num1 == 1)) 
+	{
+	  return 1;
+	}
+	res1 = fibonacci (num1 - 1);
+	res2 = fibonacci (num1 - 2);
+	return res1 + res2;
+    }
+
+// Sentencias
+
+	scanf x;
+
+	resultado = fibonacci (x);
+
+	printf resultado;
 }
+
+
+
+
+

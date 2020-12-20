@@ -107,6 +107,7 @@ void write_param(FPASM, int index, int total_params);
 void write_local_var(FPASM, int index);
 
 void write_stack_assign_dest(FPASM, bool is_var);
+void write_inv_stack_assign_dest(FPASM, bool is_var);
 void write_stack_optoarg(FPASM, bool is_var);
 void write_stack_clean(FPASM, int argc);
 

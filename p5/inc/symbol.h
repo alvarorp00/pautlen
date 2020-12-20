@@ -162,6 +162,8 @@ IdentifierCategory symbol_blind_identifierCategory(Symbol *s);
 
 int8_t symbol_blind_size(Symbol *s);
 
+Scope symbol_blind_scope(Symbol *s);
+
 /*- - - VARS - - - */
 
 DataType symbol_get_var_dataType(Symbol *s);

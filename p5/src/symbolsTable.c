@@ -134,6 +134,17 @@ Symbol* localUse(SymbolsTable *st, String identifier)
   return searchSymbol(st->globalScope, identifier); 
 }
 
+Symbol* findExclusiveLocal(SymbolsTable *st, String identifier)
+{ 
+  if(!st || !identifier)
+    return NULL;
+
+  if(st->currentScope != LOCAL)
+    return NULL;
+
+  return searchSymbol(st->localScope, identifier);
+}
+
 bool declareFunction(SymbolsTable *st, String identifier, DataType returnType ,int value)
 {
   Symbol *s;
@@ -188,12 +199,12 @@ Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier)
 {
   if(!st || !identifier)
     return NULL;
-  return searchSymbol(
-    st->currentScope == GLOBAL ? st->globalScope : st->localScope,
-    identifier
-  );
-  // return st->currentScope == GLOBAL ? 
-  //   globalUse(st, identifier) : localUse(st, identifier);
+  // return searchSymbol(
+  //   st->currentScope == GLOBAL ? st->globalScope : st->localScope,
+  //   identifier
+  // );
+  return st->currentScope == GLOBAL ? 
+    globalUse(st, identifier) : localUse(st, identifier);
 }
 
 /* -------------------------------------------- */
