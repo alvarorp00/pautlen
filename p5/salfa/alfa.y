@@ -1372,13 +1372,7 @@ identifier: TOK_IDENTIFICADOR
             if( current_scope == LOCAL )
             {
               current_localvars++;
-              // write_local_var( FPASM_NAME, current_var_pos );
             }
-            // else
-            // {
-            //   EXITFAIL("Failure in insertion of %s identifier in %s scope.\n",
-            //               $1.lexeme, st_getScope( st ) == GLOBAL ? "global" : "local");
-            // }
           
           }
           ;
