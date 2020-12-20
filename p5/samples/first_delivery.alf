@@ -1,35 +1,20 @@
-// Tratamiento de funciones: recursividad
-
 main
 {
-// Declaraciones
 
-    int x, resultado;
+    int x, y, resultado;
 
-// Funciones
-    function int fibonacci (int num1)
-    {
-        // Declaraciones
-	int res1, res2;
-	
-        if ((num1 == 0))
-        {
-          return 0;
-	}  
-	if ((num1 == 1)) 
+
+	function int suma (int num1; int num2)
 	{
-	  return 1;
+        array int[10] vector1;
+	 return num1+num2+x+y;
 	}
-	res1 = fibonacci (num1 - 1);
-	res2 = fibonacci (num1 - 2);
-	return res1 + res2;
-    }
 
-// Sentencias
 
 	scanf x;
+	scanf y;
 
-	resultado = fibonacci (x);
+	resultado = suma (x,y);
 
 	printf resultado;
 }

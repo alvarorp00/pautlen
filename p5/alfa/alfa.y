@@ -360,10 +360,10 @@ function: fer1 /* fn_declarations statements */ TOK_LLAVEDERECHA
             $1.type
           );
 
-          printf("\t -> Function vars: %d\n", current_localvars);
-          printf("\t -> Function params: %d\n", current_params);
-          printf("\t -> Function name: %s\n", $1.lexeme );
-          printf("\t -> Function cat: %d\n", symbol_get_category(_funct));
+          // printf("\t -> Function vars: %d\n", current_localvars);
+          // printf("\t -> Function params: %d\n", current_params);
+          // printf("\t -> Function name: %s\n", $1.lexeme );
+          // printf("\t -> Function cat: %d\n", symbol_get_category(_funct));
 
           $$.type = $1.type; // propagate function return type
           strcpy($$.lexeme, $1.lexeme); // propagate function name
@@ -409,15 +409,6 @@ fn_declarations: fn_name TOK_PARENTESISIZQUIERDO function_params TOK_PARENTESISD
                   EXITFAIL("Fatal error. Function identifier %s not found", $1.lexeme);
                 }
 
-                // printf("\n\tSet up function with %d params & %d vars.\n", current_params, current_localvars);
-
-                // symbol_configure_function(
-                //   _sgeneric,
-                //   current_params,
-                //   current_localvars,
-                //   $1.type
-                // );
-
                 $$.type = $1.type; // propagate function return type
                 strcpy($$.lexeme, $1.lexeme); // propagate function name
 
@@ -435,7 +426,6 @@ fer1: fer2 statements
 fer2: fn_declarations TOK_LLAVEIZQUIERDA function_declarations
     {
       write_function_declare( FPASM_NAME, $1.lexeme, current_localvars ); // function init
-      // fprintf(FPASM_NAME, "\t; -_-_- \n");
       strncpy($$.lexeme, $1.lexeme, MAX_LEN);
       $$.type = $1.type;
 
@@ -649,14 +639,11 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
       {
         if ( symbol_get_category( _sgeneric ) == PARAM )
         {
-          printf("\n\tParam at pos:: @@@ %d of %d @@@ in %s \n", symbol_get_param_pos( _sgeneric ),
-                  symbol_get_funct_params( _funct ), symbol_get_key( _funct ) );
           write_param( FPASM_NAME, symbol_get_param_pos( _sgeneric ),
                       symbol_get_funct_params( _funct ) );
         }
         else if ( symbol_get_category( _sgeneric ) == VAR )
         {
-          printf("\n\tVar at pos:: @@@ %d @@@ \n", symbol_get_var_pos( _sgeneric ));
           write_local_var( FPASM_NAME, symbol_get_var_pos( _sgeneric ) );
         }
         else
@@ -707,7 +694,7 @@ vector_element: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                 }
                 else if ( $3.type != INT )
                 {
-                  EXITFAIL("Vector integer must be a integer"); // This is protected by assembly write_index_vector routine
+                  EXITFAIL("Vector index must be a integer"); // This is protected by assembly write_index_vector routine
                 }
                 $$.type = symbol_blind_dataType( _sleft );
                 $$.is_var = true;
@@ -1003,13 +990,9 @@ exp: TOK_IDENTIFICADOR
 
       $$.type = symbol_blind_dataType(_sgeneric);
       $$.is_var = true;
-
-      printf("\n\tæææ %d", current_scope);
-      printf("\n\tæææ %d\n", st_getScope( st ));
       
       if ( st_getScope( st ) == GLOBAL )
       {
-        printf("\n\tDetected %s operand in GLOBAL scope\n", $1.lexeme );
         write_operand(FPASM_NAME, $1.lexeme, $$.is_var);
         if ( in_fn_call )
         {
@@ -1027,9 +1010,6 @@ exp: TOK_IDENTIFICADOR
 
         if ( symbol_get_category( _sgeneric ) == PARAM )
         {
-          printf("\n\tInsertion of param [ pos : %d -- of -- %d ] in %s \n",
-              symbol_get_param_pos( _sgeneric ), 
-                  symbol_get_funct_params( _funct ), symbol_get_key( _funct) );
           write_param( FPASM_NAME, symbol_get_param_pos( _sgeneric ),
                       symbol_get_funct_params( _funct ) );
         }
@@ -1037,7 +1017,6 @@ exp: TOK_IDENTIFICADOR
         {
           if ( symbol_get_var_scope( _sgeneric ) == GLOBAL )
           {
-            printf("\n\t@@ --> GLOB SCOPE --> var.\n");
             write_operand(FPASM_NAME, $1.lexeme, $$.is_var );
           }
           else
@@ -1114,7 +1093,7 @@ exp: fidf_funct_call TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
       if ( symbol_get_funct_params( _funct ) != current_call_param_count )
       {
         EXITFAIL("function call err: %d arguments missmatch. Expected %d args\n",
-                    symbol_get_funct_params( _funct ), current_call_param_count );
+                    current_call_param_count, symbol_get_funct_params( _funct ) );
       }
       write_function_call( FPASM_NAME, $1.lexeme, symbol_get_funct_params( _funct ) );
       
@@ -1140,7 +1119,7 @@ fidf_funct_call: TOK_IDENTIFICADOR
                 }
                 if ( in_expList )
                 {
-
+                  EXITFAIL("Trying to pass function as argument");
                 }
                 else
                 {
@@ -1392,7 +1371,6 @@ identifier: TOK_IDENTIFICADOR
             
             if( current_scope == LOCAL )
             {
-              printf("\n\tInsertion of localvar in pos: %d\n", current_localvars);
               current_localvars++;
               // write_local_var( FPASM_NAME, current_var_pos );
             }
