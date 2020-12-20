@@ -47,7 +47,7 @@ bool declareLocal(SymbolsTable *st, String identifier, int value);
  * @param identifier of the symbol to search
  * @return symbol found or NULL
  */
-Symbol* globalUse(SymbolsTable *st, String identifier);
+symbol_t* globalUse(SymbolsTable *st, String identifier);
 
 /**
  * Search a symbol in local scope
@@ -55,9 +55,9 @@ Symbol* globalUse(SymbolsTable *st, String identifier);
  * @param identifier of the symbol to search
  * @return symbol found or NULL
  */
-Symbol* localUse(SymbolsTable *st, String identifier);
+symbol_t* localUse(SymbolsTable *st, String identifier);
 
-Symbol* findExclusiveLocal(SymbolsTable *st, String identifier);
+symbol_t* findExclusiveLocal(SymbolsTable *st, String identifier);
 
 /**
  * Declares function and starts local scope
@@ -69,7 +69,7 @@ bool declareFunction(SymbolsTable *st, String identifier, DataType returnType, i
 
 /* ------------------------------------------------ */
 
-Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier);
+symbol_t* st_searchCurrentScope(SymbolsTable *st, String identifier);
 
 /* ------------------------------------------------ */
 
@@ -189,7 +189,7 @@ bool st_insertBlindCurrentScope(
 
 /* ----------------------------------------------- */
 
-Hash *st_getScopeHash(SymbolsTable *st);
+hash_t *st_getScopeHash(SymbolsTable *st);
 
 /* ----------------------------------------------- */
 

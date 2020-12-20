@@ -11,34 +11,34 @@
 #define _DEF_HASHLEN_ 9
 #define _HIGH_CRITICAL_FACTOR_ 0.6
 
-typedef struct _iterator_node iterator_node;
-typedef struct _hash_iterator hash_iterator;
+typedef struct _iterator_node_t iterator_node_t;
+typedef struct _hash_iterator_t hash_iterator_t;
 
 /**
- * Hashcode Funct prototype
+ * hashcode_t Funct prototype
  * @param void elem to be compared
  * @return hashcode value
  */
-typedef uint_fast64_t (*Hashcode)(void*);
+typedef uint_fast64_t (*hashcode_t)(void*);
 
 /**
- * Equals Func prototype
+ * equals_t Func prototype
  * @param void element 1
  * @param void element 2
  * @return Returns if both elements are equal
  */
-typedef bool (*Equals)(void*, void*);
+typedef bool (*equals_t)(void*, void*);
 
 /**
- * Clean Func prototype
+ * clean_t Func prototype
  * @param void element to clean
  */
-typedef void (*Clean)(void*);
+typedef void (*clean_t)(void*);
 
 /**
  * Hash type definition
  */
-typedef struct _Hash Hash;
+typedef struct _hash_t hash_t;
 
 /**
  * Initialize hash structure
@@ -47,7 +47,7 @@ typedef struct _Hash Hash;
  * @param clean clean funciton
  * @return hash
  */
-Hash *hash_init(Hashcode hashcode, Equals equals, Clean clean);
+hash_t *hash_init(hashcode_t hashcode, equals_t equals, clean_t clean);
 
 /**
  * Stores an element in hash
@@ -55,7 +55,7 @@ Hash *hash_init(Hashcode hashcode, Equals equals, Clean clean);
  * @param info stored info
  * @return if it was posible
  */
-bool hash_encode(Hash *hash, void *info);
+bool hash_encode(hash_t *hash, void *info);
 
 /**
  * Retrieves an element prev. stored in hash
@@ -63,13 +63,13 @@ bool hash_encode(Hash *hash, void *info);
  * @param info stored info
  * @return info retrieved
  */
-void *hash_decode(Hash *hash, void *info);
+void *hash_decode(hash_t *hash, void *info);
 
 /**
  * Cleans memory
  * @param hash structure to delete
  */
-void hash_clean(Hash *hash);
+void hash_clean(hash_t *hash);
 
 /**
  * If info is stored
@@ -77,13 +77,13 @@ void hash_clean(Hash *hash);
  * @param info info to check
  * @return if it's stored
  */
-bool hash_contains(Hash *hash, void *info);
+bool hash_contains(hash_t *hash, void *info);
 
-hash_iterator *hash_iterate(Hash *hash);
-iterator_node *first(hash_iterator *iterator);
-iterator_node *next(iterator_node *_inode);
-void *iter_nodeInfo(iterator_node *_inode);
-bool hasNext(iterator_node *_inode);
-void hash_iterate_clean(hash_iterator *iterator);
+hash_iterator_t *hash_iterate(hash_t *hash);
+iterator_node_t *first(hash_iterator_t *iterator);
+iterator_node_t *next(iterator_node_t *_inode);
+void *iter_nodeInfo(iterator_node_t *_inode);
+bool hasNext(iterator_node_t *_inode);
+void hash_iterate_clean(hash_iterator_t *iterator);
 
 #endif

@@ -8,17 +8,14 @@ BISONFLAGS = -y -d -v -Wyacc
 
 _DEBUG_ = _DEBUG_
 
-INC = inc/
-DIR = alfa/
-OUT = out/
-OBJ = obj/
-SRC = src/
-INFO = info/
+INC = inc
+DIR = alfa
+OUT = out
+OBJ = obj
+SRC = src
+INFO = info
 
-TESTFILES = testfiles/
-RESULTS = testresults/
-
-COMPILED = compiler
+COMPILED = alfa
 
 CALFA = $(DIR)alfa.c
 OALFA = $(OBJ)alfa.o
@@ -45,16 +42,7 @@ default: clean $(OALFA) ## Equivalent to 'make all'
 help:	## This guide
 		@@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-all: default ## Produces nasm file
-	./$(COMPILED) samples/first_delivery.alf first_delivery.nasm
-
-nasm: all ## Compiles nasm file
-	./nasm_to_exec.sh first_delivery.nasm prg1
-	@echo "Success. Program --> prg1"
-
-hash_test: ## Test hash
-	 	@$(CC) -I $(INC) -o run_hash_test $(SRC)hashTest.c $(SYMBOL) $(HASH)
-		./run_hash_test
+all: default ## Produces compiler
 
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
@@ -86,14 +74,10 @@ $(OYYPARSE): $(CYYPARSE)
 .PHONY: clean
 
 clean: ## Cleans output files
-		rm -rf $(RESULTS)*
 		rm -rf $(INFO)/y.output
-		rm -f $(COMPILED)
 		rm -f $(OYYLEX)
 		rm -f $(OYYPARSE)
 		rm -f $(CYYLEX)
 		rm -f $(CYYPARSE)
 		rm -f $(INC)/y.tab.h 
-		rm -f run_hash_test
-		rm -f prg1
 		@echo "Data cleaned."

@@ -8,8 +8,8 @@
 
 struct _SymbolsTable
 {
-  Hash *globalScope; /* Used for global identifiers */
-  Hash *localScope; /* Used for local identifiers */
+  hash_t *globalScope; /* Used for global identifiers */
+  hash_t *localScope; /* Used for local identifiers */
   Scope currentScope; /* Access quickly to current scope */
 };
 
@@ -21,7 +21,7 @@ struct _SymbolsTable
  * @param identifier of symbol to search
  * @return symbol found or NULL
  */
-static Symbol *searchSymbol(Hash *hash, String identifier);
+static symbol_t *searchSymbol(hash_t *hash, String identifier);
 
 /* ---------------- */
 
@@ -34,9 +34,9 @@ SymbolsTable *symbolsTableInit()
     return NULL;
 
   symbolsTable->globalScope = hash_init(
-    (Hashcode)symbol_hashcode,
-    (Equals)symbol_equals,
-    (Clean)symbol_delete
+    (hashcode_t)symbol_hashcode,
+    (equals_t)symbol_equals,
+    (clean_t)symbol_delete
   );
 
   if(!symbolsTable->globalScope)
@@ -69,7 +69,7 @@ void symbolsTableClean(SymbolsTable *st)
 
 bool declareGlobal(SymbolsTable *st, String identifier, int value)
 {
-  Symbol *s;
+  symbol_t *s;
 
   // if(value < 0)
   //   return declareFunction(st, identifier, value);
@@ -92,7 +92,7 @@ bool declareGlobal(SymbolsTable *st, String identifier, int value)
 
 bool declareLocal(SymbolsTable *st, String identifier, int value)
 {
-  Symbol *s;
+  symbol_t *s;
   
   if(!st || !identifier || value < 0)
     return false;
@@ -110,7 +110,7 @@ bool declareLocal(SymbolsTable *st, String identifier, int value)
   return hash_encode(st->localScope, s);
 }
 
-Symbol* globalUse(SymbolsTable *st, String identifier)
+symbol_t* globalUse(SymbolsTable *st, String identifier)
 {  
   if(!st || !identifier)
     return NULL;
@@ -118,9 +118,9 @@ Symbol* globalUse(SymbolsTable *st, String identifier)
   return searchSymbol(st->globalScope, identifier);
 }
 
-Symbol* localUse(SymbolsTable *st, String identifier)
+symbol_t* localUse(SymbolsTable *st, String identifier)
 {
-  Symbol *s;
+  symbol_t *s;
   
   if(!st || !identifier)
     return NULL;
@@ -134,7 +134,7 @@ Symbol* localUse(SymbolsTable *st, String identifier)
   return searchSymbol(st->globalScope, identifier); 
 }
 
-Symbol* findExclusiveLocal(SymbolsTable *st, String identifier)
+symbol_t* findExclusiveLocal(SymbolsTable *st, String identifier)
 { 
   if(!st || !identifier)
     return NULL;
@@ -147,7 +147,7 @@ Symbol* findExclusiveLocal(SymbolsTable *st, String identifier)
 
 bool declareFunction(SymbolsTable *st, String identifier, DataType returnType ,int value)
 {
-  Symbol *s;
+  symbol_t *s;
   
   if(!st || !identifier )
     return false;
@@ -160,9 +160,9 @@ bool declareFunction(SymbolsTable *st, String identifier, DataType returnType ,i
     return false;
   
   st->localScope = hash_init(
-    (Hashcode)symbol_hashcode,
-    (Equals)symbol_equals,
-    (Clean)symbol_delete
+    (hashcode_t)symbol_hashcode,
+    (equals_t)symbol_equals,
+    (clean_t)symbol_delete
   );
 
   if(!st->localScope)
@@ -195,7 +195,7 @@ bool stopLocalScope(SymbolsTable *st)
 
 /* -------------------------------------------- */
 
-Symbol* st_searchCurrentScope(SymbolsTable *st, String identifier)
+symbol_t* st_searchCurrentScope(SymbolsTable *st, String identifier)
 {
   if(!st || !identifier)
     return NULL;
@@ -217,8 +217,8 @@ bool st_set_scalar_variable(
   int pos
 )
 {
-  Symbol *s;
-  Hash *dst;
+  symbol_t *s;
+  hash_t *dst;
   
   if(!st || !identifier)
     return false;
@@ -249,8 +249,8 @@ bool st_set_vector_variable(
   int8_t size
 )
 {
-  Symbol *s;
-  Hash *dst;
+  symbol_t *s;
+  hash_t *dst;
   
   if(!st || !identifier || !size )
     return false;
@@ -278,7 +278,7 @@ bool st_set_scalar_parametre(
   int pos
 )
 {
-  Symbol *s;
+  symbol_t *s;
   
   if(!st || !identifier)
     return false;
@@ -304,7 +304,7 @@ bool st_set_vector_parametre(
   int8_t size
 )
 {
-  Symbol *s;
+  symbol_t *s;
   
   if(!st || !identifier)
     return false;
@@ -329,7 +329,7 @@ bool st_set_function(
   DataType returnType
 )
 {
-  Symbol *s;
+  symbol_t *s;
   
   if(!st || !identifier)
     return false;
@@ -358,15 +358,15 @@ Scope st_getScope(SymbolsTable *st)
 
 /* -------------------------------------------- */
 
-static Symbol* searchSymbol(Hash *hash, String identifier)
+static symbol_t* searchSymbol(hash_t *hash, String identifier)
 {
-  Symbol *tmp, *_tmp;
+  symbol_t *tmp, *_tmp;
   
   if(!hash || !identifier)
     return NULL;
 
   tmp = symbol_init(identifier, NONE);
-  _tmp = (Symbol*)hash_decode(hash, tmp);
+  _tmp = (symbol_t*)hash_decode(hash, tmp);
 
   symbol_delete(tmp);
 
@@ -389,7 +389,7 @@ bool st_insertBlindCurrentScope(
   int32_t localvars
 )
 {
-  Hash *dst;
+  hash_t *dst;
   
   if(!st || !identifier)
     return false;
@@ -474,7 +474,7 @@ bool st_insertBlindCurrentScope(
 
 /* -------------------------------------------- */
 
-Hash *st_getScopeHash(SymbolsTable *st)
+hash_t *st_getScopeHash(SymbolsTable *st)
 {
   if(!st)
     return NULL;

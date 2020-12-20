@@ -9,6 +9,26 @@
 #include "symbol.h"
 
 /**
+ * Variable type definition
+ */
+typedef struct _Variable Variable;
+
+/**
+ * Parametre type definition
+ */
+typedef struct _Parametre Parametre;
+
+/**
+ * Function type definition
+ */
+typedef struct _Function Function;
+
+/**
+ * union with element stored
+ */
+typedef union _Element Element;
+
+/**
  * Structure with alfa's variables info
  */
 struct _Variable
@@ -54,7 +74,7 @@ union _Element
 /**
  * Helper structure to store multiple info values
  */
-struct _Symbol {
+struct _symbol_t {
   char key[MAX_LEN]; /* Key to access this element */
   ElementCategory elemCat; /* Type of element stored in struct {Function, Parametre, Variable} */
   Element element; /* Element */
@@ -69,13 +89,13 @@ struct _Symbol {
  * @param key identifier
  * @return if ok
  */
-static bool symbol_set_key(Symbol *s, String key);
+static bool symbol_set_key(symbol_t *s, String key);
 
 /* ------------ */
 
-Symbol *symbol_init(String key, int value)
+symbol_t *symbol_init(String key, int value)
 {
-  Symbol *s;
+  symbol_t *s;
 
   if(!key)
     return NULL;
@@ -83,7 +103,7 @@ Symbol *symbol_init(String key, int value)
   if(!key || strlen(key) > MAX_LEN)
     return NULL;
 
-  s = (Symbol*)calloc(1, sizeof(Symbol));
+  s = (symbol_t*)calloc(1, sizeof(symbol_t));
 
   if(!s)
     return NULL;
@@ -97,7 +117,7 @@ Symbol *symbol_init(String key, int value)
 }
 
 void symbol_configure_scalar_variable(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   Scope scope,
   int pos
@@ -114,7 +134,7 @@ void symbol_configure_scalar_variable(
 }
 
 void symbol_configure_vector_variable(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   Scope scope,
   int pos,
@@ -133,7 +153,7 @@ void symbol_configure_vector_variable(
 }
 
 void symbol_configure_scalar_parametre(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   int pos
 )
@@ -147,7 +167,7 @@ void symbol_configure_scalar_parametre(
 }
 
 void symbol_configure_vector_parametre(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   int pos,
   int8_t size
@@ -163,7 +183,7 @@ void symbol_configure_vector_parametre(
 }
 
 void symbol_configure_function(
-  Symbol *s,
+  symbol_t *s,
   int32_t params,
   int32_t localvars,
   DataType returnType
@@ -177,14 +197,14 @@ void symbol_configure_function(
   s->element.func.returnType = returnType;
 }
 
-String symbol_get_key(Symbol *s)
+String symbol_get_key(symbol_t *s)
 {
   if(!s)
     return NULL;
   return s->key;
 }
 
-static bool symbol_set_key(Symbol *s, String key)
+static bool symbol_set_key(symbol_t *s, String key)
 {
   if(!s || !key)
     return false;
@@ -197,28 +217,28 @@ static bool symbol_set_key(Symbol *s, String key)
   return true;
 }
 
-void symbol_set_category(Symbol *s, ElementCategory elemCat)
+void symbol_set_category(symbol_t *s, ElementCategory elemCat)
 {
   if(!s)
     return;
   s->elemCat = elemCat;
 }
 
-ElementCategory symbol_get_category(Symbol *s)
+ElementCategory symbol_get_category(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
   return s->elemCat;
 }
 
-int symbol_get_value(Symbol *s)
+int symbol_get_value(symbol_t *s)
 {
   if(!s)
     return NONE;
   return s->value;
 }
 
-bool symbol_equals(Symbol *s1, Symbol *s2)
+bool symbol_equals(symbol_t *s1, symbol_t *s2)
 {
   if(!s1 || !s2)
     return false;
@@ -232,7 +252,7 @@ uint_fast64_t symbol_hashcode(void *s)
   String identifier;
   int c;
 
-  s = (Symbol*)s;
+  s = (symbol_t*)s;
 
   identifier = symbol_get_key(s);
 
@@ -249,7 +269,7 @@ void symbol_delete(void *s)
   free(s);
 }
 
-String symbol_toString(Symbol *s)
+String symbol_toString(symbol_t *s)
 {
   if(!s)
     return NULL;
@@ -262,7 +282,7 @@ String symbol_toString(Symbol *s)
 
 /* - - - COMMON - - - */
 
-DataType symbol_blind_dataType(Symbol *s)
+DataType symbol_blind_dataType(symbol_t *s)
 {
   if(!s )
     return UNSP_ERR;
@@ -274,7 +294,7 @@ DataType symbol_blind_dataType(Symbol *s)
     return s->element.func.returnType;
 }
 
-IdentifierCategory symbol_blind_identifierCategory(Symbol *s)
+IdentifierCategory symbol_blind_identifierCategory(symbol_t *s)
 {
   if(!s || symbol_get_category(s) == FUNCT)
     return UNSP_ERR;
@@ -284,7 +304,7 @@ IdentifierCategory symbol_blind_identifierCategory(Symbol *s)
     return s->element.param.classCat;
 }
 
-int8_t symbol_blind_size(Symbol *s)
+int8_t symbol_blind_size(symbol_t *s)
 {
   if (! s || symbol_get_category(s) == FUNCT)
     return CHAR_MIN;
@@ -292,7 +312,7 @@ int8_t symbol_blind_size(Symbol *s)
     s->element.var.size : s->element.param.size;
 }
 
-Scope symbol_blind_scope(Symbol *s)
+Scope symbol_blind_scope(symbol_t *s)
 {
   if(!s || symbol_get_category(s) == FUNCT)
     return NONE;
@@ -302,35 +322,35 @@ Scope symbol_blind_scope(Symbol *s)
 
 /*- - - VARS - - - */
 
-DataType symbol_get_var_dataType(Symbol *s)
+DataType symbol_get_var_dataType(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
   return s->element.var.dataType;
 }
 
-IdentifierCategory symbol_get_var_identifierCategory(Symbol *s)
+IdentifierCategory symbol_get_var_identifierCategory(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
   return s->element.var.classCat;
 }
 
-Scope symbol_get_var_scope(Symbol *s)
+Scope symbol_get_var_scope(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
   return s->element.var.scope;
 }
 
-int symbol_get_var_pos(Symbol *s)
+int symbol_get_var_pos(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
   return s->element.var.pos;
 }
 
-int8_t symbol_get_var_size(Symbol *s)
+int8_t symbol_get_var_size(symbol_t *s)
 {
   if(!s)
     return CHAR_MIN;
@@ -339,7 +359,7 @@ int8_t symbol_get_var_size(Symbol *s)
 
 /* - - - PARAMS - - -  */
 
-DataType symbol_get_param_dataType(Symbol *s)
+DataType symbol_get_param_dataType(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
@@ -347,7 +367,7 @@ DataType symbol_get_param_dataType(Symbol *s)
   return s->element.param.dataType;
 }
 
-IdentifierCategory symbol_get_param_identifierCategory(Symbol *s)
+IdentifierCategory symbol_get_param_identifierCategory(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
@@ -355,7 +375,7 @@ IdentifierCategory symbol_get_param_identifierCategory(Symbol *s)
   return s->element.param.classCat;
 }
 
-int symbol_get_param_pos(Symbol *s)
+int symbol_get_param_pos(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
@@ -363,7 +383,7 @@ int symbol_get_param_pos(Symbol *s)
   return s->element.param.pos;
 }
 
-int8_t symbol_get_param_size(Symbol *s)
+int8_t symbol_get_param_size(symbol_t *s)
 {
   if(!s)
     return CHAR_MIN;
@@ -373,7 +393,7 @@ int8_t symbol_get_param_size(Symbol *s)
 
 /* - - - FUNCTS - - - */
 
-int32_t symbol_get_funct_params(Symbol *s)
+int32_t symbol_get_funct_params(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
@@ -381,7 +401,7 @@ int32_t symbol_get_funct_params(Symbol *s)
   return s->element.func.params;
 }
 
-int32_t symbol_get_funct_localvars(Symbol *s)
+int32_t symbol_get_funct_localvars(symbol_t *s)
 {
   if(!s)
     return UNSP_ERR;
@@ -389,7 +409,7 @@ int32_t symbol_get_funct_localvars(Symbol *s)
   return s->element.func.localvars;
 }
 
-DataType symbol_get_funct_returnType(Symbol *s)
+DataType symbol_get_funct_returnType(symbol_t *s)
 {
   return s != NULL ? s->element.func.returnType : NONE;
 }

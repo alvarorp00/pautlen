@@ -4,61 +4,43 @@
 #include <stdint.h>
 #include "alfa.h"
 
-/**
- * Variable type definition
- */
-typedef struct _Variable Variable;
+typedef struct _symbol_t symbol_t;
 
 /**
- * Parametre type definition
- */
-typedef struct _Parametre Parametre;
-
-/**
- * Function type definition
- */
-typedef struct _Function Function;
-
-/**
- * union with element stored
- */
-typedef union _Element Element;
-
-/**
- * Initializes a new Symbol
+ * Initializes a new symbol_t
  * @param key identifier
  * @param value value assigned
  * @return new symbol
  */
-Symbol* symbol_init(String key, int value);
+symbol_t* symbol_init(String key, int value);
 
 /**
  * Set symbol's element category
  * @param s symbol
  * @param elemCat category to insert {VAR, PARAM, FUNC}
  */
-void symbol_set_category(Symbol *s, ElementCategory elemCat);
+void symbol_set_category(symbol_t *s, ElementCategory elemCat);
 
 /**
  * Get symbol's category
  * @param s symbol
  * @return category of the symbol
  */
-ElementCategory symbol_get_category(Symbol *s);
+ElementCategory symbol_get_category(symbol_t *s);
 
 /**
  * Retrieves symbol's key
  * @param s symbol
  * @return Array with symbol's key
  */
-String symbol_get_key(Symbol *s);
+String symbol_get_key(symbol_t *s);
 
 /**
  * Get symbol's value
  * @param s symbol
  * @return symbol's value
  */
-int symbol_get_value(Symbol *s);
+int symbol_get_value(symbol_t *s);
 
 /**
  * Configures symbol as an scalar variable
@@ -68,7 +50,7 @@ int symbol_get_value(Symbol *s);
  * @param pos position in case it's in a function
  */
 void symbol_configure_scalar_variable(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   Scope scope,
   int pos
@@ -83,7 +65,7 @@ void symbol_configure_scalar_variable(
  * @param size size of the vector
  */
 void symbol_configure_vector_variable(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   Scope scope,
   int pos,
@@ -97,7 +79,7 @@ void symbol_configure_vector_variable(
  * @param pos position in function arguments, start in 0
  */
 void symbol_configure_scalar_parametre(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   int pos
 );
@@ -110,7 +92,7 @@ void symbol_configure_scalar_parametre(
  * @param size size of the vector
  */
 void symbol_configure_vector_parametre(
-  Symbol *s,
+  symbol_t *s,
   DataType dataType,
   int pos,
   int8_t size
@@ -123,7 +105,7 @@ void symbol_configure_vector_parametre(
  * @param localvars number of localvars, starting in 1
  */
 void symbol_configure_function(
-  Symbol *s,
+  symbol_t *s,
   int32_t params,
   int32_t localvars,
   DataType returnType
@@ -135,7 +117,7 @@ void symbol_configure_function(
  * @param s2 symbol2
  * @return true if equal, else false
  */
-bool symbol_equals(Symbol *s1, Symbol *s2);
+bool symbol_equals(symbol_t *s1, symbol_t *s2);
 
 /**
  * Calculates hashcode for given symbol
@@ -156,43 +138,43 @@ void symbol_delete(void *s);
 
 /* - - - COMMON - - - */
 
-DataType symbol_blind_dataType(Symbol *s);
+DataType symbol_blind_dataType(symbol_t *s);
 
-IdentifierCategory symbol_blind_identifierCategory(Symbol *s);
+IdentifierCategory symbol_blind_identifierCategory(symbol_t *s);
 
-int8_t symbol_blind_size(Symbol *s);
+int8_t symbol_blind_size(symbol_t *s);
 
-Scope symbol_blind_scope(Symbol *s);
+Scope symbol_blind_scope(symbol_t *s);
 
 /*- - - VARS - - - */
 
-DataType symbol_get_var_dataType(Symbol *s);
+DataType symbol_get_var_dataType(symbol_t *s);
 
-IdentifierCategory symbol_get_var_identifierCategory(Symbol *s);
+IdentifierCategory symbol_get_var_identifierCategory(symbol_t *s);
 
-Scope symbol_get_var_scope(Symbol *s);
+Scope symbol_get_var_scope(symbol_t *s);
 
-int symbol_get_var_pos(Symbol *s);
+int symbol_get_var_pos(symbol_t *s);
 
-int8_t symbol_get_var_size(Symbol *s);
+int8_t symbol_get_var_size(symbol_t *s);
 
 /* - - - PARAMS - - -  */
 
-DataType symbol_get_param_dataType(Symbol *s);
+DataType symbol_get_param_dataType(symbol_t *s);
 
-IdentifierCategory symbol_get_param_identifierCategory(Symbol *s);
+IdentifierCategory symbol_get_param_identifierCategory(symbol_t *s);
 
-int symbol_get_param_pos(Symbol *s);
+int symbol_get_param_pos(symbol_t *s);
 
-int8_t symbol_get_param_size(Symbol *s);
+int8_t symbol_get_param_size(symbol_t *s);
 
 /* - - - FUNCTS - - - */
 
-int32_t symbol_get_funct_params(Symbol *s);
+int32_t symbol_get_funct_params(symbol_t *s);
 
-int32_t symbol_get_funct_localvars(Symbol *s);
+int32_t symbol_get_funct_localvars(symbol_t *s);
 
-DataType symbol_get_funct_returnType(Symbol *s);
+DataType symbol_get_funct_returnType(symbol_t *s);
 
 /*  - * - * - * - * - * - * - * - */
 

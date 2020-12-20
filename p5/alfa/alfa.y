@@ -50,12 +50,12 @@
   /* - - - - - - GLOBAL VARS - - - - - - - */
   /* *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* */
 
-  Symbol *_sgeneric;
-  Symbol *_sleft;
-  Symbol *_sright;
-  Symbol *_smid;
+  symbol_t *_sgeneric;
+  symbol_t *_sleft;
+  symbol_t *_sright;
+  symbol_t *_smid;
 
-  Symbol *_funct;
+  symbol_t *_funct;
 
   char __buff[MAX_LEN + 1];
   char __curr_fn_name[MAX_LEN + 1];
@@ -619,7 +619,7 @@ assignment: TOK_IDENTIFICADOR TOK_ASIGNACION exp
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
       if((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL)
       {
-        /* Symbol is not declared */
+        /* symbol_t is not declared */
         EXITFAIL("Identifier %s not declared.", $1.lexeme);
       }
       if(symbol_get_category(_sgeneric) == FUNCT)
@@ -1401,9 +1401,9 @@ int yyerror(SymbolsTable *st, char *s)
 
 void write_symbols_table(FPASM, SymbolsTable *st)
 {
-  hash_iterator *iterator;
-  iterator_node *__inode;
-  Symbol *__s;
+  hash_iterator_t *iterator;
+  iterator_node_t *__inode;
+  symbol_t *__s;
   int32_t size;
   
   if(!FPASM_NAME || !st)
@@ -1418,7 +1418,7 @@ void write_symbols_table(FPASM, SymbolsTable *st)
 
   for(__inode = first(iterator); __inode != NULL; __inode = next(__inode))
   {
-    __s = (Symbol*)iter_nodeInfo(__inode);
+    __s = (symbol_t*)iter_nodeInfo(__inode);
 
     if(symbol_get_category(__s) != VAR)
       continue;

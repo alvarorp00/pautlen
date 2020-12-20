@@ -17,45 +17,45 @@
 #define NS__INFO_AT( n, i ) ( n[i] )->info
 #define N__INFO( n ) ( n )->info
 
-typedef struct _ProbingResponse ProbingResponse;
-typedef struct _Node Node;
+typedef struct _probing_response_t probing_response_t;
+typedef struct _node node_t;
 
-struct _iterator_node
+struct _iterator_node_t
 {
   void *info;
-  iterator_node *__next;
+  iterator_node_t *__next;
 };
 
-struct _hash_iterator
+struct _hash_iterator_t
 {
   uint_fast64_t size;
-  iterator_node *first;
+  iterator_node_t *first;
 };
 
-struct _ProbingResponse
+struct _probing_response_t
 {
   bool present;
   uint_fast64_t index;
 };
 
 /**
- * Node in hash
+ * node_t in hash
  */
-struct _Node {
-  void *info; /* Node info */
+struct _node {
+  void *info; /* node_t info */
 };
 
 /**
  * Main hash structure
  */
-struct _Hash {
+struct _hash_t {
   uint_fast64_t max_size;
   uint_fast64_t curr_size;
   float factor;
-  Node **nodes; /* Hash nodes which store info */
-  Hashcode hashcode;
-  Equals equals;
-  Clean clean;
+  node_t **nodes; /* hash_t nodes which store info */
+  hashcode_t hashcode;
+  equals_t equals;
+  clean_t clean;
 };
 
 /* ----------------------- */
@@ -67,14 +67,14 @@ struct _Hash {
  * @param hash where nodes will be stored
  * @return if was posible
  */
-static bool init_nodes( Hash *hash );
+static bool init_nodes( hash_t *hash );
 
 /**
  * Checks if node is empty
  * @param node to check
  * @return if it's empty
  */
-static bool node_isEmpty( Node *node );
+static bool node_isEmpty( node_t *node );
 
 /**
  * Initializes a new node
@@ -82,21 +82,21 @@ static bool node_isEmpty( Node *node );
  * @param info to store in node
  * @return same node
  */
-static Node* init_node( void* info );
+static node_t* init_node( void* info );
 
-static void clean_nodes( Node **nodes,Clean clean, uint_fast64_t max_size );
+static void clean_nodes( node_t **nodes,clean_t clean, uint_fast64_t max_size );
 
 /**
  * Linear probing for hash structure
  * @param hash to check
  * @param info info to check
- * @return ProbingResponse object
+ * @return probing_response_t object
  */
-static ProbingResponse linearProbing( 
-  Node **nodes,
+static probing_response_t linearProbing( 
+  node_t **nodes,
   void *info,
-  Hashcode hashcode,
-  Equals equals,
+  hashcode_t hashcode,
+  equals_t equals,
   uint_fast64_t max_size
  );
 
@@ -104,18 +104,18 @@ static ProbingResponse linearProbing(
  * Refactors hash size if it's needed
  * @param hash to resize
  */
-static void refactor_ifNeeded( Hash *hash );
+static void refactor_ifNeeded( hash_t *hash );
 
 /* ----------------------- */
 
-Hash *hash_init( Hashcode hashcode, Equals equals, Clean clean )
+hash_t *hash_init( hashcode_t hashcode, equals_t equals, clean_t clean )
 {
-  Hash *hash;
+  hash_t *hash;
 
   if( !hashcode || !equals || !clean )
     return NULL;
 
-  hash = ( Hash* )calloc( 1,sizeof( Hash ) );
+  hash = ( hash_t* )calloc( 1,sizeof( hash_t ) );
   if( !hash )
     return NULL;
   
@@ -132,17 +132,17 @@ Hash *hash_init( Hashcode hashcode, Equals equals, Clean clean )
   return hash;
 }
 
-static bool init_nodes( Hash *hash )
+static bool init_nodes( hash_t *hash )
 {
   if( !hash )
     return false;
 
-  H__NODES( hash ) = (Node** )calloc(_DEF_HASHLEN_, sizeof(Node* ) );
+  H__NODES( hash ) = (node_t** )calloc(_DEF_HASHLEN_, sizeof(node_t* ) );
   H__MAX( hash ) = _DEF_HASHLEN_;
   H__SIZE( hash ) = 0;
   H__FACTOR( hash ) = 0;
 
-  memset(H__NODES( hash ), 0, sizeof(Node* )*_DEF_HASHLEN_ );
+  memset(H__NODES( hash ), 0, sizeof(node_t* )*_DEF_HASHLEN_ );
 
   if(!H__NODES( hash ) )
   {
@@ -153,7 +153,7 @@ static bool init_nodes( Hash *hash )
   return true;
 }
 
-void hash_clean(Hash *hash )
+void hash_clean(hash_t *hash )
 {  
   if(!hash )
     return;
@@ -166,9 +166,9 @@ void hash_clean(Hash *hash )
   
 }
 
-bool hash_encode(Hash *hash, void* info )
+bool hash_encode(hash_t *hash, void* info )
 {
-  ProbingResponse response;
+  probing_response_t response;
   
   if(!info )
     return false;
@@ -192,9 +192,9 @@ bool hash_encode(Hash *hash, void* info )
   return true;
 }
 
-void* hash_decode( Hash *hash, void* info )
+void* hash_decode( hash_t *hash, void* info )
 {
-  ProbingResponse response;
+  probing_response_t response;
 
   response = linearProbing( 
     H__NODES( hash ),
@@ -211,15 +211,15 @@ void* hash_decode( Hash *hash, void* info )
   return H__INFO( hash, response.index );
 }
 
-static ProbingResponse linearProbing( 
-  Node **nodes,
+static probing_response_t linearProbing( 
+  node_t **nodes,
   void* info,
-  Hashcode hashcode,
-  Equals equals,
+  hashcode_t hashcode,
+  equals_t equals,
   uint_fast64_t max_size
  )
 {
-  ProbingResponse response;
+  probing_response_t response;
   uint_fast64_t hashed, val;
   uint_fast64_t i;
   
@@ -253,9 +253,9 @@ static ProbingResponse linearProbing(
   return response;
 }
 
-bool hash_contains( Hash *hash, void* info )
+bool hash_contains( hash_t *hash, void* info )
 {
-  ProbingResponse response;
+  probing_response_t response;
 
   if( !hash || !info )
     return false;
@@ -274,10 +274,10 @@ bool hash_contains( Hash *hash, void* info )
   return response.present;
 }
 
-static void refactor_ifNeeded( Hash *hash )
+static void refactor_ifNeeded( hash_t *hash )
 {
-  Node **__nodes;
-  ProbingResponse r_response;
+  node_t **__nodes;
+  probing_response_t r_response;
   uint_fast64_t __size;
   uint_fast64_t i;
   
@@ -290,8 +290,8 @@ static void refactor_ifNeeded( Hash *hash )
     return;
 
   __size = ( H__MAX( hash ) ) << 1;
-  __nodes = ( Node** )calloc( __size, sizeof( Node* ) );
-  memset( __nodes, 0, sizeof( Node* )*_DEF_HASHLEN_ );
+  __nodes = ( node_t** )calloc( __size, sizeof( node_t* ) );
+  memset( __nodes, 0, sizeof( node_t* )*_DEF_HASHLEN_ );
 
   
   for( i = 0; i < H__MAX( hash ); i++ )
@@ -320,20 +320,20 @@ static void refactor_ifNeeded( Hash *hash )
 
 }
 
-static Node* init_node( void* info )
+static node_t* init_node( void* info )
 {
-  Node *node;
+  node_t *node;
   
   if( !info )
     return NULL;
   
-  node = ( Node* )calloc( 1,sizeof( Node ) );
+  node = ( node_t* )calloc( 1,sizeof( node_t ) );
   N__INFO( node ) = info; 
 
   return node;
 }
 
-static void clean_nodes( Node **nodes, Clean clean, uint_fast64_t max_size )
+static void clean_nodes( node_t **nodes, clean_t clean, uint_fast64_t max_size )
 {
   uint_fast64_t i;
   
@@ -350,27 +350,27 @@ static void clean_nodes( Node **nodes, Clean clean, uint_fast64_t max_size )
   }
 }
 
-static bool node_isEmpty( Node *node )
+static bool node_isEmpty( node_t *node )
 { 
   return node == NULL;
 }
 
 /* ------------------------------- */
 
-hash_iterator *hash_iterate( Hash *hash )
+hash_iterator_t *hash_iterate( hash_t *hash )
 {
   uint_fast64_t i;
-  hash_iterator *iterator;
-  iterator_node *__inode, *__prev_inode;
+  hash_iterator_t *iterator;
+  iterator_node_t *__inode, *__prev_inode;
   
   if( !hash )
     return NULL;
 
-  iterator = ( hash_iterator* )calloc( 1, sizeof( hash_iterator ) );
+  iterator = ( hash_iterator_t* )calloc( 1, sizeof( hash_iterator_t ) );
   if( !iterator )
     return NULL;
 
-  __inode = ( iterator_node* )calloc( 1, sizeof( hash_iterator ) );
+  __inode = ( iterator_node_t* )calloc( 1, sizeof( hash_iterator_t ) );
   if( !__inode )
     {
       hash_iterate_clean( iterator );
@@ -395,7 +395,7 @@ hash_iterator *hash_iterate( Hash *hash )
     if( node_isEmpty( H__NODE_AT( hash, i ) ) )
       continue;
     __prev_inode = __inode;
-    __inode = ( iterator_node* )calloc( 1, sizeof( hash_iterator ) );
+    __inode = ( iterator_node_t* )calloc( 1, sizeof( hash_iterator_t ) );
     if( !__inode )
       {
         hash_iterate_clean( iterator );
@@ -409,29 +409,29 @@ hash_iterator *hash_iterate( Hash *hash )
   return iterator;
 }
 
-iterator_node *first( hash_iterator *iterator )
+iterator_node_t *first( hash_iterator_t *iterator )
 {
   return iterator == NULL ? NULL : iterator->first;
 }
 
-iterator_node *next( iterator_node *_inode )
+iterator_node_t *next( iterator_node_t *_inode )
 {
   return _inode == NULL ? NULL : _inode->__next;
 }
 
-void *iter_nodeInfo( iterator_node *_inode )
+void *iter_nodeInfo( iterator_node_t *_inode )
 {
   return _inode == NULL ? NULL : _inode->info;
 }
 
-bool hasNext( iterator_node *_inode )
+bool hasNext( iterator_node_t *_inode )
 {
   return _inode == NULL ? false : _inode->__next != NULL;
 }
 
-void hash_iterate_clean( hash_iterator *iterator )
+void hash_iterate_clean( hash_iterator_t *iterator )
 {
-  iterator_node *__inode, *__next_inode;
+  iterator_node_t *__inode, *__next_inode;
   
   if( !iterator )
     return;
