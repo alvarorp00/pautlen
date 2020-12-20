@@ -1,25 +1,25 @@
-main
-{
+main {
 
-    int x, y, resultado;
+// Declaraciones
+	int x;
 
 
-	function int suma (int num1; int num2)
+// Funciones
+	function int negar ( int numero )
 	{
-        array int[10] vector1;
-	 return num1+num2+x+y;
+		int w;
+
+		w = -numero;
+
+		return  w;
+
 	}
 
-
 	scanf x;
-	scanf y;
 
-	resultado = suma (x,y);
+	printf negar(x);
+	
 
-	printf resultado;
+// Sentencias
+
 }
-
-
-
-
-

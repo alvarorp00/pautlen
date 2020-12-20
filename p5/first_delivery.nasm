@@ -5,46 +5,33 @@ segment .bss
 	_msg_fail_err resd 1
 	__esp resd 1
 	_x resd 1
-	_resultado resd 1
-	_y resd 1
 segment .text
 	global main
 	extern scan_int, print_int, scan_float, print_float, scan_boolean, print_boolean
 	extern print_endofline, print_blank, print_string
 	extern alfa_malloc, alfa_free, ld_float
-_suma:
+_negar:
 	push ebp
 	mov ebp, esp
 	sub esp, 4
-	mov edx, 2
+	mov edx, 1
 	sub edx, 0
 	inc edx
 	lea eax, [ebp + edx*4]
 	push dword eax
-	mov edx, 2
-	sub edx, 1
-	inc edx
-	lea eax, [ebp + edx*4]
-	push dword eax
-	pop dword ebx
 	pop dword eax
 	mov dword eax, [eax]
-	mov dword ebx, [ebx]
-	add eax, ebx
+	neg eax
 	push dword eax
-	push dword _x
+	lea eax, [ebp - 4]
+	push dword eax
 	pop dword ebx
 	pop dword eax
-	mov dword ebx, [ebx]
-	add eax, ebx
-	push dword eax
-	push dword _y
-	pop dword ebx
-	pop dword eax
-	mov dword ebx, [ebx]
-	add eax, ebx
+	mov dword [ebx], dword eax
+	lea eax, [ebp - 4]
 	push dword eax
 	pop eax
+	mov dword eax, [eax]
 	mov esp, ebp
 	pop ebp
 	ret
@@ -53,25 +40,14 @@ main:
 	push dword _x
 	call scan_int
 	add esp, 4
-	push dword _y
-	call scan_int
-	add esp, 4
 	push dword _x
 	pop dword eax
 	mov dword eax, dword [eax] 
 	push eax
-	push dword _y
-	pop dword eax
-	mov dword eax, dword [eax] 
-	push eax
-	call _suma
-	add esp, 8
+	call _negar
+	add esp, 4
 	push dword eax
 	pop dword eax
-	mov dword [_resultado], eax
-	push dword _resultado
-	pop dword eax
-	mov dword eax, [eax]
 	push dword eax
 	call print_int
 	call print_endofline
