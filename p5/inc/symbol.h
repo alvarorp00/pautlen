@@ -42,6 +42,10 @@ String symbol_get_key(symbol_t *s);
  */
 int symbol_get_value(symbol_t *s);
 
+/* ------------------------------ */
+/* -- -- -- - SETTERS -- -- -- -- */
+/* ------------------------------ */
+
 /**
  * Configures symbol as an scalar variable
  * @param s symbol
@@ -138,42 +142,130 @@ void symbol_delete(void *s);
 
 /* - - - COMMON - - - */
 
+/**
+ * Gets datatype in case 
+ * we don't know if it's a param
+ * or a variable
+ * @param s symbol
+ * @return data type
+ */
 DataType symbol_blind_dataType(symbol_t *s);
 
+/**
+ * Gets identifier category in case
+ * we don't know if it's a param
+ * or a variable
+ * @param s symbol
+ * @return identifier category
+ */
 IdentifierCategory symbol_blind_identifierCategory(symbol_t *s);
 
+/**
+ * Gets size in case we don't know
+ * if it's a param or a variable
+ * @param s symbol
+ * @return vector's size
+ */
 int8_t symbol_blind_size(symbol_t *s);
 
+/**
+ * Gets scope. Would be better using
+ * symbol_get_var_scope(symbol_t *s) asa
+ * params have LOCAL & functions no
+ * @param s symbol
+ * @return scope
+ */
 Scope symbol_blind_scope(symbol_t *s);
 
 /*- - - VARS - - - */
 
+/**
+ * Gets var datatype
+ * @param s symbol
+ * @return data type
+ */
 DataType symbol_get_var_dataType(symbol_t *s);
 
+/**
+ * Gets var identifier category
+ * @param s symbol
+ * @return identifier category
+ */
 IdentifierCategory symbol_get_var_identifierCategory(symbol_t *s);
 
+/**
+ * Gets var scope
+ * @param s symbol
+ * @return scope
+ */
 Scope symbol_get_var_scope(symbol_t *s);
 
+/**
+ * Gets var position if it's in local scope
+ * @param s symbol
+ * @return pos
+ */
 int symbol_get_var_pos(symbol_t *s);
 
+/**
+ * Gets var size in case it's a vector
+ * @param s symbol
+ * @return vector's size, 0 if it's SCALAR
+ */
 int8_t symbol_get_var_size(symbol_t *s);
 
 /* - - - PARAMS - - -  */
 
+/**
+ * Gets param datatype
+ * @param s symbol
+ * @return data type
+ */
 DataType symbol_get_param_dataType(symbol_t *s);
 
+/**
+ * Gets param identifier category
+ * @param s
+ * @return identifier category
+ */
 IdentifierCategory symbol_get_param_identifierCategory(symbol_t *s);
 
+/**
+ * Gets param pos inside function
+ * @param s symbol
+ * @return position
+ */
 int symbol_get_param_pos(symbol_t *s);
 
+/**
+ * Gets param size in case it's a vector,
+ * either currently it's not supported
+ * @param s symbol
+ * @return size
+ */
 int8_t symbol_get_param_size(symbol_t *s);
 
 /* - - - FUNCTS - - - */
 
+/**
+ * Gets function params qty
+ * @param s symbol
+ * @return number of params
+ */
 int32_t symbol_get_funct_params(symbol_t *s);
 
+/**
+ * Gets function localvars qty
+ * @param s
+ * @return number of localvars
+ */
 int32_t symbol_get_funct_localvars(symbol_t *s);
 
+/**
+ * Gets function return type
+ * @param s symbol
+ * @return data type
+ */
 DataType symbol_get_funct_returnType(symbol_t *s);
 
 /*  - * - * - * - * - * - * - * - */

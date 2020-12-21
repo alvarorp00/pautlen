@@ -226,16 +226,16 @@ extern int col;
  */
 struct _attrs_type
 {
-  char lexeme[MAX_LEN + 1];
-  int int_value;
-  bool bool_value;
-  DataType type;
-  IdentifierCategory classCat;
-  bool is_var;
-  int32_t addresses;
-  uint32_t tags;
-  int32_t low;
-  int32_t hight;
+  char lexeme[MAX_LEN + 1]; // Identifier
+  int int_value; // Value if it's a integer
+  bool bool_value; // Value if it's a boolean
+  DataType type; // Semantic type value {INT, BOOLEAN}
+  IdentifierCategory classCat; // Category class {SCALAR, VECTOR}
+  bool is_var; // If it's a var (direction)
+  int32_t addresses; // Number of addressess
+  uint32_t tags; // Number of tags
+  int32_t low; // Low index
+  int32_t hight; // High index
 };
 
 #endif

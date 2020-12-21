@@ -1393,6 +1393,10 @@ int yyerror(SymbolsTable *st, char *s)
   return PARSEFAIL;
 }
 
+/**
+ * Dumps vars stored in symbols table
+ */
+
 void write_symbols_table(FPASM, SymbolsTable *st)
 {
   hash_iterator_t *iterator;

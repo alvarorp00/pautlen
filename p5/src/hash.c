@@ -49,11 +49,11 @@ struct _node {
  * Main hash structure
  */
 struct _hash_t {
-  uint_fast64_t max_size;
-  uint_fast64_t curr_size;
-  float factor;
+  uint_fast64_t max_size; // Max available size
+  uint_fast64_t curr_size; // Current size
+  float factor; // Load factor
   node_t **nodes; /* hash_t nodes which store info */
-  hashcode_t hashcode;
+  hashcode_t hashcode; // function that
   equals_t equals;
   clean_t clean;
 };

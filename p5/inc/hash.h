@@ -7,33 +7,13 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h> /* for fast integers */
+#include "prototypes.h"
 
 #define _DEF_HASHLEN_ 9
 #define _HIGH_CRITICAL_FACTOR_ 0.6
 
 typedef struct _iterator_node_t iterator_node_t;
 typedef struct _hash_iterator_t hash_iterator_t;
-
-/**
- * hashcode_t Funct prototype
- * @param void elem to be compared
- * @return hashcode value
- */
-typedef uint_fast64_t (*hashcode_t)(void*);
-
-/**
- * equals_t Func prototype
- * @param void element 1
- * @param void element 2
- * @return Returns if both elements are equal
- */
-typedef bool (*equals_t)(void*, void*);
-
-/**
- * clean_t Func prototype
- * @param void element to clean
- */
-typedef void (*clean_t)(void*);
 
 /**
  * Hash type definition
@@ -79,11 +59,46 @@ void hash_clean(hash_t *hash);
  */
 bool hash_contains(hash_t *hash, void *info);
 
+/**
+ * Returns a hash iterator with NON-NULL values
+ * @param hash with values
+ * @return hash iterator
+ */
 hash_iterator_t *hash_iterate(hash_t *hash);
+
+/**
+ * Gets first hash_iterator node
+ * @param iterator returned by hash_iterate()
+ * @return first iterator node
+ */
 iterator_node_t *first(hash_iterator_t *iterator);
+
+/**
+ * Gets next iterator node's node
+ * @param _inode whos next value's desired
+ * @return next iterator node
+ */
 iterator_node_t *next(iterator_node_t *_inode);
+
+/**
+ * Gets iterator node info
+ * @param _inode whose info is desired
+ * @return info
+ */
 void *iter_nodeInfo(iterator_node_t *_inode);
+
+/**
+ * Returns if iterator node has
+ * next node or node
+ * @param _inode iterator node
+ * @return if hash next or not
+ */
 bool hasNext(iterator_node_t *_inode);
+
+/**
+ * Cleans hash iterator
+ * @param iterator hash iterator
+ */
 void hash_iterate_clean(hash_iterator_t *iterator);
 
 #endif

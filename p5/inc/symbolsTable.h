@@ -57,6 +57,12 @@ symbol_t* globalUse(SymbolsTable *st, String identifier);
  */
 symbol_t* localUse(SymbolsTable *st, String identifier);
 
+/**
+ * Searchs only in local scope - not in global if not found
+ * @param st symbols table
+ * @param identifier
+ * @return symbol found or NULL
+ */
 symbol_t* findExclusiveLocal(SymbolsTable *st, String identifier);
 
 /**
@@ -69,6 +75,12 @@ bool declareFunction(SymbolsTable *st, String identifier, DataType returnType, i
 
 /* ------------------------------------------------ */
 
+/**
+ * Searchs symbol at current scope
+ * @param st symbols table
+ * @param identifier string identifier
+ * @return symbol searched
+ */
 symbol_t* st_searchCurrentScope(SymbolsTable *st, String identifier);
 
 /* ------------------------------------------------ */
@@ -173,6 +185,23 @@ Scope st_getScope(SymbolsTable *st);
 
 /* ------------------------------------------------ */
 
+/**
+ * Inserts in current scope with blind info, 
+ * and auto detects how to insert it 
+ * depending on the args
+ * @param st symbols table
+ * @param identifier of the symbol
+ * @param elemCat category of the element
+ * @param dataType symbol¡s data type
+ * @param identifierCategory symbol's identifier category
+ * @param scope symbol's scope
+ * @param param_pos symbol's param position if it's in local scope
+ * @param var_pos symbol's var position if it's in local scope
+ * @param size symbol's size if it's a vector
+ * @param params number of params if it's a function
+ * @param localvars number of localvars if it's a function
+ * @return if insertion was possible or not
+ */
 bool st_insertBlindCurrentScope(
   SymbolsTable *st,
   String identifier,
@@ -189,6 +218,11 @@ bool st_insertBlindCurrentScope(
 
 /* ----------------------------------------------- */
 
+/**
+ * Gets current scope hash table
+ * @param st symbols table
+ * @return local hash or global hash
+ */
 hash_t *st_getScopeHash(SymbolsTable *st);
 
 /* ----------------------------------------------- */

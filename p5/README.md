@@ -31,6 +31,8 @@ default                        Equivalent to 'make all'
 help                           This guide
 ```
 
+Important: `y.output` is stored at **root/info/y.output**.
+
 <div style="page-break-after: always"></div>
 
 ## Compiler Info
@@ -80,10 +82,10 @@ A common header - _alfa.h_ - contains all common stuff (buffers & related) used 
 The project uses the next data structures:
 
   - Hash, with these features:
-    - Auto incremental size
-    - Does **not** support deletions
-    - Linea probing
-    - Keys are arrays of chars - if desired, you can use arrays of integers as arrays of signed chars.
+    - Auto incremental size.
+    - Does **not** support deletions.
+    - Linea probing.
+    - Keys are whatever is desired. _Hashcode_ prototype is at **root/inc/prototypes.h**.
   - Symbols:
     - The different options alfa language contain. Actually, as we've designed them is not as we though at the first the moment, but deadlines and stuff overload forced us to end them as quickly as possible.
   - Symbols Table:
