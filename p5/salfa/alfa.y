@@ -58,7 +58,8 @@
   symbol_t *_funct;
 
   char __buff[MAX_LEN + 1];
-  char __curr_fn_name[MAX_LEN + 1];
+  char __curr_fn_call_name[MAX_LEN + 1];
+  char __curr_fn_scope_name[MAX_LEN + 1];
   int32_t i;
   
   ElementCategory current_category; /* VAR, PARAM, FUNCT */
@@ -395,7 +396,7 @@ fn_name: TOK_FUNCTION type TOK_IDENTIFICADOR
 
         $$.type = $2.type; // propagate function return type
         strcpy($$.lexeme, $3.lexeme); // propagate function name
-        strncpy(__curr_fn_name, $$.lexeme, MAX_LEN);
+        strncpy(__curr_fn_scope_name, $$.lexeme, MAX_LEN);
       }
       ;
 
@@ -696,12 +697,42 @@ vector_element: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                 {
                   EXITFAIL("Vector index must be a integer"); // This is protected by assembly write_index_vector routine
                 }
+                else if ( symbol_get_category( _sleft ) == PARAM )
+                {
+                  EXITFAIL("Params as vectors are not supported yet");
+                } 
+
                 $$.type = symbol_blind_dataType( _sleft );
                 $$.is_var = true;
                 strncpy($$.lexeme, $1.lexeme, MAX_LEN);
 
-                write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), $3.is_var );
+                if ( st_getScope( st ) == GLOBAL )
+                {
+                  write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), $3.is_var );
 
+                  if ( in_fn_call )
+                  {
+                    write_stack_optoarg( FPASM_NAME, $$.is_var );
+                  }
+                }
+                else
+                {
+                  if ( !_funct )
+                  {
+                    EXITFAIL( "Fatal error. Expected to be inside function but not!" );
+                  }
+
+                  if ( symbol_blind_scope( _sleft ) != GLOBAL)
+                  {
+                    EXITFAIL( "Fatal error. Vectors in function must be declared global! " );
+                  }
+
+                  write_index_vector( FPASM_NAME, $1.lexeme, symbol_blind_size( _sleft ), $3.is_var );
+                  if ( in_fn_call )
+                  {
+                    write_stack_optoarg( FPASM_NAME, $$.is_var );
+                  }
+                }
               }
               ;
 
@@ -830,7 +861,6 @@ function_return: TOK_RETURN exp
         write_function_return( FPASM_NAME, $2.is_var );
         current_scope = GLOBAL;
         _funct = NULL;
-        // st_
       }
       ;
 
@@ -974,8 +1004,6 @@ exp: TOK_IDENTIFICADOR
       PRINT_RULE("<exp> ::= <identificador>", 80);
       if((_sgeneric = st_searchCurrentScope(st, $1.lexeme)) == NULL)
       {
-        if ( in_fn_call )
-          break;
         EXITFAIL("Identifier %s doesn't exists", $1.lexeme);
       }
       
@@ -997,11 +1025,12 @@ exp: TOK_IDENTIFICADOR
         if ( in_fn_call )
         {
           write_stack_optoarg( FPASM_NAME, $$.is_var );
+          $$.is_var = false;
         }
       }
       else
       {
-        _funct = globalUse( st, __curr_fn_name );
+        _funct = globalUse( st, __curr_fn_scope_name );
 
         if ( !_funct )
         {
@@ -1010,18 +1039,36 @@ exp: TOK_IDENTIFICADOR
 
         if ( symbol_get_category( _sgeneric ) == PARAM )
         {
+          // printf("\n\tINFO:: %s @ Vars: %d @ Params: %d @ Pos: %d\n\n",
+          //   symbol_get_key( _funct ), symbol_get_funct_localvars( _funct ), 
+          //     symbol_get_funct_params( _funct ), symbol_get_param_pos( _sgeneric ));
           write_param( FPASM_NAME, symbol_get_param_pos( _sgeneric ),
                       symbol_get_funct_params( _funct ) );
+          if ( in_fn_call )
+          {
+            write_stack_optoarg( FPASM_NAME, $$.is_var );
+            $$.is_var = false;
+          }
         }
         else if ( symbol_get_category( _sgeneric ) == VAR )
         {
           if ( symbol_get_var_scope( _sgeneric ) == GLOBAL )
           {
             write_operand(FPASM_NAME, $1.lexeme, $$.is_var );
+            if ( in_fn_call )
+            {
+              write_stack_optoarg( FPASM_NAME, $$.is_var );
+              $$.is_var = false;
+            }
           }
           else
           {
             write_local_var( FPASM_NAME, symbol_get_var_pos( _sgeneric ) );
+            if ( in_fn_call )
+            {
+              write_stack_optoarg( FPASM_NAME, $$.is_var );
+              $$.is_var = false;
+            }
           }
         }
         else
@@ -1101,6 +1148,8 @@ exp: fidf_funct_call TOK_PARENTESISIZQUIERDO exp_list TOK_PARENTESISDERECHO
       $$.type = symbol_get_funct_returnType( _funct );
       $$.is_var = false;
       in_fn_call = false;
+
+      __curr_fn_call_name[0] = '\0';
     }
     ;
 
@@ -1128,7 +1177,7 @@ fidf_funct_call: TOK_IDENTIFICADOR
                 }
                 in_fn_call = true;
                 strncpy($$.lexeme, $1.lexeme, MAX_LEN);
-                strncpy(__curr_fn_name, $$.lexeme, MAX_LEN);
+                strncpy(__curr_fn_call_name, $$.lexeme, MAX_LEN);
               }
               ;
 
@@ -1371,7 +1420,14 @@ identifier: TOK_IDENTIFICADOR
             
             if( current_scope == LOCAL )
             {
-              current_localvars++;
+              if ( current_class == VECTOR )
+              {
+                current_localvars += current_vector_size;
+              }
+              else
+              {
+                current_localvars++;
+              }
             }
           
           }
