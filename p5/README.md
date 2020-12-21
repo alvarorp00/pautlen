@@ -12,7 +12,7 @@ Pautlen UAM | 2020 - 2021
 
 ## Assignment 5 - Compiler
 
-This project is about a simple compiler for 'alfa' language. 'Alfa' was thought for educational purposes, so this will not be such interesting to consider as a real option language - don't waste time here!.
+This project is about a simple compiler for 'alfa' language. 'Alfa' was thought for educational purposes, so this will not be such interesting to consider as a real option language - don't waste time here!
 
 Despite previous line, it's been iteresting to have a general idea about compilers stuff.
 
