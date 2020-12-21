@@ -44,11 +44,6 @@ help:	## This guide
 
 all: default ## Produces compiler
 
-nasm:	all
-	./alfa samples/funciones1.alf out.nasm
-	./produce.sh out.nasm program
-	# rm out.nasm
-
 $(OALFA): $(OYYPARSE) $(OYYLEX)
 		@echo "Generating alfa.o"
 		@$(CC) -I $(INC) $(CFLAGS) -c $(CALFA)
