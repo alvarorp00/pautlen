@@ -665,14 +665,14 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,   173,   173,   184,   197,   205,   214,   223,   233,   243,
-     253,   262,   272,   283,   299,   311,   320,   330,   338,   378,
-     406,   420,   427,   447,   457,   465,   475,   483,   495,   509,
-     519,   527,   536,   545,   554,   563,   572,   581,   590,   600,
-     609,   618,   666,   685,   742,   753,   761,   768,   782,   793,
-     808,   818,   842,   854,   870,   887,   904,   920,   936,   953,
-     969,   985,  1001,  1085,  1096,  1107,  1118,  1129,  1159,  1187,
-    1199,  1207,  1219,  1227,  1244,  1260,  1277,  1294,  1311,  1328,
-    1342,  1356,  1368,  1380,  1392
+     253,   262,   272,   283,   304,   316,   325,   335,   343,   383,
+     411,   425,   432,   452,   462,   470,   480,   488,   500,   514,
+     524,   532,   541,   550,   559,   568,   577,   586,   595,   605,
+     614,   623,   671,   690,   747,   758,   766,   773,   787,   798,
+     813,   823,   847,   859,   875,   892,   909,   925,   941,   958,
+     974,   990,  1006,  1090,  1101,  1112,  1123,  1134,  1164,  1192,
+    1204,  1212,  1224,  1232,  1249,  1265,  1282,  1299,  1316,  1333,
+    1347,  1361,  1373,  1385,  1397
 };
 #endif
 
@@ -1690,46 +1690,51 @@ yyreduce:
               {
                 EXITFAIL("Vector's size out of allowed bounds");
               }
+
+              if ( st_getScope( st ) == LOCAL )
+              {
+                EXITFAIL("Fatal error. Arrays must be declared global!");
+              }
             }
-#line 1695 "y.tab.c"
+#line 1700 "y.tab.c"
     break;
 
   case 14:
-#line 300 "salfa/alfa.y"
+#line 305 "salfa/alfa.y"
           {
             PRINT_RULE("<identificadores> ::= <identificador>", 18);
 
             
           }
-#line 1705 "y.tab.c"
+#line 1710 "y.tab.c"
     break;
 
   case 15:
-#line 312 "salfa/alfa.y"
+#line 317 "salfa/alfa.y"
           {
             PRINT_RULE("<identificadores> ::= <identificador> , <identificadores>", 19);
           }
-#line 1713 "y.tab.c"
+#line 1718 "y.tab.c"
     break;
 
   case 16:
-#line 321 "salfa/alfa.y"
+#line 326 "salfa/alfa.y"
         {
           PRINT_RULE("<funciones> :: <funcion> <funciones>", 20);
         }
-#line 1721 "y.tab.c"
+#line 1726 "y.tab.c"
     break;
 
   case 17:
-#line 330 "salfa/alfa.y"
+#line 335 "salfa/alfa.y"
         {
           PRINT_RULE("<funciones> ::= ", 21);
         }
-#line 1729 "y.tab.c"
+#line 1734 "y.tab.c"
     break;
 
   case 18:
-#line 339 "salfa/alfa.y"
+#line 344 "salfa/alfa.y"
         {
           PRINT_RULE("<funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }", 22);
 
@@ -1764,11 +1769,11 @@ yyreduce:
           strcpy((yyval.attrs).lexeme, (yyvsp[-1].attrs).lexeme); // propagate function name
 
         }
-#line 1768 "y.tab.c"
+#line 1773 "y.tab.c"
     break;
 
   case 19:
-#line 379 "salfa/alfa.y"
+#line 384 "salfa/alfa.y"
       {
         if(( _sgeneric = globalUse(st, (yyvsp[0].attrs).lexeme)) != NULL )
         {
@@ -1791,11 +1796,11 @@ yyreduce:
         strcpy((yyval.attrs).lexeme, (yyvsp[0].attrs).lexeme); // propagate function name
         strncpy(__curr_fn_scope_name, (yyval.attrs).lexeme, MAX_LEN);
       }
-#line 1795 "y.tab.c"
+#line 1800 "y.tab.c"
     break;
 
   case 20:
-#line 407 "salfa/alfa.y"
+#line 412 "salfa/alfa.y"
               {
                 if(( _sgeneric = st_searchCurrentScope(st, (yyvsp[-3].attrs).lexeme )) == NULL )
                 {
@@ -1807,20 +1812,20 @@ yyreduce:
 
                 // write_function_declare( FPASM_NAME, $1.lexeme, current_localvars ); // function init
               }
-#line 1811 "y.tab.c"
+#line 1816 "y.tab.c"
     break;
 
   case 21:
-#line 421 "salfa/alfa.y"
+#line 426 "salfa/alfa.y"
     {
       strncpy((yyval.attrs).lexeme, (yyvsp[-1].attrs).lexeme, MAX_LEN);
       (yyval.attrs).type = (yyvsp[-1].attrs).type;
     }
-#line 1820 "y.tab.c"
+#line 1825 "y.tab.c"
     break;
 
   case 22:
-#line 428 "salfa/alfa.y"
+#line 433 "salfa/alfa.y"
     {
       write_function_declare( FPASM_NAME, (yyvsp[-2].attrs).lexeme, current_localvars ); // function init
       strncpy((yyval.attrs).lexeme, (yyvsp[-2].attrs).lexeme, MAX_LEN);
@@ -1835,54 +1840,54 @@ yyreduce:
         (yyvsp[-2].attrs).type
       );
     }
-#line 1839 "y.tab.c"
+#line 1844 "y.tab.c"
     break;
 
   case 23:
-#line 448 "salfa/alfa.y"
+#line 453 "salfa/alfa.y"
               {
                 PRINT_RULE("<parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>", 23);
               }
-#line 1847 "y.tab.c"
+#line 1852 "y.tab.c"
     break;
 
   case 24:
-#line 457 "salfa/alfa.y"
+#line 462 "salfa/alfa.y"
               {
                 PRINT_RULE("<parametros_funcion> ::= ", 24);
               }
-#line 1855 "y.tab.c"
+#line 1860 "y.tab.c"
     break;
 
   case 25:
-#line 466 "salfa/alfa.y"
+#line 471 "salfa/alfa.y"
                         {
                           PRINT_RULE("<resto_parametros_funcion> ::= ; <parametro_funcion> <resto_parametros_funcion>", 25);
                         }
-#line 1863 "y.tab.c"
+#line 1868 "y.tab.c"
     break;
 
   case 26:
-#line 475 "salfa/alfa.y"
+#line 480 "salfa/alfa.y"
                         {
                           PRINT_RULE("<resto_parametros_funcion> ::= ", 26);
                         }
-#line 1871 "y.tab.c"
+#line 1876 "y.tab.c"
     break;
 
   case 27:
-#line 484 "salfa/alfa.y"
+#line 489 "salfa/alfa.y"
               {
                 PRINT_RULE("<parametro_funcion> ::= <tipo> <identificador>", 27);
 
                 st_set_scalar_parametre( st, (yyvsp[0].attrs).lexeme, (yyvsp[-1].attrs).type, current_param_pos++);
                 current_params++;
               }
-#line 1882 "y.tab.c"
+#line 1887 "y.tab.c"
     break;
 
   case 28:
-#line 496 "salfa/alfa.y"
+#line 501 "salfa/alfa.y"
                         {
                           if ((_sgeneric = findExclusiveLocal(st, (yyvsp[0].attrs).lexeme)) != NULL)
                           {
@@ -1891,108 +1896,108 @@ yyreduce:
 
                           strcpy((yyval.attrs).lexeme, (yyvsp[0].attrs).lexeme);
                         }
-#line 1895 "y.tab.c"
+#line 1900 "y.tab.c"
     break;
 
   case 29:
-#line 510 "salfa/alfa.y"
+#line 515 "salfa/alfa.y"
                     {
                       PRINT_RULE("<declaraciones_funcion> ::= <declaraciones>", 28);
                     }
-#line 1903 "y.tab.c"
+#line 1908 "y.tab.c"
     break;
 
   case 30:
-#line 519 "salfa/alfa.y"
+#line 524 "salfa/alfa.y"
                     {
                       PRINT_RULE("<declaraciones_funcion> ::= ", 29);
                     }
-#line 1911 "y.tab.c"
+#line 1916 "y.tab.c"
     break;
 
   case 31:
-#line 528 "salfa/alfa.y"
+#line 533 "salfa/alfa.y"
           {
             PRINT_RULE("<sentencias> ::= <sentencia>", 30);
           }
-#line 1919 "y.tab.c"
+#line 1924 "y.tab.c"
     break;
 
   case 32:
-#line 537 "salfa/alfa.y"
+#line 542 "salfa/alfa.y"
           {
             PRINT_RULE("<sentencias> ::= <sentencia> <sentencias>", 31);
           }
-#line 1927 "y.tab.c"
+#line 1932 "y.tab.c"
     break;
 
   case 33:
-#line 546 "salfa/alfa.y"
+#line 551 "salfa/alfa.y"
         {
           PRINT_RULE("<sentencia> ::= <sentencia_simple> ;", 32);
         }
-#line 1935 "y.tab.c"
+#line 1940 "y.tab.c"
     break;
 
   case 34:
-#line 555 "salfa/alfa.y"
+#line 560 "salfa/alfa.y"
         {
           PRINT_RULE("<sentencia> ::= <bloque>", 33);
         }
-#line 1943 "y.tab.c"
+#line 1948 "y.tab.c"
     break;
 
   case 35:
-#line 564 "salfa/alfa.y"
+#line 569 "salfa/alfa.y"
               {
                 PRINT_RULE("<sentencia_simple> ::= <asignacion>", 34);
               }
-#line 1951 "y.tab.c"
+#line 1956 "y.tab.c"
     break;
 
   case 36:
-#line 573 "salfa/alfa.y"
+#line 578 "salfa/alfa.y"
               {
                 PRINT_RULE("<sentencia_simple> ::= <lectura>", 35);
               }
-#line 1959 "y.tab.c"
+#line 1964 "y.tab.c"
     break;
 
   case 37:
-#line 582 "salfa/alfa.y"
+#line 587 "salfa/alfa.y"
               {
                 PRINT_RULE("<sentencia_simple> ::= <escritura>", 36);
               }
-#line 1967 "y.tab.c"
+#line 1972 "y.tab.c"
     break;
 
   case 38:
-#line 591 "salfa/alfa.y"
+#line 596 "salfa/alfa.y"
               {
                 PRINT_RULE("<sentencia_simple> ::= <retorno_funcion>", 38);
                 has_return = true;
               }
-#line 1976 "y.tab.c"
+#line 1981 "y.tab.c"
     break;
 
   case 39:
-#line 601 "salfa/alfa.y"
+#line 606 "salfa/alfa.y"
     {
       PRINT_RULE("<bloque> ::= <condicional>", 40);
     }
-#line 1984 "y.tab.c"
+#line 1989 "y.tab.c"
     break;
 
   case 40:
-#line 610 "salfa/alfa.y"
+#line 615 "salfa/alfa.y"
     {
       PRINT_RULE("<bloque> ::= <bubcle>", 41);
     }
-#line 1992 "y.tab.c"
+#line 1997 "y.tab.c"
     break;
 
   case 41:
-#line 619 "salfa/alfa.y"
+#line 624 "salfa/alfa.y"
     {
       PRINT_RULE("<asignacion> ::= <identificador> = <exp>", 43);
       if((_sgeneric = st_searchCurrentScope(st, (yyvsp[-2].attrs).lexeme)) == NULL)
@@ -2035,11 +2040,11 @@ yyreduce:
         write_assignment(FPASM_NAME, (yyvsp[-2].attrs).lexeme, (yyvsp[0].attrs).is_var);
       }
     }
-#line 2039 "y.tab.c"
+#line 2044 "y.tab.c"
     break;
 
   case 42:
-#line 667 "salfa/alfa.y"
+#line 672 "salfa/alfa.y"
           {
             PRINT_RULE("<asignacion> ::= <elemento_vector> = <exp>", 44);
             if ( (yyvsp[-2].attrs).type != (yyvsp[0].attrs).type )
@@ -2053,11 +2058,11 @@ yyreduce:
             }
             write_stack_assign_dest( FPASM_NAME, (yyvsp[0].attrs).is_var );
           }
-#line 2057 "y.tab.c"
+#line 2062 "y.tab.c"
     break;
 
   case 43:
-#line 686 "salfa/alfa.y"
+#line 691 "salfa/alfa.y"
               {
                 PRINT_RULE("<elemento_vector> ::= <identificador> [ <exp> ]", 48);
                 if ( ( _sleft = st_searchCurrentScope(st, (yyvsp[-3].attrs).lexeme ) ) == NULL )
@@ -2109,40 +2114,40 @@ yyreduce:
                   }
                 }
               }
-#line 2113 "y.tab.c"
+#line 2118 "y.tab.c"
     break;
 
   case 44:
-#line 743 "salfa/alfa.y"
+#line 748 "salfa/alfa.y"
           {
             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> }", 50);
             (yyval.attrs).tags = (yyvsp[0].attrs).tags;
             write_ifthenelse_end(FPASM_NAME, (yyval.attrs).tags);
           }
-#line 2123 "y.tab.c"
+#line 2128 "y.tab.c"
     break;
 
   case 45:
-#line 754 "salfa/alfa.y"
+#line 759 "salfa/alfa.y"
           {
             PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", 51);
             (yyval.attrs).tags = (yyvsp[-4].attrs).tags;
             write_ifthenelse_end(FPASM_NAME, (yyval.attrs).tags);
           }
-#line 2133 "y.tab.c"
+#line 2138 "y.tab.c"
     break;
 
   case 46:
-#line 762 "salfa/alfa.y"
+#line 767 "salfa/alfa.y"
           {
             (yyval.attrs).tags = (yyvsp[-2].attrs).tags;
             write_ifthenelse_middle(FPASM_NAME, (yyval.attrs).tags);
           }
-#line 2142 "y.tab.c"
+#line 2147 "y.tab.c"
     break;
 
   case 47:
-#line 769 "salfa/alfa.y"
+#line 774 "salfa/alfa.y"
       {
         if( (yyvsp[-2].attrs).type != BOOLEAN)
         {
@@ -2151,21 +2156,21 @@ yyreduce:
         (yyval.attrs).tags = tags++;
         write_ifthenelse_begin(FPASM_NAME, (yyvsp[-2].attrs).is_var, (yyval.attrs).tags);
       }
-#line 2155 "y.tab.c"
+#line 2160 "y.tab.c"
     break;
 
   case 48:
-#line 783 "salfa/alfa.y"
+#line 788 "salfa/alfa.y"
     {
       PRINT_RULE("<bucle> ::= whie ( <exp> ) { <sentencias> }", 52);
       (yyval.attrs).tags = (yyvsp[-3].attrs).tags;
       write_while_end( FPASM_NAME, (yyval.attrs).tags );
     }
-#line 2165 "y.tab.c"
+#line 2170 "y.tab.c"
     break;
 
   case 49:
-#line 795 "salfa/alfa.y"
+#line 800 "salfa/alfa.y"
         {
           if ( (yyvsp[-1].attrs).type != BOOLEAN )
           {
@@ -2174,20 +2179,20 @@ yyreduce:
           (yyval.attrs).tags = (yyvsp[-3].attrs).tags;
           write_while_exp( FPASM_NAME, (yyvsp[-1].attrs).is_var, (yyval.attrs).tags );
         }
-#line 2178 "y.tab.c"
+#line 2183 "y.tab.c"
     break;
 
   case 50:
-#line 809 "salfa/alfa.y"
+#line 814 "salfa/alfa.y"
     {
       (yyval.attrs).tags = tags++;
       write_while_begin( FPASM_NAME, (yyval.attrs).tags );
     }
-#line 2187 "y.tab.c"
+#line 2192 "y.tab.c"
     break;
 
   case 51:
-#line 819 "salfa/alfa.y"
+#line 824 "salfa/alfa.y"
       {
         PRINT_RULE("<lectura> ::= scanf <identificador>", 54);
 
@@ -2197,31 +2202,31 @@ yyreduce:
         }
         if(symbol_get_category(_sgeneric) == FUNCT)
         {
-          EXITFAIL("Trying to print a function");
+          EXITFAIL("Trying to read a function");
         }
         else if(symbol_blind_identifierCategory(_sgeneric) == VECTOR)
         {
-          EXITFAIL("Trying to print a vector");
+          EXITFAIL("Trying to read a vector");
         }
 
         write_reading(FPASM_NAME, (yyvsp[0].attrs).lexeme, (yyvsp[0].attrs).type);
       }
-#line 2210 "y.tab.c"
+#line 2215 "y.tab.c"
     break;
 
   case 52:
-#line 843 "salfa/alfa.y"
+#line 848 "salfa/alfa.y"
       {
         PRINT_RULE("<escritura> ::= printf <exp>", 56);
 
         write_writing(FPASM_NAME, (yyvsp[0].attrs).is_var, (yyvsp[0].attrs).type);
 
       }
-#line 2221 "y.tab.c"
+#line 2226 "y.tab.c"
     break;
 
   case 53:
-#line 855 "salfa/alfa.y"
+#line 860 "salfa/alfa.y"
       {
         PRINT_RULE("<retorno_funcion> ::= return <exp>", 61);
         if ( st_getScope( st ) == GLOBAL )
@@ -2232,11 +2237,11 @@ yyreduce:
         current_scope = GLOBAL;
         _funct = NULL;
       }
-#line 2236 "y.tab.c"
+#line 2241 "y.tab.c"
     break;
 
   case 54:
-#line 871 "salfa/alfa.y"
+#line 876 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <exp> + <exp>", 72);
       if((yyvsp[-2].attrs).type != (yyvsp[0].attrs).type || (yyvsp[-2].attrs).type != INT )
@@ -2248,11 +2253,11 @@ yyreduce:
       (yyval.attrs).type = (yyvsp[-2].attrs).type; // also $$.type = $3.type
       (yyval.attrs).is_var = false;
     }
-#line 2252 "y.tab.c"
+#line 2257 "y.tab.c"
     break;
 
   case 55:
-#line 888 "salfa/alfa.y"
+#line 893 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <exp> - <exp>", 73);
       if( (yyvsp[-2].attrs).type != (yyvsp[0].attrs).type || (yyvsp[-2].attrs).type != INT )
@@ -2264,11 +2269,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = INT;
     }
-#line 2268 "y.tab.c"
+#line 2273 "y.tab.c"
     break;
 
   case 56:
-#line 905 "salfa/alfa.y"
+#line 910 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <exp> / <exp>", 74);
       if( (yyvsp[-2].attrs).type != (yyvsp[0].attrs).type || ((yyvsp[-2].attrs).type != INT) )
@@ -2279,11 +2284,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = INT;
     }
-#line 2283 "y.tab.c"
+#line 2288 "y.tab.c"
     break;
 
   case 57:
-#line 921 "salfa/alfa.y"
+#line 926 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <exp> * <exp>", 75);
       if( (yyvsp[-2].attrs).type != (yyvsp[0].attrs).type || ((yyvsp[-2].attrs).type != INT) )
@@ -2294,11 +2299,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = INT;
     }
-#line 2298 "y.tab.c"
+#line 2303 "y.tab.c"
     break;
 
   case 58:
-#line 937 "salfa/alfa.y"
+#line 942 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= - <exp>", 76);
       if((yyvsp[0].attrs).type != INT)
@@ -2310,11 +2315,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = INT;
     }
-#line 2314 "y.tab.c"
+#line 2319 "y.tab.c"
     break;
 
   case 59:
-#line 954 "salfa/alfa.y"
+#line 959 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <exp> && <exp>", 77);
       if( (yyvsp[-2].attrs).type != (yyvsp[0].attrs).type || ((yyvsp[-2].attrs).type != BOOLEAN) )
@@ -2325,11 +2330,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = BOOLEAN;
     }
-#line 2329 "y.tab.c"
+#line 2334 "y.tab.c"
     break;
 
   case 60:
-#line 970 "salfa/alfa.y"
+#line 975 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <exp> || <exp>", 78);
       if( (yyvsp[-2].attrs).type != (yyvsp[0].attrs).type || ((yyvsp[-2].attrs).type != BOOLEAN) )
@@ -2340,11 +2345,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = BOOLEAN;
     }
-#line 2344 "y.tab.c"
+#line 2349 "y.tab.c"
     break;
 
   case 61:
-#line 986 "salfa/alfa.y"
+#line 991 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= ! <exp>", 79);
       if( (yyvsp[0].attrs).type != BOOLEAN )
@@ -2355,11 +2360,11 @@ yyreduce:
       (yyval.attrs).is_var = false;
       (yyval.attrs).type = BOOLEAN;
     }
-#line 2359 "y.tab.c"
+#line 2364 "y.tab.c"
     break;
 
   case 62:
-#line 1002 "salfa/alfa.y"
+#line 1007 "salfa/alfa.y"
     {
       
       PRINT_RULE("<exp> ::= <identificador>", 80);
@@ -2438,51 +2443,51 @@ yyreduce:
         }
       }
     }
-#line 2442 "y.tab.c"
+#line 2447 "y.tab.c"
     break;
 
   case 63:
-#line 1086 "salfa/alfa.y"
+#line 1091 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <constante>", 81);
       (yyval.attrs).type = (yyvsp[0].attrs).type;
       (yyval.attrs).is_var = (yyvsp[0].attrs).is_var;
     }
-#line 2452 "y.tab.c"
+#line 2457 "y.tab.c"
     break;
 
   case 64:
-#line 1097 "salfa/alfa.y"
+#line 1102 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= ( <exp> )", 82);
       (yyval.attrs).type = (yyvsp[-1].attrs).type;
       (yyval.attrs).is_var = (yyvsp[-1].attrs).is_var;
     }
-#line 2462 "y.tab.c"
+#line 2467 "y.tab.c"
     break;
 
   case 65:
-#line 1108 "salfa/alfa.y"
+#line 1113 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= ( <comparacion> )", 83);
       (yyval.attrs).type = (yyvsp[-1].attrs).type;
       (yyval.attrs).is_var = (yyvsp[-1].attrs).is_var;
     }
-#line 2472 "y.tab.c"
+#line 2477 "y.tab.c"
     break;
 
   case 66:
-#line 1119 "salfa/alfa.y"
+#line 1124 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <elemento_vector>", 85);
       (yyval.attrs).type = (yyvsp[0].attrs).type;
       (yyval.attrs).is_var = (yyvsp[0].attrs).is_var;
     }
-#line 2482 "y.tab.c"
+#line 2487 "y.tab.c"
     break;
 
   case 67:
-#line 1130 "salfa/alfa.y"
+#line 1135 "salfa/alfa.y"
     {
       PRINT_RULE("<exp> ::= <identificador> ( <lista_expresiones> )", 88);
       if ((_funct = globalUse( st, (yyvsp[-3].attrs).lexeme )) == NULL)
@@ -2507,11 +2512,11 @@ yyreduce:
 
       __curr_fn_call_name[0] = '\0';
     }
-#line 2511 "y.tab.c"
+#line 2516 "y.tab.c"
     break;
 
   case 68:
-#line 1160 "salfa/alfa.y"
+#line 1165 "salfa/alfa.y"
               {
                 if ((_funct = globalUse( st, (yyvsp[0].attrs).lexeme )) == NULL)
                 {
@@ -2534,47 +2539,47 @@ yyreduce:
                 strncpy((yyval.attrs).lexeme, (yyvsp[0].attrs).lexeme, MAX_LEN);
                 strncpy(__curr_fn_call_name, (yyval.attrs).lexeme, MAX_LEN);
               }
-#line 2538 "y.tab.c"
+#line 2543 "y.tab.c"
     break;
 
   case 69:
-#line 1188 "salfa/alfa.y"
+#line 1193 "salfa/alfa.y"
         {
           PRINT_RULE("<lista_expresiones> ::= <exp> <resto_lista_expresiones>", 89);
           // write_stack_optoarg( FPASM_NAME, $1.is_var );
           current_call_param_count++;
         }
-#line 2548 "y.tab.c"
+#line 2553 "y.tab.c"
     break;
 
   case 70:
-#line 1199 "salfa/alfa.y"
+#line 1204 "salfa/alfa.y"
         {
           PRINT_RULE("<lista_expresiones> ::= ", 90);
         }
-#line 2556 "y.tab.c"
+#line 2561 "y.tab.c"
     break;
 
   case 71:
-#line 1208 "salfa/alfa.y"
+#line 1213 "salfa/alfa.y"
                   {
                     PRINT_RULE("<resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>", 91);
                     // write_stack_optoarg( FPASM_NAME, $2.is_var );
                     current_call_param_count++;
                   }
-#line 2566 "y.tab.c"
+#line 2571 "y.tab.c"
     break;
 
   case 72:
-#line 1219 "salfa/alfa.y"
+#line 1224 "salfa/alfa.y"
                   {
                     PRINT_RULE("<resto_lista_expresiones> ::= ", 92);
                   }
-#line 2574 "y.tab.c"
+#line 2579 "y.tab.c"
     break;
 
   case 73:
-#line 1228 "salfa/alfa.y"
+#line 1233 "salfa/alfa.y"
           {
             PRINT_RULE("<comparacion> ::= <exp> == <exp>", 93);
             if((yyvsp[-2].attrs).type != INT || (yyvsp[-2].attrs).type != INT)
@@ -2586,11 +2591,11 @@ yyreduce:
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
           }
-#line 2590 "y.tab.c"
+#line 2595 "y.tab.c"
     break;
 
   case 74:
-#line 1245 "salfa/alfa.y"
+#line 1250 "salfa/alfa.y"
           {
             PRINT_RULE("<comparacion> ::= <exp> != <exp>", 94);
             if((yyvsp[-2].attrs).type != INT || (yyvsp[0].attrs).type != INT)
@@ -2601,11 +2606,11 @@ yyreduce:
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
           }
-#line 2605 "y.tab.c"
+#line 2610 "y.tab.c"
     break;
 
   case 75:
-#line 1261 "salfa/alfa.y"
+#line 1266 "salfa/alfa.y"
           {
             PRINT_RULE("<comparacion> ::= <exp> <= <exp>", 95);
             if((yyvsp[-2].attrs).type != INT || (yyvsp[0].attrs).type != INT)
@@ -2617,11 +2622,11 @@ yyreduce:
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
           }
-#line 2621 "y.tab.c"
+#line 2626 "y.tab.c"
     break;
 
   case 76:
-#line 1278 "salfa/alfa.y"
+#line 1283 "salfa/alfa.y"
           {
             PRINT_RULE("<comparacion> ::= <exp> >= <exp>", 96);
             if((yyvsp[-2].attrs).type != INT || (yyvsp[0].attrs).type != INT)
@@ -2633,11 +2638,11 @@ yyreduce:
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
           }
-#line 2637 "y.tab.c"
+#line 2642 "y.tab.c"
     break;
 
   case 77:
-#line 1295 "salfa/alfa.y"
+#line 1300 "salfa/alfa.y"
           {
             PRINT_RULE("<comparacion> ::= <exp> < <exp>", 97);
             if((yyvsp[-2].attrs).type != INT || (yyvsp[0].attrs).type != INT)
@@ -2649,11 +2654,11 @@ yyreduce:
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
           }
-#line 2653 "y.tab.c"
+#line 2658 "y.tab.c"
     break;
 
   case 78:
-#line 1312 "salfa/alfa.y"
+#line 1317 "salfa/alfa.y"
           {
             PRINT_RULE("<comparacion> ::= <exp> > <exp>", 98);
             if((yyvsp[-2].attrs).type != INT || (yyvsp[0].attrs).type != INT)
@@ -2665,11 +2670,11 @@ yyreduce:
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
           }
-#line 2669 "y.tab.c"
+#line 2674 "y.tab.c"
     break;
 
   case 79:
-#line 1329 "salfa/alfa.y"
+#line 1334 "salfa/alfa.y"
           {
             PRINT_RULE("<constante> ::= <constante_logica>", 99);
             (yyval.attrs).type = (yyvsp[0].attrs).type;
@@ -2678,11 +2683,11 @@ yyreduce:
             snprintf( __buff, MAX_LEN, "%d", (yyvsp[0].attrs).bool_value );
             write_operand( FPASM_NAME, __buff, false );
           }
-#line 2682 "y.tab.c"
+#line 2687 "y.tab.c"
     break;
 
   case 80:
-#line 1343 "salfa/alfa.y"
+#line 1348 "salfa/alfa.y"
           {
             PRINT_RULE("<constante> ::= <constante_entera>", 100);
             (yyval.attrs).type = (yyvsp[0].attrs).type;
@@ -2691,44 +2696,44 @@ yyreduce:
             snprintf(__buff, MAX_LEN, "%d", (yyvsp[0].attrs).int_value);
             write_operand(FPASM_NAME, __buff, false);
           }
-#line 2695 "y.tab.c"
+#line 2700 "y.tab.c"
     break;
 
   case 81:
-#line 1357 "salfa/alfa.y"
+#line 1362 "salfa/alfa.y"
           {
             PRINT_RULE("<constante_logica> ::= true", 102);
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
             (yyval.attrs).bool_value = true;
           }
-#line 2706 "y.tab.c"
+#line 2711 "y.tab.c"
     break;
 
   case 82:
-#line 1369 "salfa/alfa.y"
+#line 1374 "salfa/alfa.y"
           {
             PRINT_RULE("<constante_logica> ::= false", 103);
             (yyval.attrs).type = BOOLEAN;
             (yyval.attrs).is_var = false;
             (yyval.attrs).bool_value = false;
           }
-#line 2717 "y.tab.c"
+#line 2722 "y.tab.c"
     break;
 
   case 83:
-#line 1381 "salfa/alfa.y"
+#line 1386 "salfa/alfa.y"
             {
               PRINT_RULE("<constante_entera> ::= TOK_CONSTANTE_ENTERA", 104);
               (yyval.attrs).type = INT;
               (yyval.attrs).is_var = false;
               (yyval.attrs).int_value = (yyvsp[0].attrs).int_value;
             }
-#line 2728 "y.tab.c"
+#line 2733 "y.tab.c"
     break;
 
   case 84:
-#line 1393 "salfa/alfa.y"
+#line 1398 "salfa/alfa.y"
           {
             PRINT_RULE("<identificador> ::= TOK_IDENTIFICADOR", 108);
             if ( current_scope == LOCAL )
@@ -2770,11 +2775,11 @@ yyreduce:
             }
           
           }
-#line 2774 "y.tab.c"
+#line 2779 "y.tab.c"
     break;
 
 
-#line 2778 "y.tab.c"
+#line 2783 "y.tab.c"
 
       default: break;
     }
@@ -3006,7 +3011,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1436 "salfa/alfa.y"
+#line 1441 "salfa/alfa.y"
 
 
 /* User functions definitions */

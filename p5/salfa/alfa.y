@@ -290,6 +290,11 @@ class_vector: TOK_ARRAY type TOK_CORCHETEIZQUIERDO constant_int TOK_CORCHETEDERE
               {
                 EXITFAIL("Vector's size out of allowed bounds");
               }
+
+              if ( st_getScope( st ) == LOCAL )
+              {
+                EXITFAIL("Fatal error. Arrays must be declared global!");
+              }
             }
             ;
 
@@ -825,11 +830,11 @@ reading: TOK_SCANF TOK_IDENTIFICADOR
         }
         if(symbol_get_category(_sgeneric) == FUNCT)
         {
-          EXITFAIL("Trying to print a function");
+          EXITFAIL("Trying to read a function");
         }
         else if(symbol_blind_identifierCategory(_sgeneric) == VECTOR)
         {
-          EXITFAIL("Trying to print a vector");
+          EXITFAIL("Trying to read a vector");
         }
 
         write_reading(FPASM_NAME, $2.lexeme, $2.type);
