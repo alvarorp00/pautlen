@@ -75,6 +75,8 @@ If you want to launch compiler with **_DEBUG_** mode - it'll print traces, rules
 105 #endif
 ```
 
+<div style="page-break-after: always"></div>
+
 ## Comments about design
 
 A common header - _alfa.h_ - contains all common stuff (buffers & related) used by _alfa.c_ - launcher -, _alfa.y_ - bison - and _alfa.l_ - flex.

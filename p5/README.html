@@ -416,16 +416,17 @@ help                           This guide
 104 #define TRACE
 105 #endif
 </div></code></pre>
+<div style="page-break-after: always"></div>
 <h2 id="comments-about-design">Comments about design</h2>
 <p>A common header - <em>alfa.h</em> - contains all common stuff (buffers &amp; related) used by <em>alfa.c</em> - launcher -, <em>alfa.y</em> - bison - and <em>alfa.l</em> - flex.</p>
 <p>The project uses the next data structures:</p>
 <ul>
 <li>Hash, with these features:
 <ul>
-<li>Auto incremental size</li>
-<li>Does <strong>not</strong> support deletions</li>
-<li>Linea probing</li>
-<li>Keys are arrays of chars - if desired, you can use arrays of integers as arrays of signed chars.</li>
+<li>Auto incremental size.</li>
+<li>Does <strong>not</strong> support deletions.</li>
+<li>Linea probing.</li>
+<li>Keys are whatever is desired. <em>Hashcode</em> prototype is at <strong>root/inc/prototypes.h</strong>.</li>
 </ul>
 </li>
 <li>Symbols:
