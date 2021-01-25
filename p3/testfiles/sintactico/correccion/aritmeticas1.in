@@ -1,0 +1,26 @@
+main
+{
+
+    int v1, v2;
+
+
+	scanf v1;
+	scanf v2;
+
+	printf v1+v2;
+
+	printf v1-v2;
+
+	printf v1*v2;
+
+	printf v1/v2;
+
+	printf -v1;
+
+
+}
+
+
+
+
+

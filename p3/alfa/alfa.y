@@ -113,7 +113,7 @@ identifiers: identifier { PRINT_RULE("<identificadores> ::= <identificador>", RU
           | identifier TOK_COMA identifiers { PRINT_RULE("<identificadores> ::= <identificador> , <identificadores>", RULE_IDENTIFIERS + 1); }
           ;
 
-functions: function functions { PRINT_RULE("<funciones> :: <funcion> <funciones>", RULE_FUNCTIONS); }
+functions: function functions { PRINT_RULE("<funciones> ::= <funcion> <funciones>", RULE_FUNCTIONS); }
         | { PRINT_RULE("<funciones> ::= ", RULE_FUNCTIONS + 1); }
         ;
 
@@ -148,7 +148,7 @@ simple_statement: assignment { PRINT_RULE("<sentencia_simple> ::= <asignacion>",
               ;
 
 block: conditional { PRINT_RULE("<bloque> ::= <condicional>", RULE_BLOCK); }
-    | loop { PRINT_RULE("<bloque> ::= <bubcle>", RULE_BLOCK + 1); }
+    | loop { PRINT_RULE("<bloque> ::= <bucle>", RULE_BLOCK + 1); }
     ;
 
 assignment: identifier TOK_ASIGNACION exp  { PRINT_RULE("<asignacion> ::= <identificador> = <exp>", RULE_ASSIGNMENT); }
@@ -161,7 +161,7 @@ conditional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEI
           | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA { PRINT_RULE("<condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }", RULE_CONDITIONAL + 1); }
           ;
 
-loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA { PRINT_RULE("<bucle> ::= whie ( <exp> ) { <sentencias> }", RULE_LOOP); };
+loop: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA statements TOK_LLAVEDERECHA { PRINT_RULE("<bucle> ::= while ( <exp> ) { <sentencias> }", RULE_LOOP); };
 
 reading: TOK_SCANF identifier { PRINT_RULE("<lectura> ::= scanf <identificador>", RULE_READING); };
 
@@ -173,7 +173,7 @@ exp: exp TOK_MAS exp { PRINT_RULE("<exp> ::= <exp> + <exp>", RULE_EXP); }
     | exp TOK_MENOS exp { PRINT_RULE("<exp> ::= <exp> - <exp>", RULE_EXP + 1); }
     | exp TOK_DIVISION exp { PRINT_RULE("<exp> ::= <exp> / <exp>", RULE_EXP + 2); }
     | exp TOK_ASTERISCO exp { PRINT_RULE("<exp> ::= <exp> * <exp>", RULE_EXP + 3); }
-    | TOK_MENOS exp { PRINT_RULE("<exp> ::= - <exp>", RULE_EXP + 4); }
+    | TOK_MENOS exp %prec MENOSU { PRINT_RULE("<exp> ::= - <exp>", RULE_EXP + 4); }
     | exp TOK_AND exp { PRINT_RULE("<exp> ::= <exp> && <exp>", RULE_EXP + 5); }
     | exp TOK_OR exp { PRINT_RULE("<exp> ::= <exp> || <exp>", RULE_EXP + 6); }
     | TOK_NOT exp { PRINT_RULE("<exp> ::= ! <exp>", RULE_EXP + 7); }

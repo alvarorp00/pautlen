@@ -1,0 +1,22 @@
+main
+{
+    int v1, v2, i, resultado;
+
+
+    scanf v1;
+    scanf v2;
+
+    resultado=0;
+    i = 0;
+
+    while ((i<v2))
+    {
+        resultado = resultado + v1;
+    }
+    printf resultado;
+}
+
+
+
+
+

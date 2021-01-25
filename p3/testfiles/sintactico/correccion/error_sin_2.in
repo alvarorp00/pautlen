@@ -1,0 +1,9 @@
+main
+{
+
+  int v1;
+
+
+  scanf v1;
+  printf v1;
+

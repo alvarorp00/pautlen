@@ -1,0 +1,22 @@
+main
+{
+
+
+    int v1, v2, z;
+
+
+	scanf v1;
+	scanf v2;
+	scanf z;
+
+	printf v1+v2*z;
+
+	printf (v1+v2)*z;
+
+	printf -v1*v2*-z;
+
+}
+
+
+
+

@@ -1,0 +1,25 @@
+main
+{
+
+
+    int v1, v2, resultado;
+
+
+	function int suma (int num1; int num2)
+	{
+		return num1+num2;
+	}
+
+
+	scanf v1;
+	scanf v2;
+
+	resultado = suma (v1,v2);
+
+	printf resultado;
+}
+
+
+
+
+

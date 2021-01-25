@@ -1,0 +1,58 @@
+cp $1/*.in .
+cp $1/*.out .
+cp -i $1/informe .
+
+
+echo ================    aritmeticas1.in   ======================================
+./pruebaSintactico aritmeticas1.in sal_aritmeticas1.out
+diff -b -B sal_aritmeticas1.out aritmeticas1.out
+
+echo ================    aritmeticas2.in   ======================================
+./pruebaSintactico aritmeticas2.in sal_aritmeticas2.out
+diff -b -B sal_aritmeticas2.out aritmeticas2.out
+
+echo ================    bucles.in   ====================================== 
+./pruebaSintactico bucles.in sal_bucles.out
+diff -b -B sal_bucles.out bucles.out
+
+echo ================     especifico1.in  ====================================== 
+./pruebaSintactico especifico1.in sal_especifico1.out
+diff -b -B sal_especifico1.out especifico1.out
+
+echo ================     especifico2.in  ====================================== 
+./pruebaSintactico especifico2.in sal_especifico2.out
+diff -b -B sal_especifico2.out especifico2.out
+
+echo ================     especifico3.in  ====================================== 
+./pruebaSintactico especifico3.in sal_especifico3.out
+diff -b -B sal_especifico3.out especifico3.out
+
+echo ================     funciones1.in  ====================================== 
+./pruebaSintactico funciones1.in sal_funciones1.out
+diff -b -B sal_funciones1.out funciones1.out
+
+echo ================     funciones2.in  ====================================== 
+./pruebaSintactico funciones2.in sal_funciones2.out
+diff -b -B sal_funciones2.out funciones2.out
+
+echo ================     ifs.in  ====================================== 
+./pruebaSintactico ifs.in sal_ifs.out
+diff -b -B sal_ifs.out ifs.out
+
+echo ================     logicas.in  ====================================== 
+./pruebaSintactico logicas.in sal_logicas.out
+diff -b -B sal_logicas.out logicas.out
+
+echo ================     error_morfo_sin.in  ====================================== 
+./pruebaSintactico error_morfo_sin.in sal_error_morfo_sin.out
+diff -b -B sal_error_morfo_sin.out error_morfo_sin.out
+
+echo ================     error_sin_1.in  ====================================== 
+./pruebaSintactico error_sin_1.in sal_error_sin_1.out
+diff -b -B sal_error_sin_1.out error_sin_1.out
+
+echo ================     error_sin_2.in  ====================================== 
+./pruebaSintactico error_sin_2.in sal_error_sin_2.out
+diff -b -B sal_error_sin_2.out error_sin_2.out
+
+

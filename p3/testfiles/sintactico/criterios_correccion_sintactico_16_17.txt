@@ -1,0 +1,35 @@
+Hola a todos,
+os envío la sugerencia para corregir el sintáctico. Os lo desgloso en puntos:
+
+1) Lo que os propongo coincide con lo que hicimos el año pasado exceptuando el tema de los conflictos. Este año ya hemos avisado en el enunciado acerca de que una entrega con conflictos se considerará suspensa.
+
+2) La corrección consiste en probar con 10 programas sintácticamente correctos.
+Cada uno de ellos puntúa 0.8 También se prueba un programa que tiene un error morfológico
+que puntúa 1. Por último se prueban 2 programas con errores sintácticos que puntúan0.5 cada uno.
+
+3) Los diez programas sintácticamente correctos, al comparar su salida con las salidas que nosotros
+tenemos puede haber alguna diferencia en el texto de las producciones, pero eso no se debe penalizar
+porque no es relevante. Lo importante es que se trate de la misma producción. De hecho,en nuestras
+salidas hay alguna producción mal escrita.
+
+4) El programa que tiene un error morfológico tiene por objetivo evaluar si ellos controlan que cuando
+hay un error morfológico, aunque éste desencadene un error sintáctico, el mensaje al usuario hable únicamente
+del error morfológico. Sólo en ese caso se puntúa este caso.
+
+5) los dos programas con errores sintácticos pues únicamente tienen qeu informar de error sintáctico "cerca" de las
+posiciones [8,3] para el primer programa y [10,0]  para el segundo. Cada programa puntúa 0.5. Yo propongo puntuar 
+solo 0.25 si no se han molestado en mantener un formato por lo menos parcido al que les pedimos para informar
+de los errores sintácticos.
+
+6) Si tienen conflictos la entrega está suspensa.
+
+7) Si se repiten errores del morfológico que no han corregido aunque hayan tenido en su mano la corrección del morfológico. Yo potpongo quitar como mínimo 1 punto por cada error no corregido.
+
+8) No tengo muy claro si es bueno publicar los ficheros de corrección, ¿qué opináis?
+
+
+
+Bueno, ya me diréis.
+
+Un saludo,
+MARINA

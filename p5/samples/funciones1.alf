@@ -1,6 +1,7 @@
 main
 {
     int x, y, resultado;
+    array int[64] v;
 
 	function int suma (int num1; int num2)
 	{
